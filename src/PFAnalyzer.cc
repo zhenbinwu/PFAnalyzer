@@ -1,4 +1,3 @@
-// -*- C++ -*-
 //
 // Package:    PFAnalyzer
 // Class:      PFAnalyzer
@@ -16,48 +15,11 @@
 // $Id$
 //
 //
-
-
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-//
-// class declaration
-//
-
-class PFAnalyzer : public edm::EDAnalyzer {
-   public:
-      explicit PFAnalyzer(const edm::ParameterSet&);
-      ~PFAnalyzer();
-
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-
-   private:
-      virtual void beginJob() override;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-
-      // ----------member data ---------------------------
-};
+#include "UserCode/PFAnalyzer/interface/PFAnalyzer.h"
 
 //
 // constants, enums and typedefs
 //
-
 //
 // static data member definitions
 //
@@ -65,10 +27,12 @@ class PFAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-PFAnalyzer::PFAnalyzer(const edm::ParameterSet& iConfig)
-
+PFAnalyzer::PFAnalyzer(const edm::ParameterSet& iConfig):
+minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 {
    //now do what ever initialization is needed
+  demohisto = fs->make<TH1D>("tracks" , "Tracks" , 100 , 0 , 5000 );
+  BookTH1D("HbheRechit", "Number of HbHeRechit", 1000, 0, 3000);
 
 }
 
@@ -92,6 +56,21 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
+   Handle<reco::TrackCollection> tracks;
+   iEvent.getByLabel("generalTracks", tracks); 
+   iEvent.getByLabel("ak8PFJets", pfJetcollection); 
+   demohisto->Fill(tracks->size());
+
+   if (minTracks_ <= tracks->size())
+   {
+     LogInfo("Demo") << "number of tracks "<<tracks->size();
+   }
+
+  for (unsigned int i = 0; i < pfJetcollection->size(); ++i)
+  {
+    reco::PFJet j = pfJetcollection->at(i);
+    std::cout << j.energy() << std::endl;
+  }
 
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -116,7 +95,7 @@ PFAnalyzer::beginJob()
 void 
 PFAnalyzer::endJob() 
 {
-}
+
 
 // ------------ method called when starting to processes a run  ------------
 /*
@@ -160,5 +139,22 @@ PFAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   descriptions.addDefault(desc);
 }
 
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFAnalyzer);
+// ===  FUNCTION  ============================================================
+//         Name:  PFAnalyzer::BookTH1D
+//  Description:  
+// ===========================================================================
+bool PFAnalyzer::BookTH1D(std::string name, std::string title, unsigned nbins, double xlow, double xhigh)
+{
+  Hist1D[name] = fs->make<TH1D>(name.c_str(), title.c_str(), nbins , xlow, xhigh);
+  return true;
+}       // -----  end of function PFAnalyzer::BookTH1D  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  PFAnalyzer::GetConfigFlag
+//  Description:  
+// ===========================================================================
+int PFAnalyzer::GetConfigFlag() const
+{
+  
+
+}       // -----  end of function PFAnalyzer::GetConfigFlag  -----
