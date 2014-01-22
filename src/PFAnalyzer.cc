@@ -34,6 +34,9 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   demohisto = fs->make<TH1D>("tracks" , "Tracks" , 100 , 0 , 5000 );
   BookTH1D("HbheRechit", "Number of HbHeRechit", 1000, 0, 3000);
 
+  // Get all the input tag needed
+  GetInputTag(iConfig);
+
 }
 
 
@@ -56,6 +59,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
 
+   GetHandleByLabel(iEvent);
    Handle<reco::TrackCollection> tracks;
    iEvent.getByLabel("generalTracks", tracks); 
    iEvent.getByLabel("ak8PFJets", pfJetcollection); 
@@ -71,17 +75,14 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     reco::PFJet j = pfJetcollection->at(i);
     std::cout << j.energy() << std::endl;
   }
+  std::cout<<"Run to \033[0;31m"<<__func__<<"\033[0m at \033[1;36m"<< __FILE__<<"\033[0m, line \033[0;34m"<< __LINE__<<"\033[0m"<< std::endl; 
+  for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
+  {
+    reco::PFRecHit HcalPFRH = HcalPFRecHitHdl->at(i);
+    std::cout << HcalPFRH.energy() << std::endl;
+  }
 
 
-#ifdef THIS_IS_AN_EVENT_EXAMPLE
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-#endif
-   
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-#endif
 }
 
 
@@ -95,6 +96,7 @@ PFAnalyzer::beginJob()
 void 
 PFAnalyzer::endJob() 
 {
+}
 
 
 // ------------ method called when starting to processes a run  ------------
@@ -153,8 +155,54 @@ bool PFAnalyzer::BookTH1D(std::string name, std::string title, unsigned nbins, d
 //         Name:  PFAnalyzer::GetConfigFlag
 //  Description:  
 // ===========================================================================
-int PFAnalyzer::GetConfigFlag() const
+int PFAnalyzer::GetInputTag(const edm::ParameterSet& iConfig)
 {
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
+  HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
+  HfRecHitTag_ = iConfig.getParameter<edm::InputTag>("HfRecHitTag");
+  HoRecHitTag_ = iConfig.getParameter<edm::InputTag>("HoRecHitTag");
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFRecHit ~~~~~
+  EcalPFRecHitTag_ = iConfig.getParameter<edm::InputTag>("EcalPFRecHitTag");
+  HcalPFRecHitTag_ = iConfig.getParameter<edm::InputTag>("HcalPFRecHitTag");
+  HOPFRecHitTag_ = iConfig.getParameter<edm::InputTag>("HOPFRecHitTag");
+  PSPFRecHitTag_ = iConfig.getParameter<edm::InputTag>("PSPFRecHitTag");
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFCluster ~~~~~
+  EcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("EcalPFClusterTag");
+  HcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("HcalPFClusterTag");
+  HOPFClusterTag_ = iConfig.getParameter<edm::InputTag>("HOPFClusterTag");
+  PSPFClusterTag_ = iConfig.getParameter<edm::InputTag>("PSPFClusterTag");
+
+
+  //caloJetInputTag_ = iConfig.getParameter<edm::InputTag>("caloJetInputTag");
+
+  return 1;
 }       // -----  end of function PFAnalyzer::GetConfigFlag  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  PFAnalyzer::GetHandleByLabel
+//  Description:  
+// ===========================================================================
+int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
+{
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
+   iEvent.getByLabel(HbHeRecHitTag_, HbHeRecHitHdl); 
+   iEvent.getByLabel(HfRecHitTag_, HfRecHitHdl); 
+   iEvent.getByLabel(HoRecHitTag_, HoRecHitHdl); 
+
+   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFRecHit ~~~~~
+   iEvent.getByLabel(EcalPFRecHitTag_, EcalPFRecHitHdl); 
+   iEvent.getByLabel(HcalPFRecHitTag_, HcalPFRecHitHdl); 
+   iEvent.getByLabel(HOPFRecHitTag_, HOPFRecHitHdl); 
+   iEvent.getByLabel(PSPFRecHitTag_, PSPFRecHitHdl); 
+
+   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFCluster ~~~~~
+   iEvent.getByLabel(EcalPFClusterTag_, EcalPFClusterHdl); 
+   iEvent.getByLabel(HcalPFClusterTag_, HcalPFClusterHdl); 
+   iEvent.getByLabel(HOPFClusterTag_, HOPFClusterHdl); 
+   iEvent.getByLabel(PSPFClusterTag_, PSPFClusterHdl); 
+  return 1;
+}       // -----  end of function PFAnalyzer::GetHandleByLabel  -----
