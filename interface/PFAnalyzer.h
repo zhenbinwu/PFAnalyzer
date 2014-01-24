@@ -16,6 +16,8 @@
 
 // system include files
 #include <memory>
+#include <list>
+#include <map>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -34,13 +36,13 @@
 #include "DataFormats/ParticleFlowReco/interface/PFRecHit.h"
 #include "DataFormats/ParticleFlowReco/interface/PFCluster.h"
 #include "DataFormats/ParticleFlowReco/interface/PFSuperCluster.h"
-#include "DataFormats/ParticleFlowReco/interface/PFJetCollection.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 #include "DataFormats/METReco/interface/CaloMETCollection.h"
@@ -51,6 +53,7 @@
 #include "DataFormats/METReco/interface/GenMET.h"
 #include "DataFormats/Math/interface/deltaR.h"
 //
+#include "SimDataFormats/CaloHit/interface/PCaloHit.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 //
 // class declaration
@@ -83,6 +86,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
       int CaloMETAna();
       int GenMETAna();
       int PFMetAna();
+      int PFRecHitAna();
 
    private:
       virtual void beginJob() override;
@@ -95,6 +99,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
       // ----------member data ---------------------------
+      bool isLeptonic;
       //----------------------------------------------------------------------------
       //  Object handler
       //----------------------------------------------------------------------------
@@ -159,7 +164,10 @@ class PFAnalyzer : public edm::EDAnalyzer {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
       edm::InputTag GenParticleInputTag_;
       edm::Handle<reco::GenParticleCollection> GenParticleHdl;
-//
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
+      edm::InputTag SimCaloHitInputTag_;
+      edm::Handle<std::vector<PCaloHit> > SimCaloHitHdl;
       
       //now do what ever initialization is needed
       unsigned int minTracks_;
@@ -186,32 +194,129 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* GenJet_Eta;
       TH1D* GenJet_Phi;
 
+      std::map<unsigned int, std::list<std::pair<double, unsigned int> > > PFGenJet_deltaR;
+      // GenJet -> PFJet
+      std::map<unsigned int, unsigned int> PFGenJet;
+      std::map<unsigned int, std::list<std::pair<double, unsigned int> > > CaloGenJet_deltaR;
+      // GenJet -> CaloJet
+      std::map<unsigned int, unsigned int> CaloGenJet;
       TH1D* PFJetRes_Pt;
       TH1D* PFJetRes_Eta;
       TH1D* PFJetRes_Phi;
       TH1D* GenJetRes_Pt;
       TH1D* GenJetRes_Eta;
       TH1D* GenJetRes_Phi;
+      TH1D* CaloJetRes_Pt;
+      TH1D* CaloJetRes_Eta;
+      TH1D* CaloJetRes_Phi;
+
+
+      TH1D* PFJet_Gen0_50_Pt;
+      TH1D* PFJet_Gen50_80_Pt;
+      TH1D* PFJet_Gen80_120_Pt;
+      TH1D* PFJet_Gen120_200_Pt;
+      TH1D* PFJet_Gen200_500_Pt;
+      TH1D* PFJet_Gen500_1000_Pt;
+
+      TH1D* CaloJet_Gen0_50_Pt;
+      TH1D* CaloJet_Gen50_80_Pt;
+      TH1D* CaloJet_Gen80_120_Pt;
+      TH1D* CaloJet_Gen120_200_Pt;
+      TH1D* CaloJet_Gen200_500_Pt;
+      TH1D* CaloJet_Gen500_1000_Pt;
+
+
 
       //----------------------------------------------------------------------------
       //  MET
       //----------------------------------------------------------------------------
 
       TH1D* PFMET_Pt;
-      TH1D* PFMET_Eta;
-      TH1D* PFMET_Sig;
+      TH1D* PFMET_Phi;
+      TH1D* PFMET_SumEt;
+      TH1D* PFMET_Px;
+      TH1D* PFMET_Py;
       
       TH1D* CaloMET_Pt;
-      TH1D* CaloMET_Eta;
-      TH1D* CaloMET_Sig;
+      TH1D* CaloMET_Phi;
+      TH1D* CaloMET_SumEt;
+      TH1D* CaloMET_Px;
+      TH1D* CaloMET_Py;
 
       TH1D* GenMET_Pt;
-      TH1D* GenMET_Eta;
-      TH1D* GenMET_Sig;
+      TH1D* GenMET_Phi;
+      TH1D* GenMET_SumEt;
+      TH1D* GenMET_Px;
+      TH1D* GenMET_Py;
+
+      TH1D* Lep_PFMET_Pt;
+      TH1D* Lep_PFMET_Phi;
+      TH1D* Lep_PFMET_SumEt;
+      TH1D* Lep_PFMET_Px;
+      TH1D* Lep_PFMET_Py;
+      
+      TH1D* Lep_CaloMET_Pt;
+      TH1D* Lep_CaloMET_Phi;
+      TH1D* Lep_CaloMET_SumEt;
+      TH1D* Lep_CaloMET_Px;
+      TH1D* Lep_CaloMET_Py;
+
+      TH1D* Lep_GenMET_Pt;
+      TH1D* Lep_GenMET_Phi;
+      TH1D* Lep_GenMET_SumEt;
+      TH1D* Lep_GenMET_Px;
+      TH1D* Lep_GenMET_Py;
 
 
+      TH1D* Had_PFMET_Pt;
+      TH1D* Had_PFMET_Phi;
+      TH1D* Had_PFMET_SumEt;
+      TH1D* Had_PFMET_Px;
+      TH1D* Had_PFMET_Py;
+      
+      TH1D* Had_CaloMET_Pt;
+      TH1D* Had_CaloMET_Phi;
+      TH1D* Had_CaloMET_SumEt;
+      TH1D* Had_CaloMET_Px;
+      TH1D* Had_CaloMET_Py;
+
+      TH1D* Had_GenMET_Pt;
+      TH1D* Had_GenMET_Phi;
+      TH1D* Had_GenMET_SumEt;
+      TH1D* Had_GenMET_Px;
+      TH1D* Had_GenMET_Py;
+
+
+//----------------------------------------------------------------------------
+//  Sim Calo Hit
+//----------------------------------------------------------------------------
+      TH1D* N_SimCalo;
+      TH1D* SimCalo_Eta;
+      TH1D* SimCalo_Energy;
       //AnaRecHit *RecHitAna;
       //AnaPFJet *PFJetAna;
+//----------------------------------------------------------------------------
+//  HbHe Rechit
+//----------------------------------------------------------------------------
+      TH1D* HcalRH_N;
+      TH1D* HcalRH_iEta;
+      TH1D* HcalRH_iPhi;
+      TH2D* HcalRH_iEtaPhi;
+      TH1D* HcalRH_Energy;
+      TH1D* HcalRH_SumE_Eta;
+      TH1D* HcalRH_SumE_Phi;
+
+//----------------------------------------------------------------------------
+//  HbHe PFRechit
+//----------------------------------------------------------------------------
+      TH1D* HcalPFRH_N;
+      TH1D* HcalPFRH_iEta;
+      TH1D* HcalPFRH_iPhi;
+      TH2D* HcalPFRH_iEtaPhi;
+      TH1D* HcalPFRH_Energy;
+      TH1D* HcalPFRH_SumE_Eta;
+      TH1D* HcalPFRH_SumE_Phi;
+
 };
 
 //define this as a plug-in
