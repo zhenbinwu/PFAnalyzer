@@ -25,11 +25,11 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
 
   GenParticleInputTag_= iConfig.getParameter<edm::InputTag>("GenParticleInputTag");
   PFCandidateInputTag_= iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
-  HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkPt", 100, -5, 5);
+  HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkPt", 400, -2, 2);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 50);
   PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 500);
-  PionTrkPt =fs->make<TH1D>("PionTrkPt", "PionTrkPt", 100, 0, 500);
-  PionTrkP =fs->make<TH1D>("PionTrkP", "PionTrkP", 100, 0, 500);
+  PionTrkPt =fs->make<TH1D>("PionTrkPt", "PionTrkPt", 500, 0, 500);
+  PionTrkP =fs->make<TH1D>("PionTrkP", "PionTrkP", 500, 0, 500);
   PionTrkEta =fs->make<TH1D>("PionTrkEta", "PionTrkEta", 100, -5, 5);
   PionTrkPhi =fs->make<TH1D>("PionTrkPhi", "PionTrkPhi", 140, -7, 7);
   PionGen_Pt = fs->make<TH1D>("PionGen_Pt", "PionGen_Pt", 100, 0, 100);
@@ -64,18 +64,21 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::vector<unsigned int> GenIdx;
 
+  double GenE = 0;
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
   {
     reco::GenParticle gen = GenParticleHdl->at(i);
     if (fabs(gen.pdgId()) == 211)
     {
       GenIdx.push_back(i);
+      GenE = gen.p4().E();
       PionGen_Pt->Fill(gen.p4().pt());
       PionGen_Eta->Fill(gen.p4().Eta());
       PionGen_Phi->Fill(gen.p4().Phi());
     }
     
   }
+  assert(GenE != 0);
   //std::cout << " how many 211? " << GenIdx.size() << std::endl;
 
   GenPion_deltaR.clear();
@@ -85,7 +88,7 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   {
     reco::PFCandidate can = PFCandidateHdl->at(i);
     if (can.particleId() != 1) continue;
-    if (can.trackRef()->outerP() < 40 || can.trackRef()->outerP() > 60 ) continue;
+    if (can.trackRef()->outerP() < 0.8*GenE || can.trackRef()->outerP() > 1.2*GenE ) continue;
     
     for(unsigned int j=0; j < GenIdx.size(); j++)
     {
