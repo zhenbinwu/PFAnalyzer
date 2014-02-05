@@ -55,6 +55,8 @@
 //
 #include "SimDataFormats/CaloHit/interface/PCaloHit.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 //
 // class declaration
 //
@@ -73,13 +75,15 @@ class PFAnalyzer : public edm::EDAnalyzer {
       int RecHitAna();
       int GetInputTag(const edm::ParameterSet& iConfig);
       int GetHandleByLabel(const edm::Event& iEvent);
+      int PCaloHitAna() const;
 
       // ----------member data ---------------------------
       edm::Service<TFileService> fs;
 
 
    protected:
-      int PFJetAna();
+      //int PFJetAna();
+      int PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup);
       int CaloJetAna();
       int GenJetAna();
       bool HasNeutrino() const;
@@ -87,6 +91,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
       int GenMETAna();
       int PFMetAna();
       int PFRecHitAna();
+      int PFClusterAna();
 
    private:
       virtual void beginJob() override;
@@ -172,6 +177,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
       //now do what ever initialization is needed
       unsigned int minTracks_;
 
+      TH1D* Rho_His;
       //----------------------------------------------------------------------------
       //  Rechit
       //----------------------------------------------------------------------------
@@ -211,10 +217,17 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* CaloJetRes_Phi;
 
 
-      TH1D* PFJet_Gen0_50_Pt;
-      TH1D* PFJet_Gen50_80_Pt;
-      TH1D* PFJet_Gen80_120_Pt;
-      TH1D* PFJet_Gen120_200_Pt;
+      TH1D* PFJet_Gen10_20_Pt;
+      TH1D* PFJet_Gen20_30_Pt;
+      TH1D* PFJet_Gen30_40_Pt;
+      TH1D* PFJet_Gen40_50_Pt;
+      TH1D* PFJet_Gen50_60_Pt;
+      TH1D* PFJet_Gen60_70_Pt;
+      TH1D* PFJet_Gen70_80_Pt;
+      TH1D* PFJet_Gen80_100_Pt;
+      TH1D* PFJet_Gen100_120_Pt;
+      TH1D* PFJet_Gen120_150_Pt;
+      TH1D* PFJet_Gen150_200_Pt;
       TH1D* PFJet_Gen200_500_Pt;
       TH1D* PFJet_Gen500_1000_Pt;
 
@@ -290,9 +303,9 @@ class PFAnalyzer : public edm::EDAnalyzer {
 //----------------------------------------------------------------------------
 //  Sim Calo Hit
 //----------------------------------------------------------------------------
-      TH1D* N_SimCalo;
-      TH1D* SimCalo_Eta;
-      TH1D* SimCalo_Energy;
+      //TH1D* N_SimCalo;
+      //TH1D* SimCalo_Eta;
+      //TH1D* SimCalo_Energy;
       //AnaRecHit *RecHitAna;
       //AnaPFJet *PFJetAna;
 //----------------------------------------------------------------------------
@@ -317,7 +330,87 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* HcalPFRH_SumE_Eta;
       TH1D* HcalPFRH_SumE_Phi;
 
+
+      TH1D*  N_SimCalo       ;
+      TH1D*  SimCalo_iEta    ;
+      TH1D*  SimCalo_iPhi    ;
+      TH1D*  SimCalo_Energy  ;
+      TH1D*  SimCalo_SumE_iEta;
+      TH1D*  SimCalo_SumE_iPhi;
+
+//----------------------------------------------------------------------------
+//  HbHe PFCluster
+//----------------------------------------------------------------------------
+      TH1D* HcalPFCL_Size;
+      TH1D* HcalPFCL_N;
+      //TH1D* HcalPFCL_Nhits;
+      TH1D* HcalPFCL_Eta;
+      TH1D* HcalPFCL_Phi;
+      TH2D* HcalPFCL_EtaPhi_N;
+      TH2D* HcalPFCL_EtaPhi_Energy;
+      TH2D* HcalPFCL_EtaPhi_Pt;
+      TH1D* HcalPFCL_Energy;
+      TH1D* HcalPFCL_Pt;
+      TH1D* HcalPFCL_SumE_Eta;
+      TH1D* HcalPFCL_SumE_Phi;
+      TH1D* HcalPFCL_SumPt_Eta;
+      TH1D* HcalPFCL_SumPt_Phi;
+
+
+TH1D* GenJetRes0_Pt;
+TH1D* GenJetRes0_Eta;
+TH1D* GenJetRes0_Phi;
+TH1D* GenJetRes1_Pt;
+TH1D* GenJetRes1_Eta;
+TH1D* GenJetRes1_Phi;
+TH1D* GenJetRes2_Pt;
+TH1D* GenJetRes2_Eta;
+TH1D* GenJetRes2_Phi;
+TH1D* GenJetRes3_Pt;
+TH1D* GenJetRes3_Eta;
+TH1D* GenJetRes3_Phi;
+TH1D* CaloJet_Gen10_20_Pt;
+TH1D* CaloJet_Gen20_30_Pt;
+TH1D* CaloJet_Gen30_40_Pt;
+TH1D* CaloJet_Gen40_50_Pt;
+TH1D* CaloJet_Gen50_60_Pt;
+TH1D* CaloJet_Gen60_70_Pt;
+TH1D* CaloJet_Gen70_80_Pt;
+TH1D* CaloJet_Gen80_100_Pt;
+TH1D* CaloJet_Gen100_120_Pt;
+TH1D* CaloJet_Gen120_150_Pt;
+TH1D* CaloJet_Gen150_200_Pt;
+TH1D* PFJetG_Gen10_20_Pt;
+TH1D* PFJetG_Gen20_30_Pt;
+TH1D* PFJetG_Gen30_40_Pt;
+TH1D* PFJetG_Gen40_50_Pt;
+TH1D* PFJetG_Gen50_60_Pt;
+TH1D* PFJetG_Gen60_70_Pt;
+TH1D* PFJetG_Gen70_80_Pt;
+TH1D* PFJetG_Gen80_100_Pt;
+TH1D* PFJetG_Gen100_120_Pt;
+TH1D* PFJetG_Gen120_150_Pt;
+TH1D* PFJetG_Gen150_200_Pt;
+TH1D* PFJetG_Gen200_500_Pt;
+TH1D* PFJetG_Gen500_1000_Pt;
+TH1D* CaloJetG_Gen10_20_Pt;
+TH1D* CaloJetG_Gen20_30_Pt;
+TH1D* CaloJetG_Gen30_40_Pt;
+TH1D* CaloJetG_Gen40_50_Pt;
+TH1D* CaloJetG_Gen50_60_Pt;
+TH1D* CaloJetG_Gen60_70_Pt;
+TH1D* CaloJetG_Gen70_80_Pt;
+TH1D* CaloJetG_Gen80_100_Pt;
+TH1D* CaloJetG_Gen100_120_Pt;
+TH1D* CaloJetG_Gen120_150_Pt;
+TH1D* CaloJetG_Gen150_200_Pt;
+TH1D* CaloJetG_Gen200_500_Pt;
+TH1D* CaloJetG_Gen500_1000_Pt;
+TH2D* HcalRH_iEtaiPhi;
 };
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(PFAnalyzer);
+
+
+
