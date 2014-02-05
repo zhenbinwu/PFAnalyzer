@@ -510,7 +510,7 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     reco::PFJet  correctedJet = *it;
     double jec = corrector->correction(correctedJet,iEvent,iSetup);
     correctedJet.scaleEnergy(jec);
-    if (correctedJet.pt() > 0)
+    if (correctedJet.pt() > 0 && fabs(correctedJet.eta()) < 1.3 )
     {
       PFJetV.push_back(correctedJet);
     }
