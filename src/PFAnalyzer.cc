@@ -106,33 +106,33 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   //CaloJet_Gen120_200_Pt = fs->make<TH1D>("CaloJet_Gen120_200_Pt", "CaloJet (GenJet 120~200) Pt " ,  100, 0, 1000);
   //CaloJet_Gen200_500_Pt = fs->make<TH1D>("CaloJet_Gen200_500_Pt", "CaloJet (GenJet 200~500) Pt " ,  100, 0, 1000);
   //CaloJet_Gen500_1000_Pt = fs->make<TH1D>("CaloJet_Gen500_1000_Pt", "CaloJet (GenJet 500~1000) Pt " ,  100, 0, 1000);
-  PFJetG_Gen10_20_Pt = fs->make<TH1D>("PFJetG_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -10, 10);
-  PFJetG_Gen20_30_Pt = fs->make<TH1D>("PFJetG_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -10, 10);
-  PFJetG_Gen30_40_Pt = fs->make<TH1D>("PFJetG_Gen30_40_Pt", "PFJet (GenJet 30~40) Pt " ,  100, -10, 10);
-  PFJetG_Gen40_50_Pt = fs->make<TH1D>("PFJetG_Gen40_50_Pt", "PFJet (GenJet 40~50) Pt " ,  100, -10, 10);
-  PFJetG_Gen50_60_Pt = fs->make<TH1D>("PFJetG_Gen50_60_Pt", "PFJet (GenJet 50~60) Pt " ,  100, -10, 10);
-  PFJetG_Gen60_70_Pt = fs->make<TH1D>("PFJetG_Gen60_70_Pt", "PFJet (GenJet 60~70) Pt " ,  100, -10, 10);
-  PFJetG_Gen70_80_Pt = fs->make<TH1D>("PFJetG_Gen70_80_Pt", "PFJet (GenJet 70~80) Pt " ,  100, -10, 10);
-  PFJetG_Gen80_100_Pt = fs->make<TH1D>("PFJetG_Gen80_100_Pt", "PFJet (GenJet 80~100) Pt " ,  100, -10, 10);
-  PFJetG_Gen100_120_Pt = fs->make<TH1D>("PFJetG_Gen100_120_Pt", "PFJet (GenJet 100~120) Pt " ,  100, -10, 10);
-  PFJetG_Gen120_150_Pt = fs->make<TH1D>("PFJetG_Gen120_150_Pt", "PFJet (GenJet 120~150) Pt " ,  100, -10, 10);
-  PFJetG_Gen150_200_Pt = fs->make<TH1D>("PFJetG_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -10, 10);
-  PFJetG_Gen200_500_Pt = fs->make<TH1D>("PFJetG_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -10, 10);
-  PFJetG_Gen500_1000_Pt = fs->make<TH1D>("PFJetG_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -10, 10);
+  PFJetG_Gen10_20_Pt = fs->make<TH1D>("PFJetG_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -5, 5);
+  PFJetG_Gen20_30_Pt = fs->make<TH1D>("PFJetG_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -5, 5);
+  PFJetG_Gen30_40_Pt = fs->make<TH1D>("PFJetG_Gen30_40_Pt", "PFJet (GenJet 30~40) Pt " ,  100, -5, 5);
+  PFJetG_Gen40_50_Pt = fs->make<TH1D>("PFJetG_Gen40_50_Pt", "PFJet (GenJet 40~50) Pt " ,  100, -5, 5);
+  PFJetG_Gen50_60_Pt = fs->make<TH1D>("PFJetG_Gen50_60_Pt", "PFJet (GenJet 50~60) Pt " ,  100, -5, 5);
+  PFJetG_Gen60_70_Pt = fs->make<TH1D>("PFJetG_Gen60_70_Pt", "PFJet (GenJet 60~70) Pt " ,  100, -5, 5);
+  PFJetG_Gen70_80_Pt = fs->make<TH1D>("PFJetG_Gen70_80_Pt", "PFJet (GenJet 70~80) Pt " ,  100, -5, 5);
+  PFJetG_Gen80_100_Pt = fs->make<TH1D>("PFJetG_Gen80_100_Pt", "PFJet (GenJet 80~100) Pt " ,  100, -5, 5);
+  PFJetG_Gen100_120_Pt = fs->make<TH1D>("PFJetG_Gen100_120_Pt", "PFJet (GenJet 100~120) Pt " ,  100, -5, 5);
+  PFJetG_Gen120_150_Pt = fs->make<TH1D>("PFJetG_Gen120_150_Pt", "PFJet (GenJet 120~150) Pt " ,  100, -5, 5);
+  PFJetG_Gen150_200_Pt = fs->make<TH1D>("PFJetG_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
+  PFJetG_Gen200_500_Pt = fs->make<TH1D>("PFJetG_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
+  PFJetG_Gen500_1000_Pt = fs->make<TH1D>("PFJetG_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
 
-  CaloJetG_Gen10_20_Pt = fs->make<TH1D>("CaloJetG_Gen10_20_Pt", "CaloJet (GenJet 10~20) Pt " ,  100, -10, 10);
-  CaloJetG_Gen20_30_Pt = fs->make<TH1D>("CaloJetG_Gen20_30_Pt", "CaloJet (GenJet 20~30) Pt " ,  100, -10, 10);
-  CaloJetG_Gen30_40_Pt = fs->make<TH1D>("CaloJetG_Gen30_40_Pt", "CaloJet (GenJet 30~40) Pt " ,  100, -10, 10);
-  CaloJetG_Gen40_50_Pt = fs->make<TH1D>("CaloJetG_Gen40_50_Pt", "CaloJet (GenJet 40~50) Pt " ,  100, -10, 10);
-  CaloJetG_Gen50_60_Pt = fs->make<TH1D>("CaloJetG_Gen50_60_Pt", "CaloJet (GenJet 50~60) Pt " ,  100, -10, 10);
-  CaloJetG_Gen60_70_Pt = fs->make<TH1D>("CaloJetG_Gen60_70_Pt", "CaloJet (GenJet 60~70) Pt " ,  100, -10, 10);
-  CaloJetG_Gen70_80_Pt = fs->make<TH1D>("CaloJetG_Gen70_80_Pt", "CaloJet (GenJet 70~80) Pt " ,  100, -10, 10);
-  CaloJetG_Gen80_100_Pt = fs->make<TH1D>("CaloJetG_Gen80_100_Pt", "CaloJet (GenJet 80~100) Pt " ,  100, -10, 10);
-  CaloJetG_Gen100_120_Pt = fs->make<TH1D>("CaloJetG_Gen100_120_Pt", "CaloJet (GenJet 100~120) Pt " ,  100, -10, 10);
-  CaloJetG_Gen120_150_Pt = fs->make<TH1D>("CaloJetG_Gen120_150_Pt", "CaloJet (GenJet 120~150) Pt " ,  100, -10, 10);
-  CaloJetG_Gen150_200_Pt = fs->make<TH1D>("CaloJetG_Gen150_200_Pt", "CaloJet (GenJet 150~200) Pt " ,  100, -10, 10);
-  CaloJetG_Gen200_500_Pt = fs->make<TH1D>("CaloJetG_Gen200_500_Pt", "CaloJet (GenJet 200~500) Pt " ,  100, -10, 10);
-  CaloJetG_Gen500_1000_Pt = fs->make<TH1D>("CaloJetG_Gen500_1000_Pt", "CaloJet (GenJet 500~1000) Pt " ,  100, -10, 10);
+  CaloJetG_Gen10_20_Pt = fs->make<TH1D>("CaloJetG_Gen10_20_Pt", "CaloJet (GenJet 10~20) Pt " ,  100, -5, 5);
+  CaloJetG_Gen20_30_Pt = fs->make<TH1D>("CaloJetG_Gen20_30_Pt", "CaloJet (GenJet 20~30) Pt " ,  100, -5, 5);
+  CaloJetG_Gen30_40_Pt = fs->make<TH1D>("CaloJetG_Gen30_40_Pt", "CaloJet (GenJet 30~40) Pt " ,  100, -5, 5);
+  CaloJetG_Gen40_50_Pt = fs->make<TH1D>("CaloJetG_Gen40_50_Pt", "CaloJet (GenJet 40~50) Pt " ,  100, -5, 5);
+  CaloJetG_Gen50_60_Pt = fs->make<TH1D>("CaloJetG_Gen50_60_Pt", "CaloJet (GenJet 50~60) Pt " ,  100, -5, 5);
+  CaloJetG_Gen60_70_Pt = fs->make<TH1D>("CaloJetG_Gen60_70_Pt", "CaloJet (GenJet 60~70) Pt " ,  100, -5, 5);
+  CaloJetG_Gen70_80_Pt = fs->make<TH1D>("CaloJetG_Gen70_80_Pt", "CaloJet (GenJet 70~80) Pt " ,  100, -5, 5);
+  CaloJetG_Gen80_100_Pt = fs->make<TH1D>("CaloJetG_Gen80_100_Pt", "CaloJet (GenJet 80~100) Pt " ,  100, -5, 5);
+  CaloJetG_Gen100_120_Pt = fs->make<TH1D>("CaloJetG_Gen100_120_Pt", "CaloJet (GenJet 100~120) Pt " ,  100, -5, 5);
+  CaloJetG_Gen120_150_Pt = fs->make<TH1D>("CaloJetG_Gen120_150_Pt", "CaloJet (GenJet 120~150) Pt " ,  100, -5, 5);
+  CaloJetG_Gen150_200_Pt = fs->make<TH1D>("CaloJetG_Gen150_200_Pt", "CaloJet (GenJet 150~200) Pt " ,  100, -5, 5);
+  CaloJetG_Gen200_500_Pt = fs->make<TH1D>("CaloJetG_Gen200_500_Pt", "CaloJet (GenJet 200~500) Pt " ,  100, -5, 5);
+  CaloJetG_Gen500_1000_Pt = fs->make<TH1D>("CaloJetG_Gen500_1000_Pt", "CaloJet (GenJet 500~1000) Pt " ,  100, -5, 5);
 
   // Get all the input tag needed
   PFMET_Pt = fs->make<TH1D>("PFMET_PT", "PF MET_Pt " ,  200, 0, 400);
@@ -300,7 +300,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   PFMetAna();
   GenMETAna();
   CaloMETAna();
-  PCaloHitAna();
+  //PCaloHitAna();
   PFClusterAna();
   //RecHitAna->Analyze();
   //for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
@@ -452,7 +452,7 @@ int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
    iEvent.getByLabel(CaloMETInputTag_, CaloMETHdl); 
 
    iEvent.getByLabel(GenParticleInputTag_, GenParticleHdl); 
-   iEvent.getByLabel(SimCaloHitInputTag_, SimCaloHitHdl); 
+   //iEvent.getByLabel(SimCaloHitInputTag_, SimCaloHitHdl); 
   return 1;
 }       // -----  end of function PFAnalyzer::GetHandleByLabel  -----
 
@@ -510,7 +510,7 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     reco::PFJet  correctedJet = *it;
     double jec = corrector->correction(correctedJet,iEvent,iSetup);
     correctedJet.scaleEnergy(jec);
-    if (correctedJet.pt() > 0)
+    if (correctedJet.pt() > 0 && fabs(correctedJet.eta()) < 1.3 )
     {
       PFJetV.push_back(correctedJet);
     }
