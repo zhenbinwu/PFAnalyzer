@@ -34,10 +34,10 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
   CaloTowerTag_ = iConfig.getParameter<edm::InputTag>("CaloTowerTag");
   HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkPt", 400, -2, 2);
-  PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 50);
-  PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 500);
-  PionTrkPt =fs->make<TH1D>("PionTrkPt", "PionTrkPt", 500, 0, 500);
-  PionTrkP =fs->make<TH1D>("PionTrkP", "PionTrkP", 500, 0, 500);
+  PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 100);
+  PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 100);
+  PionTrkPt =fs->make<TH1D>("PionTrkPt", "PionTrkPt", 500, 0, 100);
+  PionTrkP =fs->make<TH1D>("PionTrkP", "PionTrkP", 500, 0, 100);
   PionTrkEta =fs->make<TH1D>("PionTrkEta", "PionTrkEta", 100, -5, 5);
   PionTrkPhi =fs->make<TH1D>("PionTrkPhi", "PionTrkPhi", 140, -7, 7);
   PionGen_Pt = fs->make<TH1D>("PionGen_Pt", "PionGen_Pt", 100, 0, 100);
@@ -46,7 +46,8 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Pt = fs->make<TH1D>("PionGenCan_Pt", "PionGenCan_Pt", 100, 0, 100);
   PionGenCan_Eta = fs->make<TH1D>("PionGenCan_Eta", "PionGenCan_Eta", 100, -5, 5);
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
-  hs->AddTH1("NEvents", "Number of Events", 2, 0, 1);
+  hs->AddTH1("NEvents", "Number of Events", 2, 0, 2);
+  hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
   hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
 }
 
