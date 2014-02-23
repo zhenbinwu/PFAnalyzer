@@ -48,7 +48,7 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
   hs->AddTH1("NEvents", "Number of Events", 2, 0, 2);
   hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
-  hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
+  hs->AddTH2("RHTimeEnergy", "Rechit Time vs. Energy", "Energy", "Time", 400, 0, 100, 400, -100, 100);
 }
 
 SinglePion::~SinglePion()
@@ -348,8 +348,9 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
             if (RecHitMap.find(dit->rawId()) != RecHitMap.end())
             {
                 hs->FillTH1("Rechittime", RecHitMap[dit->rawId()]->time());
+                HBHERecHitCollection::const_iterator rhit = RecHitMap[dit->rawId()];
+                hs->FillTH2("RHTimeEnergy", rhit->energy(), rhit->time());
             }
-
           }
       }
 
