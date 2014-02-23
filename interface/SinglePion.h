@@ -85,6 +85,8 @@ class SinglePion : public edm::EDAnalyzer {
     virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
+    std::vector<unsigned int> FilterPUPion();
+    std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
     // ----------member data ---------------------------
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~

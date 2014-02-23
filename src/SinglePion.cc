@@ -46,8 +46,8 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Pt = fs->make<TH1D>("PionGenCan_Pt", "PionGenCan_Pt", 100, 0, 100);
   PionGenCan_Eta = fs->make<TH1D>("PionGenCan_Eta", "PionGenCan_Eta", 100, -5, 5);
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
-  hs->AddTH1("fd", "fdffi", 10, 3, 3);
-  hs->AddTH1("Rechittimgng", "Rechittimgng", 1000, -500, 500);
+  hs->AddTH1("NEvents", "Number of Events", 2, 0, 1);
+  hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
 }
 
 SinglePion::~SinglePion()
@@ -76,17 +76,17 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iSetup.get<CaloGeometryRecord>().get(calo);
   
+  hs->FillTH1("NEvents", 1);
 
 
  
   std::vector<unsigned int> GenIdx;
-  std::vector<unsigned int> CanIdx;
 
   double GenE = 0;
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
   {
     reco::GenParticle gen = GenParticleHdl->at(i);
-    if (fabs(gen.pdgId()) == 211)
+    if (fabs(gen.pdgId()) == 211  || fabs(gen.pdgId()) == 12)
     {
       GenIdx.push_back(i);
       GenE = gen.p4().E();
@@ -94,61 +94,33 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       PionGen_Eta->Fill(gen.p4().Eta());
       PionGen_Phi->Fill(gen.p4().Phi());
     }
-    
-  }
-  assert(GenE != 0);
-  //std::cout << " how many 211? " << GenIdx.size() << std::endl;
-
-  GenPion_deltaR.clear();
-  DeltaR<reco::PFCandidate, reco::GenParticle> deltaR;
-
-  for(unsigned int i=0; i < PFCandidateHdl->size(); i++)
-  {
-    reco::PFCandidate can = PFCandidateHdl->at(i);
-    if (can.particleId() != 1) continue;
-    //if (can.trackRef()->outerP() < 0.8*GenE || can.trackRef()->outerP() > 1.2*GenE ) continue;
-    
-    for(unsigned int j=0; j < GenIdx.size(); j++)
-    {
-      reco::GenParticle gen = PFCandidateHdl->at(GenIdx.at(j));
-      double delR = deltaR(can, gen);
-      if (delR< 0.3)
-      {
-        GenPion_deltaR[j].push_front(std::make_pair(delR, i));
-      }
-    }
   }
 
-  for(std::map<unsigned int, std::list<std::pair<double, unsigned int> > >::iterator it=GenPion_deltaR.begin();
-    it!=GenPion_deltaR.end(); it++)
+  bool IsPion=false;
+  for(unsigned int i=0; i < GenIdx.size(); i++)
   {
-    reco::GenParticle  gen = GenParticleHdl->at(it->first);
-    it->second.sort();
-    
-    reco::PFCandidate can = PFCandidateHdl->at(it->second.front().second);
-    PionEcal->Fill(can.ecalEnergy());
-    //if (can.ecalEnergy() < 2)
-    if (can.ecalEnergy() < 2)
+    reco::GenParticle gen = GenParticleHdl->at(GenIdx.at(i));
+    if (fabs(gen.pdgId()) == 211)
     {
-      PionHcal->Fill(can.hcalEnergy());
-      CanIdx.push_back(it->second.front().second);
-      reco::TrackRef trk = can.trackRef();
-      if (trk.isNonnull())
-      {
-        PionTrkPt->Fill(trk->outerPt());
-        PionTrkP->Fill(trk->outerP());
-        PionTrkEta->Fill(trk->outerEta());
-        PionTrkPhi->Fill(trk->outerPhi());
-        HcalTrk->Fill(can.hcalEnergy()/ trk->outerP() );
-        PionGenCan_Pt->Fill(gen.p4().pt());
-        PionGenCan_Eta->Fill(gen.p4().Eta());
-        PionGenCan_Phi->Fill(gen.p4().Phi());
-        hs->FillTH1("fd", gen.p4().Eta());
-      }
-
+      IsPion = true;
+      break;
     }
   }
   
+
+  assert(GenE != 0);
+
+  //std::cout << " how many 211? " << GenIdx.size() << std::endl;
+
+  std::vector<unsigned int> CanIdx;
+  RecHitMap.clear();
+
+  if (IsPion)
+    CanIdx = FilterTurePion(GenIdx);
+  else
+    CanIdx = FilterPUPion();
+
+
   HCalTiming(CanIdx);
   
 
@@ -274,7 +246,6 @@ bool SinglePion::HCalTiming(std::vector<unsigned int> CanIdx)
 // ===========================================================================
 bool SinglePion::GetHitMap(std::vector<unsigned int> CanIdx)
 {
-  RecHitMap.clear();
   CaloTowerMap.clear();
   
   DeltaR<reco::PFCandidate, CaloTower> CalodeltaR;
@@ -375,7 +346,7 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
           {
             if (RecHitMap.find(dit->rawId()) != RecHitMap.end())
             {
-                hs->FillTH1("Rechittimgng", RecHitMap[dit->rawId()]->time());
+                hs->FillTH1("Rechittime", RecHitMap[dit->rawId()]->time());
             }
 
           }
@@ -392,3 +363,88 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
 
   return true;
 }       // -----  end of function SinglePion::PFClusterRef  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::FilterTurePion
+//  Description:  
+// ===========================================================================
+std::vector<unsigned int> SinglePion::FilterTurePion(std::vector<unsigned int> GenIdx)
+{
+  GenPion_deltaR.clear();
+  std::vector<unsigned int> CanIdx;
+
+  DeltaR<reco::PFCandidate, reco::GenParticle> deltaR;
+
+  for(unsigned int i=0; i < PFCandidateHdl->size(); i++)
+  {
+    reco::PFCandidate can = PFCandidateHdl->at(i);
+    if (can.particleId() != 1) continue;
+    //if (can.trackRef()->outerP() < 0.8*GenE || can.trackRef()->outerP() > 1.2*GenE ) continue;
+    
+    for(unsigned int j=0; j < GenIdx.size(); j++)
+    {
+      reco::GenParticle gen = PFCandidateHdl->at(GenIdx.at(j));
+      double delR = deltaR(can, gen);
+      if (delR< 0.3)
+      {
+        GenPion_deltaR[j].push_front(std::make_pair(delR, i));
+      }
+    }
+  }
+
+  for(std::map<unsigned int, std::list<std::pair<double, unsigned int> > >::iterator it=GenPion_deltaR.begin();
+    it!=GenPion_deltaR.end(); it++)
+  {
+    reco::GenParticle  gen = GenParticleHdl->at(it->first);
+    it->second.sort();
+    
+    reco::PFCandidate can = PFCandidateHdl->at(it->second.front().second);
+    PionEcal->Fill(can.ecalEnergy());
+    //if (can.ecalEnergy() < 2)
+    if (can.ecalEnergy() < 2)
+    {
+      PionHcal->Fill(can.hcalEnergy());
+      CanIdx.push_back(it->second.front().second);
+      reco::TrackRef trk = can.trackRef();
+      if (trk.isNonnull())
+      {
+        PionTrkPt->Fill(trk->outerPt());
+        PionTrkP->Fill(trk->outerP());
+        PionTrkEta->Fill(trk->outerEta());
+        PionTrkPhi->Fill(trk->outerPhi());
+        HcalTrk->Fill(can.hcalEnergy()/ trk->outerP() );
+        PionGenCan_Pt->Fill(gen.p4().pt());
+        PionGenCan_Eta->Fill(gen.p4().Eta());
+        PionGenCan_Phi->Fill(gen.p4().Phi());
+      }
+
+    }
+  }
+
+  return CanIdx;
+}       // -----  end of function SinglePion::FilterTurePion  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::FilterPUPion
+//  Description:  
+// ===========================================================================
+std::vector<unsigned int> SinglePion::FilterPUPion()
+{
+  std::vector<unsigned int> CanIdx;
+  for(unsigned int i=0; i < PFCandidateHdl->size(); i++)
+  {
+    reco::PFCandidate can = PFCandidateHdl->at(i);
+    if (can.particleId() != 1) continue;
+    CanIdx.push_back(i);
+    PionEcal->Fill(can.ecalEnergy());
+    PionHcal->Fill(can.hcalEnergy());
+    reco::TrackRef trk = can.trackRef();
+    PionTrkPt->Fill(trk->outerPt());
+    PionTrkP->Fill(trk->outerP());
+    PionTrkEta->Fill(trk->outerEta());
+    PionTrkPhi->Fill(trk->outerPhi());
+    HcalTrk->Fill(can.hcalEnergy()/ trk->outerP() );
+  }
+
+  return CanIdx;
+}       // -----  end of function SinglePion::FilterPUPion  -----
