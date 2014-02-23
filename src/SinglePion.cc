@@ -14,17 +14,25 @@
 // 
 // ===========================================================================
 
+#include <bitset>
 #include "UserCode/PFAnalyzer/interface/SinglePion.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
+#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
+#include "DataFormats/ParticleFlowReco/interface/PFBlockElement.h"
+#include "DataFormats/ParticleFlowReco/interface/PFBlockElementCluster.h"
+#include "DataFormats/Common/interface/Ref.h"
 //
 // constructors and destructor
 //
 SinglePion::SinglePion(const edm::ParameterSet& iConfig)
 {
-  //now do what ever initialization is needed
+  hs = new HistTool("fdf");
 
   GenParticleInputTag_= iConfig.getParameter<edm::InputTag>("GenParticleInputTag");
   PFCandidateInputTag_= iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
+  HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
+  CaloTowerTag_ = iConfig.getParameter<edm::InputTag>("CaloTowerTag");
   HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkPt", 400, -2, 2);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 50);
   PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 500);
@@ -38,6 +46,8 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Pt = fs->make<TH1D>("PionGenCan_Pt", "PionGenCan_Pt", 100, 0, 100);
   PionGenCan_Eta = fs->make<TH1D>("PionGenCan_Eta", "PionGenCan_Eta", 100, -5, 5);
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
+  hs->AddTH1("fd", "fdffi", 10, 3, 3);
+  hs->AddTH1("Rechittimgng", "Rechittimgng", 1000, -500, 500);
 }
 
 SinglePion::~SinglePion()
@@ -61,8 +71,16 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   iEvent.getByLabel(GenParticleInputTag_, GenParticleHdl); 
   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
+  iEvent.getByLabel(HbHeRecHitTag_, HbHeRecHitHdl); 
+  iEvent.getByLabel(CaloTowerTag_, CaloTowerHdl); 
 
+  iSetup.get<CaloGeometryRecord>().get(calo);
+  
+
+
+ 
   std::vector<unsigned int> GenIdx;
+  std::vector<unsigned int> CanIdx;
 
   double GenE = 0;
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
@@ -88,7 +106,7 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   {
     reco::PFCandidate can = PFCandidateHdl->at(i);
     if (can.particleId() != 1) continue;
-    if (can.trackRef()->outerP() < 0.8*GenE || can.trackRef()->outerP() > 1.2*GenE ) continue;
+    //if (can.trackRef()->outerP() < 0.8*GenE || can.trackRef()->outerP() > 1.2*GenE ) continue;
     
     for(unsigned int j=0; j < GenIdx.size(); j++)
     {
@@ -109,9 +127,11 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     reco::PFCandidate can = PFCandidateHdl->at(it->second.front().second);
     PionEcal->Fill(can.ecalEnergy());
+    //if (can.ecalEnergy() < 2)
     if (can.ecalEnergy() < 2)
     {
       PionHcal->Fill(can.hcalEnergy());
+      CanIdx.push_back(it->second.front().second);
       reco::TrackRef trk = can.trackRef();
       if (trk.isNonnull())
       {
@@ -123,10 +143,13 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         PionGenCan_Pt->Fill(gen.p4().pt());
         PionGenCan_Eta->Fill(gen.p4().Eta());
         PionGenCan_Phi->Fill(gen.p4().Phi());
+        hs->FillTH1("fd", gen.p4().Eta());
       }
 
     }
   }
+  
+  HCalTiming(CanIdx);
   
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -188,3 +211,184 @@ SinglePion::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   desc.setUnknown();
   descriptions.addDefault(desc);
 }
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::HCalTiming
+//  Description:  
+// ===========================================================================
+bool SinglePion::HCalTiming(std::vector<unsigned int> CanIdx)
+{
+ 
+  GetHitMap(CanIdx);
+
+  for (unsigned int i = 0; i < CanIdx.size(); ++i)
+  {
+    reco::PFCandidate can = PFCandidateHdl->at(CanIdx.at(i));
+    
+    // Now getting the bloc
+    reco::PFCandidate::ElementsInBlocks block = can.elementsInBlocks();
+
+    for(std::vector<reco::PFCandidate::ElementInBlock>::iterator it=block.begin();
+      it!=block.end(); it++)
+    {
+      reco::PFBlockRef blockRef = it->first;
+
+      for(std::vector<reco::PFBlock>::const_iterator bit=blockRef.product()->begin();
+        bit!=blockRef.product()->end(); bit++)
+      {
+        const edm::OwnVector< reco::PFBlockElement >&  elements  = bit->elements();
+
+        for(edm::OwnVector<reco::PFBlockElement>::const_iterator ele=elements.begin();
+            ele!=elements.end(); ele++)
+        {
+          //Get the damn HCAL cluster finally
+          if (ele->type() != reco::PFBlockElement::HCAL) continue;
+
+          //std::cout << ele->type() << std::endl;
+
+          PFClusterRef(ele->clusterRef());
+        }
+        
+      }
+
+      //std::vector<reco::PFBlock> PFBlockV = blkRef.product();
+
+      //for(std::vector<reco::PFBlock>::iterator bit=PFBlockV.begin();
+        //bit!=PFBlockV.end(); bit++)
+      //{
+        
+        //std::cout << bit << std::endl;
+      //}
+      
+    }
+
+  }
+
+  return true;
+}       // -----  end of function SinglePion::HCalTiming  -----
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GetHitMap
+//  Description:  
+// ===========================================================================
+bool SinglePion::GetHitMap(std::vector<unsigned int> CanIdx)
+{
+  RecHitMap.clear();
+  CaloTowerMap.clear();
+  
+  DeltaR<reco::PFCandidate, CaloTower> CalodeltaR;
+  for (edm::SortedCollection<CaloTower>::const_iterator j=CaloTowerHdl->begin(); 
+      j != CaloTowerHdl->end(); j++) {
+    for (unsigned int i = 0; i < CanIdx.size(); ++i)
+    {
+      reco::PFCandidate can = PFCandidateHdl->at(CanIdx.at(i));
+      if (CalodeltaR(can, *j) < 1.0)
+      {
+        CaloTowerMap[j->id()] = j;
+      }
+    }
+  } 
+
+  const CaloGeometry *geom = (const CaloGeometry*)calo.product();
+
+  for (HBHERecHitCollection::const_iterator k=HbHeRecHitHdl->begin(); 
+      k != HbHeRecHitHdl->end(); k++) {
+    const CaloCellGeometry *cell = geom->getGeometry( k->detid());
+
+    for (unsigned int i = 0; i < CanIdx.size(); ++i)
+    {
+      reco::PFCandidate can = PFCandidateHdl->at(CanIdx.at(i));
+      if (reco::deltaR(can.eta(), can.phi(), cell->getPosition().eta(), cell->getPosition().phi() < 1.0))
+      {
+        RecHitMap[k->detid()] = k;
+      }
+    }
+  }
+
+  //std::cout << " Tower size " << CaloTowerMap.size() <<" RECHit size " << RecHitMap.size() << std::endl;
+  return true;
+}       // -----  end of function SinglePion::GetHitMap  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::PFClusterRef
+//  Description:  
+// ===========================================================================
+bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
+{
+  
+  for(std::vector<reco::PFCluster>::const_iterator it=CRef.product()->begin();
+    it!=CRef.product()->end(); it++)
+  {
+    // From PFCluster get the hits? PFRechit or Rechit?
+    // recHitFractions return PFRechit
+    // hitsAndFractions_ from CaloCluster return hits by detId (Rechit??)
+    //
+    const std::vector< std::pair<DetId, float> > & hits = it->hitsAndFractions();
+    for(std::vector<std::pair<DetId, float> >::const_iterator hit=hits.begin();
+        hit!=hits.end(); hit++)
+    {
+       //Fuck it reference to CaloTower??
+      //for (HBHERecHitCollection::const_iterator j=HbHeRecHitHdl->begin(); j != HbHeRecHitHdl->end(); j++) {
+        //std::cout << "Det ID from Cluster " << std::bitset<32>(hit->first.rawId()) <<"  Rechit " << std::bitset<32>(j->detid().rawId() )<< std::endl;
+        //if (hit->first == j->detid())
+        //{
+          //std::cout << "=============================================" << j->time() << std::endl;
+        //}
+      //}
+
+
+      //for (edm::SortedCollection<CaloTower>::const_iterator j=CaloTowerHdl->begin(); j != CaloTowerHdl->end(); j++) {
+        ////std::cout << "Det ID from Cluster " << std::bitset<32>(hit->first.rawId()) <<"  Rechit " << std::bitset<32>(j->id().rawId() )<< std::endl;
+        //if (hit->first == j->id())
+        //{
+          ////std::cout << "=============================================" << j->hcalTime() << std::endl;
+          //const std::vector<DetId>& CHitID =  j->constituents();
+
+          //for(std::vector<DetId>::const_iterator dit=CHitID.begin();
+            //dit!=CHitID.end(); dit++)
+          //{
+
+            ////std::cout << " Detid from the tower? " <<  std::bitset<32>(dit->rawId()) << std::endl;
+            //for (HBHERecHitCollection::const_iterator k=HbHeRecHitHdl->begin(); k != HbHeRecHitHdl->end(); k++) {
+              ////std::cout << "Det ID from Cluster " << std::bitset<32>(dit->rawId()) <<"  Rechit " << std::bitset<32>(k->detid().rawId() )<< std::endl;
+              //if (*dit == k->detid())
+              //{
+                ////std::cout << "+++++++++++++++++++++++++++++++++++++++++++++" << k->time() << std::endl;
+                //hs->FillTH1("Rechittimgng", k->time());
+              //}
+            //}
+
+          //}
+
+        //}
+
+      //}
+//----------------------------------------------------------------------------
+//  Not so fuck version
+//----------------------------------------------------------------------------
+      if (CaloTowerMap.find(hit->first) != CaloTowerMap.end())
+      {
+          const std::vector<DetId>& CHitID =  CaloTowerMap[hit->first]->constituents();
+          for(std::vector<DetId>::const_iterator dit=CHitID.begin();
+            dit!=CHitID.end(); dit++)
+          {
+            if (RecHitMap.find(dit->rawId()) != RecHitMap.end())
+            {
+                hs->FillTH1("Rechittimgng", RecHitMap[dit->rawId()]->time());
+            }
+
+          }
+      }
+
+    }
+
+      //std::cout << *it << std::endl;
+    //const std::vector< reco::PFRecHitFraction >& recHitFractions() const 
+      //k
+    //std::cout << it-> << std::endl;
+  }
+  
+
+  return true;
+}       // -----  end of function SinglePion::PFClusterRef  -----

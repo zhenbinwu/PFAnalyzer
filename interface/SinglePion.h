@@ -32,6 +32,7 @@ Implementation:
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -40,10 +41,18 @@ Implementation:
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
 #include "DataFormats/ParticleFlowReco/interface/CalibrationResultWrapper.h"
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/ParticleFlowReco/interface/PFCluster.h"
+#include "DataFormats/ParticleFlowReco/interface/PFClusterFwd.h"
+#include "DataFormats/CaloTowers/interface/CaloTower.h"
+
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
+#include "UserCode/PFAnalyzer/interface/HistTool.h"
 #include "TH1.h"
 #include "TH2.h"
 //
@@ -59,6 +68,9 @@ class SinglePion : public edm::EDAnalyzer {
     ~SinglePion();
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+    bool HCalTiming(std::vector<unsigned int> CanIdx);
+    bool GetHitMap(std::vector<unsigned int> CanIdx);
+    bool PFClusterRef(reco::PFClusterRef CRef);
     // ----------member data ---------------------------
     edm::Service<TFileService> fs;
 
@@ -82,6 +94,18 @@ class SinglePion : public edm::EDAnalyzer {
     edm::InputTag PFCandidateInputTag_;
     edm::Handle<std::vector<reco::PFCandidate> >  PFCandidateHdl;
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
+    edm::InputTag HbHeRecHitTag_;
+    edm::Handle<HBHERecHitCollection>  HbHeRecHitHdl;
+
+    edm::InputTag CaloTowerTag_;
+    edm::Handle<edm::SortedCollection<CaloTower,edm::StrictWeakOrdering<CaloTower>  > >  CaloTowerHdl;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
+    edm::ESHandle<CaloGeometry> calo;
+    std::map<DetId, edm::SortedCollection<CaloTower>::const_iterator> CaloTowerMap;
+    std::map<DetId, HBHERecHitCollection::const_iterator> RecHitMap;
+
+    HistTool* hs;
 
     TH1D* HcalTrk;
     //TH1D* HcalTrk_GenPt;

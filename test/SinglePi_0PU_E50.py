@@ -6,11 +6,18 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
+process.load('Configuration/StandardSequences/GeometryIdeal_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+#process.load('Configuration.Geometry.GeometryExtended2019Reco_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2019', '')
+
 from UserCode.PFAnalyzer.BWTool import GetList
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:TTBar_14TeV.root'
-      GetList('/data/nbay04/a/benwu/Fresh/CMSSW_6_2_0_SLHC6/src/SinglePion/SinglePiE50HCAL_RECO.root')
+      GetList('/data/nbay04/c/benwu/PFSample/CMSSW_6_2_0_SLHC6/SinglePiE50HCAL_RECO_1_1_PF.root')
+      #GetList('/data/nbay04/a/benwu/Fresh/CMSSW_6_2_0_SLHC6/src/SinglePion/SinglePiE50HCAL_RECO.root')
       #GetList('/pnfs/cms/WAX/11/store/relval/CMSSW_6_2_0_SLHC3/RelValTTbar_14TeV/ ')
     )
 )
