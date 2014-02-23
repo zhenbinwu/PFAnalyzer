@@ -22,7 +22,7 @@
 #include "TString.h"
 #include "TFile.h"
 #include "TCanvas.h"
-#include "TH1F.h"
+#include "TH1D.h"
 #include "TProfile.h"
 #include "TH2D.h"
 #include "TLegend.h"
@@ -33,7 +33,7 @@
 
 // ===========================================================================
 //        Class:  HistTool
-//  Description:  A class that should be able to generate TH1F or TH2D for the
+//  Description:  A class that should be able to generate TH1D or TH2D for the
 //  plots. It automatically generate number of plots for the cutflow.
 // ===========================================================================
 class HistTool
@@ -62,11 +62,11 @@ class HistTool
 //  TH1
 //----------------------------------------------------------------------------
     // Book the His TH1
-    TH1F* AddTH1(TH1F* th);
-    TH1F* AddTH1 (const std::string name, const std::string title, 
+    TH1D* AddTH1(TH1D* th);
+    TH1D* AddTH1 (const std::string name, const std::string title, 
         const std::string xlabel, const std::string ylabel, 
         Int_t nxbins, Axis_t xmin, Axis_t xmax, Int_t logx=0, Int_t logy=0);
-    TH1F* AddTH1 (const std::string name, const std::string title, 
+    TH1D* AddTH1 (const std::string name, const std::string title, 
         Int_t nxbins, Axis_t xmin, Axis_t xmax);
     int AddTH1C (const std::string name, const std::string title, 
         Int_t nxbins, double xmin, double  xmax);
@@ -154,7 +154,7 @@ class HistTool
 
     std::vector<std::string> order;
     std::map<std::string, TProfile*> ProMap; //Saving the 1D Hist 
-    std::map<std::string, TH1F*> HisMap; //Saving the 1D Hist 
+    std::map<std::string, TH1D*> HisMap; //Saving the 1D Hist 
     std::map<std::string, TH2D*> HisMap2D; //Saving the 2D Hist 
 
 }; // -----  end of class HistTool  -----

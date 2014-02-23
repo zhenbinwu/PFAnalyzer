@@ -12,11 +12,13 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2019', '')
 
+import os
 from UserCode.PFAnalyzer.BWTool import GetList
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:TTBar_14TeV.root'
-      GetList('/data/nbay04/c/benwu/PFSample/CMSSW_6_2_0_SLHC6/SinglePiE50HCAL_RECO_1_1_PF.root')
+      os.environ['INPUTFILE'].split(',')
+        #'file:SinglePiE50HCALT_RECO_50PUOOT_Default_100_1_JZb.root'
+      #GetList('/data/nbay04/c/benwu/PFSample/CMSSW_6_2_0_SLHC6/SinglePiE50HCAL_RECO_1_1_PF.root')
       #GetList('/data/nbay04/a/benwu/Fresh/CMSSW_6_2_0_SLHC6/src/SinglePion/SinglePiE50HCAL_RECO.root')
       #GetList('/pnfs/cms/WAX/11/store/relval/CMSSW_6_2_0_SLHC3/RelValTTbar_14TeV/ ')
     )
@@ -71,6 +73,6 @@ process.p = cms.Path(process.SinglePion)
 
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string('SinglePi_0PU_E50.root')
+                                   fileName = cms.string('file:%s' % os.environ['OUTPUTFILE'])
                                   )
 

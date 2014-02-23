@@ -129,7 +129,7 @@ int HistTool::AddTH1C (const std::string name, const std::string title,
 //  Description:  degenrous! What if the external th gets destroy? Need to
 //  figure out a better way for this!
 // ===========================================================================
-TH1F* HistTool::AddTH1(TH1F* th)
+TH1D* HistTool::AddTH1(TH1D* th)
 {
   HisMap[th->GetName()] = th;
   return HisMap[th->GetName()];
@@ -139,7 +139,7 @@ TH1F* HistTool::AddTH1(TH1F* th)
 //         Name:  HistTool::AddTH1
 //  Description:  
 // ===========================================================================
-TH1F* HistTool::AddTH1 (const std::string name, const std::string title,
+TH1D* HistTool::AddTH1 (const std::string name, const std::string title,
     const std::string xlabel, const std::string ylabel,
     Int_t nxbins, Axis_t xmin, Axis_t xmax,
     Int_t logx, Int_t logy)
@@ -150,7 +150,7 @@ TH1F* HistTool::AddTH1 (const std::string name, const std::string title,
   if (logy) ylb = "log_"+ylabel;
   else ylb = ylabel;
   TString Title = title +";"+xlb+";"+ylb;
-  HisMap[name.c_str()] = fs->make<TH1F>(name.c_str(), Title, nxbins, xmin, xmax);
+  HisMap[name.c_str()] = fs->make<TH1D>(name.c_str(), Title, nxbins, xmin, xmax);
   return HisMap[name.c_str()];
 }       // -----  end of function HistTool::AddTH1C  -----
 
@@ -158,10 +158,10 @@ TH1F* HistTool::AddTH1 (const std::string name, const std::string title,
 //         Name:  HistTool::AddTH1
 //  Description:  
 // ===========================================================================
-TH1F* HistTool::AddTH1 (const std::string name, const std::string title,
+TH1D* HistTool::AddTH1 (const std::string name, const std::string title,
     Int_t nxbins, Axis_t xmin, Axis_t xmax)
 {
-  HisMap[name.c_str()] = fs->make<TH1F>(name.c_str(), title.c_str(), nxbins, xmin, xmax);
+  HisMap[name.c_str()] = fs->make<TH1D>(name.c_str(), title.c_str(), nxbins, xmin, xmax);
   return HisMap[name.c_str()];
 }       // -----  end of function HistTool::AddTH1  -----
 
@@ -230,7 +230,7 @@ int HistTool::FillTH1(std::string HisName, double value, double weight)
 int HistTool::WriteTH1()
 {
   OutFile->cd();
-  for(std::map<std::string, TH1F*>::iterator it=HisMap.begin();
+  for(std::map<std::string, TH1D*>::iterator it=HisMap.begin();
     it!=HisMap.end(); it++)
   {
     it->second->Write();
@@ -245,7 +245,7 @@ int HistTool::WriteTH1()
 int HistTool::DrawTH1()
 {
   TCanvas *c1 = new TCanvas("TH1", "Canvas for TH1", 600, 500);
-  for(std::map<std::string, TH1F*>::iterator it=HisMap.begin();
+  for(std::map<std::string, TH1D*>::iterator it=HisMap.begin();
     it!=HisMap.end(); it++)
   {
     c1->cd();
