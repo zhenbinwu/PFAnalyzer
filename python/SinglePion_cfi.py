@@ -16,6 +16,7 @@ SinglePion = cms.EDAnalyzer('SinglePion',
                             HOPFClusterTag = cms.InputTag("particleFlowClusterHO"),
                             PSPFClusterTag = cms.InputTag("particleFlowClusterPS"),
                             PFJetInputTag = cms.InputTag("ak5PFJetsCHS"),
+                            TracksTag = cms.InputTag("generalTracks"),
                             #PFJetInputTag = cms.InputTag("ak5PFJets"),
                             CaloTowerTag = cms.InputTag("towerMaker"),
                             GenJetInputTag = cms.InputTag("ak5GenJets"),
@@ -26,6 +27,7 @@ SinglePion = cms.EDAnalyzer('SinglePion',
                             GenParticleInputTag = cms.InputTag("genParticles"),
                             PFCandidateInputTag = cms.InputTag("particleFlow"),
                             SimCaloHitInputTag = cms.InputTag("g4SimHits", "HcalHits",  "SIM" ), 
+                            PFBlockTag = cms.InputTag("particleFlowBlock"),
                             #minTracks = cms.untracked.uint32(1000)
                            )
 

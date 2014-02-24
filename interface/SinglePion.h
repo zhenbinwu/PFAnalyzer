@@ -87,6 +87,10 @@ class SinglePion : public edm::EDAnalyzer {
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
     std::vector<unsigned int> FilterPUPion();
+    bool GeneralTracks( std::vector<unsigned int> GenIdx ) const;
+    bool HcalPFCluster( std::vector<unsigned int> GenIdx ) const;
+    bool EcalPFCluster( std::vector<unsigned int> GenIdx ) const;
+    bool GetHitMapGen( std::vector<unsigned int> GenIdx ) const;
     std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
     // ----------member data ---------------------------
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
@@ -108,6 +112,22 @@ class SinglePion : public edm::EDAnalyzer {
     edm::ESHandle<CaloGeometry> calo;
     std::map<DetId, edm::SortedCollection<CaloTower>::const_iterator> CaloTowerMap;
     std::map<DetId, HBHERecHitCollection::const_iterator> RecHitMap;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Handler ~~~~~
+    edm::InputTag TracksTag_;
+    edm::Handle<std::vector<reco::Track> >  TracksHdl;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
+    edm::InputTag HcalPFClusterTag_;
+    edm::Handle<std::vector<reco::PFCluster> >  HcalPFClusterHdl;
+    edm::InputTag EcalPFClusterTag_;
+    edm::Handle<std::vector<reco::PFCluster> >  EcalPFClusterHdl;
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Handler ~~~~~
+    edm::InputTag PFBlockTag_;
+    edm::Handle<std::vector<reco::PFBlock> >  PFBlockHdl;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
+
+
+
 
     HistTool* hs;
 

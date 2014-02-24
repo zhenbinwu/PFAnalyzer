@@ -33,6 +33,13 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PFCandidateInputTag_= iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
   HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
   CaloTowerTag_ = iConfig.getParameter<edm::InputTag>("CaloTowerTag");
+  TracksTag_ = iConfig.getParameter<edm::InputTag>("TracksTag");
+  HcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("HcalPFClusterTag");
+  EcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("EcalPFClusterTag");
+  PFBlockTag_ = iConfig.getParameter<edm::InputTag>("PFBlockTag");
+
+
+
   HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkP", 600, 0, 1.5);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 100);
   PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 100);
@@ -54,6 +61,21 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("RechittimeD2", "Rechit time for Detph2", 400, -100, 100);
   hs->AddTH1("RechittimeD3", "Rechit time for Detph3", 400, -100, 100);
   hs->AddTH1("RechittimeD4", "Rechit time for Detph4", 400, -100, 100);
+  hs->AddTH2("RHTimeEnergyD1", "Rechit Time vs. Energy Depth1", "Energy", "Time", 400, 0, 100, 400, -100, 100);
+  hs->AddTH2("RHTimeEnergyD2", "Rechit Time vs. Energy Depth2", "Energy", "Time", 400, 0, 100, 400, -100, 100);
+  hs->AddTH2("RHTimeEnergyD3", "Rechit Time vs. Energy Depth3", "Energy", "Time", 400, 0, 100, 400, -100, 100);
+  hs->AddTH2("RHTimeEnergyD4", "Rechit Time vs. Energy Depth4", "Energy", "Time", 400, 0, 100, 400, -100, 100);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ General Tracks ~~~~~
+  hs->AddTH1("TracksP", "TracksP", 400, 0, 100);
+  hs->AddTH1("TracksPAroundGen", "Tracks Mometum within 0.3 around GenPion", 400, 0, 100);
+  hs->AddTH1("TracksEta", "TracksEta", 140, -7, 7);
+  hs->AddTH1("HcalClusterE", "HcalClusterE", 400, 0, 200);
+  hs->AddTH1("HcalClusterEAroundGen", "HcalCluster Energy within 0.3 around GenPion", 400, 0, 200);
+  hs->AddTH1("EcalClusterE", "EcalClusterE", 400, 0, 200);
+  hs->AddTH1("EcalClusterEAroundGen", "EcalCluster Energy within 0.3 around GenPion", 400, 0, 200);
+  hs->AddTH1("CaloClusterEAroundGen", "Sum of CaloCluster Energy within 0.3 around GenPion", 400, 0, 200);
+  hs->AddTH1("SumRecHitEAroundGen", "Sum of Rechit Energy within 0.3 around GenPion", 400, 0, 200);
+
 }
 
 SinglePion::~SinglePion()
@@ -79,6 +101,10 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
   iEvent.getByLabel(HbHeRecHitTag_, HbHeRecHitHdl); 
   iEvent.getByLabel(CaloTowerTag_, CaloTowerHdl); 
+  iEvent.getByLabel(TracksTag_, TracksHdl); 
+  iEvent.getByLabel(HcalPFClusterTag_, HcalPFClusterHdl); 
+  iEvent.getByLabel(EcalPFClusterTag_, EcalPFClusterHdl); 
+  iEvent.getByLabel(PFBlockTag_, PFBlockHdl); 
 
   iSetup.get<CaloGeometryRecord>().get(calo);
   
@@ -102,6 +128,11 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
+  GeneralTracks(GenIdx);
+  HcalPFCluster(GenIdx);
+  EcalPFCluster(GenIdx);
+  GetHitMapGen(GenIdx);
+
   bool IsPion=false;
   for(unsigned int i=0; i < GenIdx.size(); i++)
   {
@@ -119,7 +150,6 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //std::cout << " how many 211? " << GenIdx.size() << std::endl;
 
   std::vector<unsigned int> CanIdx;
-  RecHitMap.clear();
 
   if (IsPion)
     CanIdx = FilterTurePion(GenIdx);
@@ -197,7 +227,7 @@ SinglePion::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 bool SinglePion::HCalTiming(std::vector<unsigned int> CanIdx)
 {
 
-  GetHitMap(CanIdx);
+  //GetHitMap(CanIdx);
 
   for (unsigned int i = 0; i < CanIdx.size(); ++i)
   {
@@ -306,10 +336,27 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
             double RHTime = GetCorTDCTime(rhit);
             hs->FillTH1("Rechittime", RHTime);
             hs->FillTH2("RHTimeEnergy", rhit->energy(), RHTime);
-            if (HcalDetId(rhit->detid()).depth() == 1) hs->FillTH1("RechittimeD1", RHTime);
-            if (HcalDetId(rhit->detid()).depth() == 2) hs->FillTH1("RechittimeD2", RHTime);
-            if (HcalDetId(rhit->detid()).depth() == 3) hs->FillTH1("RechittimeD3", RHTime);
-            if (HcalDetId(rhit->detid()).depth() == 4) hs->FillTH1("RechittimeD4", RHTime);
+            if (HcalDetId(rhit->detid()).depth() == 1) 
+            {
+              hs->FillTH1("RechittimeD1", RHTime);
+              hs->FillTH2("RHTimeEnergyD1", rhit->energy(), RHTime);
+
+            }
+            if (HcalDetId(rhit->detid()).depth() == 2) 
+            {
+              hs->FillTH1("RechittimeD2", RHTime);
+              hs->FillTH2("RHTimeEnergyD2", rhit->energy(), RHTime);
+            }
+            if (HcalDetId(rhit->detid()).depth() == 3) 
+            {
+              hs->FillTH1("RechittimeD3", RHTime);
+              hs->FillTH2("RHTimeEnergyD3", rhit->energy(), RHTime);
+            }
+            if (HcalDetId(rhit->detid()).depth() == 4) 
+            {
+              hs->FillTH1("RechittimeD4", RHTime);
+              hs->FillTH2("RHTimeEnergyD4", rhit->energy(), RHTime);
+            }
           }
         }
       }
@@ -342,13 +389,14 @@ std::vector<unsigned int> SinglePion::FilterTurePion(std::vector<unsigned int> G
     {
       reco::GenParticle gen = PFCandidateHdl->at(GenIdx.at(j));
       double delR = deltaR(can, gen);
-      if (delR< 0.3)
+      double Ediff = fabs(can.trackRef()->outerP()/gen.energy() -1);
+      if (delR< 0.5)
       {
         hs->FillTH1("PionTrkP2", can.trackRef()->outerP());
         if (can.trackRef()->outerP() < 0.8*gen.p4().E() 
             || can.trackRef()->outerP() > 1.2*gen.p4().E()) 
           continue;
-        GenPion_deltaR[j].push_front(std::make_pair(delR, i));
+        GenPion_deltaR[j].push_front(std::make_pair(Ediff, i));
       }
     }
   }
@@ -419,8 +467,6 @@ double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) c
   
   DetId detId = recHit->detid();
   double tTime = recHit->time();
-
-
   if (detId.det()==DetId::Hcal) {
       HcalSubdetector tHcalSubDet = HcalDetId(detId).subdet();
       if ( (tHcalSubDet==HcalEndcap || tHcalSubDet==HcalBarrel) && tTime > -200 ) {
@@ -434,3 +480,154 @@ double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) c
   }
   return tTime;
 }       // -----  end of function SinglePion::GetCorTDCTime  -----
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GeneralTracks
+//  Description:  
+// ===========================================================================
+bool SinglePion::GeneralTracks( std::vector<unsigned int> GenIdx ) const
+{
+  for(unsigned int i=0; i < TracksHdl->size(); i++)
+  {
+    reco::Track trk = TracksHdl->at(i);
+    //std::cout << " tracks " << trk.outerP() << std::endl;
+    hs->FillTH1("TracksP", trk.outerP());
+
+    for(unsigned int i=0; i < GenIdx.size(); i++)
+    {
+      reco::GenParticle gen = GenParticleHdl->at(GenIdx.at(i));
+      if (deltaR(gen.eta(), gen.phi(), trk.outerEta(), trk.outerPhi()) < 0.5)
+        hs->FillTH1("TracksPAroundGen", trk.outerP());
+    }
+
+  }
+  return true;
+}       // -----  end of function SinglePion::GeneralTracks  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::HcalPFCluster
+//  Description:  
+// ===========================================================================
+bool SinglePion::HcalPFCluster( std::vector<unsigned int> GenIdx ) const
+{
+  for(unsigned int i=0; i < HcalPFClusterHdl->size(); i++)
+  {
+    reco::PFCluster cluster = HcalPFClusterHdl->at(i);
+    hs->FillTH1("HcalClusterE", cluster.energy());
+
+
+    for(unsigned int i=0; i < GenIdx.size(); i++)
+    {
+      reco::GenParticle gen = GenParticleHdl->at(GenIdx.at(i));
+      if (deltaR(gen.eta(), gen.phi(), cluster.eta(), cluster.phi()) < 0.5)
+        hs->FillTH1("HcalClusterEAroundGen", cluster.energy());
+    }
+  }
+  return true;
+}       // -----  end of function SinglePion::HcalPFCluster  -----
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::EcalPFCluster
+//  Description:  
+// ===========================================================================
+bool SinglePion::EcalPFCluster( std::vector<unsigned int> GenIdx ) const
+{
+  for(unsigned int i=0; i < EcalPFClusterHdl->size(); i++)
+  {
+    reco::PFCluster cluster = EcalPFClusterHdl->at(i);
+    hs->FillTH1("EcalClusterE", cluster.energy());
+
+
+    for(unsigned int i=0; i < GenIdx.size(); i++)
+    {
+      reco::GenParticle gen = GenParticleHdl->at(GenIdx.at(i));
+      if (deltaR(gen.eta(), gen.phi(), cluster.eta(), cluster.phi()) < 0.5)
+        hs->FillTH1("EcalClusterEAroundGen", cluster.energy());
+    }
+  }
+  return true;
+}       // -----  end of function SinglePion::EcalPFCluster  -----
+
+
+//// ===  FUNCTION  ============================================================
+////         Name:  SinglePion::SPPFBlock
+////  Description:  
+//// ===========================================================================
+//bool SinglePion::SPPFBlock( std::vector<unsigned int> GenIdx ) const
+//{
+  
+  //for(unsigned int i=0; i < PFBlockHdl->size(); i++)
+  //{
+    //reco::PFBlock blk = PFBlockHdl->at(i);
+    
+    //blk.LINKTEST_RECHIT
+  //}
+
+  //return true;
+//}       // -----  end of function SinglePion::SPPFBlock  -----
+//
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GetHitMapGen
+//  Description:  
+// ===========================================================================
+bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx ) const
+{
+
+  std::vector<double> CaloSum;
+  std::vector<double> RecHitSum;
+  CaloTowerMap.clear();
+  RecHitMap.clear();
+
+  for(unsigned int i=0; i < GenIdx.size(); i++)
+  {
+    CaloSum.push_back(0);
+    RecHitSum.push_back(0);
+  }
+
+  
+  DeltaR<reco::GenParticle, CaloTower> CalodeltaR;
+  for (edm::SortedCollection<CaloTower>::const_iterator j=CaloTowerHdl->begin(); 
+      j != CaloTowerHdl->end(); j++) {
+    for (unsigned int i = 0; i < GenIdx.size(); ++i)
+    {
+      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      if (CalodeltaR(gen, *j) < 1.0)
+      {
+        CaloTowerMap[j->id()] = j;
+        CaloSum.at(i) += j->energy();
+      }
+    }
+  } 
+
+  const CaloGeometry *geom = (const CaloGeometry*)calo.product();
+
+  for (HBHERecHitCollection::const_iterator k=HbHeRecHitHdl->begin(); 
+      k != HbHeRecHitHdl->end(); k++) {
+    const CaloCellGeometry *cell = geom->getGeometry( k->detid());
+
+    for (unsigned int i = 0; i < GenIdx.size(); ++i)
+    {
+      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      if (reco::deltaR(gen.eta(), gen.phi(), cell->getPosition().eta(), cell->getPosition().phi() < 1.0))
+      {
+        RecHitSum.at(i) += k->energy();
+        RecHitMap[k->detid()] = k;
+  
+      }
+    }
+  }
+  
+
+  for(unsigned int i=0; i < GenIdx.size(); i++)
+  {
+    hs->FillTH1("CaloClusterEAroundGen", CaloSum.at(i));
+    hs->FillTH1("SumRecHitEAroundGen", RecHitSum.at(i));
+  }
+
+
+  return true;
+}       // -----  end of function SinglePion::GetHitMapGen  -----
