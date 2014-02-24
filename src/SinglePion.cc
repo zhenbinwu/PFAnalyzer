@@ -33,7 +33,7 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PFCandidateInputTag_= iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
   HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
   CaloTowerTag_ = iConfig.getParameter<edm::InputTag>("CaloTowerTag");
-  HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkPt", 400, -2, 2);
+  HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkP", 600, 0, 1.5);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 100);
   PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 100);
   PionTrkPt =fs->make<TH1D>("PionTrkPt", "PionTrkPt", 500, 0, 100);
