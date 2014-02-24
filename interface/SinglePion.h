@@ -53,6 +53,7 @@ Implementation:
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "UserCode/PFAnalyzer/interface/HistTool.h"
+#include "UserCode/PFAnalyzer/interface/TDCTimeCorr.h"
 #include "TH1.h"
 #include "TH2.h"
 //
@@ -90,6 +91,7 @@ class SinglePion : public edm::EDAnalyzer {
     // ----------member data ---------------------------
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
+    double GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) const;
     edm::InputTag GenParticleInputTag_;
     edm::Handle<reco::GenParticleCollection> GenParticleHdl;
 

@@ -347,9 +347,10 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
           {
             if (RecHitMap.find(dit->rawId()) != RecHitMap.end())
             {
-                hs->FillTH1("Rechittime", RecHitMap[dit->rawId()]->time());
-                HBHERecHitCollection::const_iterator rhit = RecHitMap[dit->rawId()];
-                hs->FillTH2("RHTimeEnergy", rhit->energy(), rhit->time());
+              HBHERecHitCollection::const_iterator rhit = RecHitMap[dit->rawId()];
+              double RHTime = GetCorTDCTime(rhit);
+              hs->FillTH1("Rechittime", RHTime);
+              hs->FillTH2("RHTimeEnergy", rhit->energy(), RHTime);
             }
           }
       }
@@ -450,3 +451,29 @@ std::vector<unsigned int> SinglePion::FilterPUPion()
 
   return CanIdx;
 }       // -----  end of function SinglePion::FilterPUPion  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GetCorTDCTime
+//  Description:  
+// ===========================================================================
+double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) const
+{
+  
+  DetId detId = recHit->detid();
+  double tTime = -999.;
+
+
+  if (detId.det()==DetId::Hcal) {
+      HcalSubdetector tHcalSubDet = HcalDetId(detId).subdet();
+      tTime = recHit->time();
+      if ( (tHcalSubDet==HcalEndcap || tHcalSubDet==HcalBarrel) && tTime > -200 ) {
+        if (tHcalSubDet==HcalEndcap) 
+          tTime = TDCTimeCorr::tdcCorrHE(tTime, recHit->energy(), HcalDetId(detId).depth());
+        else if (tHcalSubDet==HcalBarrel) 
+          tTime = TDCTimeCorr::tdcCorrHB(tTime, recHit->energy(), HcalDetId(detId).depth());
+        if (tTime > 12 || tTime< -13) 
+          return -999;  // this is the cut for all depths for th first try
+    }
+  }
+  return tTime;
+}       // -----  end of function SinglePion::GetCorTDCTime  -----
