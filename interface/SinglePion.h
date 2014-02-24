@@ -90,7 +90,7 @@ class SinglePion : public edm::EDAnalyzer {
     bool GeneralTracks( std::vector<unsigned int> GenIdx ) const;
     bool HcalPFCluster( std::vector<unsigned int> GenIdx ) const;
     bool EcalPFCluster( std::vector<unsigned int> GenIdx ) const;
-    bool GetHitMapGen( std::vector<unsigned int> GenIdx ) const;
+    bool GetHitMapGen( std::vector<unsigned int> GenIdx );
     std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
     // ----------member data ---------------------------
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;

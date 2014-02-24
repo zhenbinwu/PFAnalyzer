@@ -574,7 +574,7 @@ bool SinglePion::EcalPFCluster( std::vector<unsigned int> GenIdx ) const
 //         Name:  SinglePion::GetHitMapGen
 //  Description:  
 // ===========================================================================
-bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx ) const
+bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
 {
 
   std::vector<double> CaloSum;
