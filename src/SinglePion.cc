@@ -50,6 +50,10 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("NEvents", "Number of Events", 2, 0, 2);
   hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
   hs->AddTH2("RHTimeEnergy", "Rechit Time vs. Energy", "Energy", "Time", 400, 0, 100, 400, -100, 100);
+  hs->AddTH1("RechittimeD1", "Rechit time for Detph1", 400, -100, 100);
+  hs->AddTH1("RechittimeD2", "Rechit time for Detph2", 400, -100, 100);
+  hs->AddTH1("RechittimeD3", "Rechit time for Detph3", 400, -100, 100);
+  hs->AddTH1("RechittimeD4", "Rechit time for Detph4", 400, -100, 100);
 }
 
 SinglePion::~SinglePion()
@@ -302,6 +306,10 @@ bool SinglePion::PFClusterRef(reco::PFClusterRef CRef)
             double RHTime = GetCorTDCTime(rhit);
             hs->FillTH1("Rechittime", RHTime);
             hs->FillTH2("RHTimeEnergy", rhit->energy(), RHTime);
+            if (HcalDetId(rhit->detid()).depth() == 1) hs->FillTH1("RechittimeD1", RHTime);
+            if (HcalDetId(rhit->detid()).depth() == 2) hs->FillTH1("RechittimeD2", RHTime);
+            if (HcalDetId(rhit->detid()).depth() == 3) hs->FillTH1("RechittimeD3", RHTime);
+            if (HcalDetId(rhit->detid()).depth() == 4) hs->FillTH1("RechittimeD4", RHTime);
           }
         }
       }
@@ -420,8 +428,8 @@ double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) c
           tTime = TDCTimeCorr::tdcCorrHE(tTime, recHit->energy(), HcalDetId(detId).depth());
         else if (tHcalSubDet==HcalBarrel) 
           tTime = TDCTimeCorr::tdcCorrHB(tTime, recHit->energy(), HcalDetId(detId).depth());
-        if (tTime > 12 || tTime< -13) 
-          return -999;  // this is the cut for all depths for th first try
+        //if (tTime > 12 || tTime< -13) 
+          //return -999;  // this is the cut for all depths for th first try
     }
   }
   return tTime;
