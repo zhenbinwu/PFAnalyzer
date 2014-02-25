@@ -122,7 +122,7 @@ class SinglePion : public edm::EDAnalyzer {
     std::map<DetId, HBHERecHitCollection::const_iterator> RecHitMap;
 
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPionPFTrack;
-    std::map<DetId, unsigned int > PFTrackMap;
+    std::map<unsigned int, unsigned int > PFTrackMap;
     std::vector<std::pair<double, double> > PFTrack2DMap;
     std::vector<double> HCalLCluster;
 

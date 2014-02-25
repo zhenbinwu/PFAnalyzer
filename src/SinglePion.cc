@@ -56,12 +56,27 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
   hs->AddTH1("PionTrkP2", "PionTrk P for all PFCandidates", 500, 0, 100);
   hs->AddTH1("NEvents", "Number of Events", 2, 0, 2);
-  hs->AddTH1("Rechittime", "Rechittimgng", 400, -100, 100);
+  hs->AddTH1("Rechittime", "Rechit Time from PFCandidate associated with GenPion", "Time", "No. of RecHit", 400, -100, 100);
   hs->AddTH2("RHTimeEnergy", "Rechit Time vs. Energy", "Energy", "Time", 400, 0, 100, 400, -100, 100);
   hs->AddTH1("RechittimeD1", "Rechit time for Detph1", 400, -100, 100);
   hs->AddTH1("RechittimeD2", "Rechit time for Detph2", 400, -100, 100);
   hs->AddTH1("RechittimeD3", "Rechit time for Detph3", 400, -100, 100);
   hs->AddTH1("RechittimeD4", "Rechit time for Detph4", 400, -100, 100);
+
+  hs->AddTH1("HBRechittime", "HB Rechit time", "Time", "No. of HB Rechit", 400, -100, 100);
+  hs->AddTH1("HBRechittimeE3", "HB Rechit time(Rechit < 3GeV)","Time", "No. of HB Rechit", 400, -100, 100);
+  hs->AddTH1("HBRechittimeE310", "HB Rechit time (3 < Rechit < 10GeV)","Time", "No. of HB Rechit", 400, -100, 100);
+  hs->AddTH1("HBRechittimeE10", "HB Rechit time (Rechit > 10GeV)","Time", "No. of HB Rechit", 400, -100, 100);
+
+  hs->AddTH1("HERechittime", "HE Rechit time","Time", "No. of HE Rechit", 400, -100, 100);
+  hs->AddTH1("HERechittimeE3", "HE Rechit time (Rechit < 3GeV)","Time", "No. of HE Rechit", 400, -100, 100);
+  hs->AddTH1("HERechittimeE310", "HE Rechit time (3 < Rechit < 10GeV)","Time", "No. of HE Rechit", 400, -100, 100);
+  hs->AddTH1("HERechittimeE10", "HE Rechit time (Rechit > 10GeV)","Time", "No. of HE Rechit", 400, -100, 100);
+
+  hs->AddTH1("LocalClusterRechittime", "Time of Rechit associated to the Local Cluster", "Time", "No. of Rechit", 400, -100, 100);
+  hs->AddTH1("LocalClusterHBRechittime", "Time of HB Rechit associated to the Local Cluster", "Time", "No. of HB Rechit", 400, -100, 100);
+  hs->AddTH1("LocalClusterHERechittime", "Time of HE Rechit associated to the Local Cluster", "Time", "No. of HE Rechit", 400, -100, 100);
+
   hs->AddTH2("RHTimeEnergyD1", "Rechit Time vs. Energy Depth1", "Energy", "Time", 400, 0, 100, 400, -100, 100);
   hs->AddTH2("RHTimeEnergyD2", "Rechit Time vs. Energy Depth2", "Energy", "Time", 400, 0, 100, 400, -100, 100);
   hs->AddTH2("RHTimeEnergyD3", "Rechit Time vs. Energy Depth3", "Energy", "Time", 400, 0, 100, 400, -100, 100);
@@ -98,7 +113,6 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("HCalLocalCluster5", "HCalLocalCluster cone 0.5", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster6", "HCalLocalCluster cone 0.6", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster7", "HCalLocalCluster cone 0.7", 400, 0, 100);
-
 }
 
 SinglePion::~SinglePion()
@@ -159,11 +173,11 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   PFTracks(GenIdx);
   HcalLocalCluster(0.2); // 3 by 3 cluster
-  HcalLocalCluster(0.3); // 5 by 5 cluster
-  HcalLocalCluster(0.4); // 5 by 5 cluster
-  HcalLocalCluster(0.5); // 5 by 5 cluster
-  HcalLocalCluster(0.6); // 5 by 5 cluster
-  HcalLocalCluster(0.7); // 5 by 5 cluster
+  //HcalLocalCluster(0.3); // 5 by 5 cluster
+  //HcalLocalCluster(0.4); // 5 by 5 cluster
+  //HcalLocalCluster(0.5); // 5 by 5 cluster
+  //HcalLocalCluster(0.6); // 5 by 5 cluster
+  //HcalLocalCluster(0.7); // 5 by 5 cluster
 
 
   bool IsPion=false;
@@ -651,6 +665,26 @@ bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
       k != HbHeRecHitHdl->end(); k++) {
     const CaloCellGeometry *cell = geom->getGeometry( k->detid());
 
+
+    if(fabs(cell->getPosition().eta())  < 1.4 )
+    {
+
+      hs->FillTH1("HBRechittime", GetCorTDCTime(k));
+      if (k->energy() < 3) hs->FillTH1("HBRechittimeE3", GetCorTDCTime(k));
+      else if (k->energy() < 10) hs->FillTH1("HBRechittimeE310", GetCorTDCTime(k));
+      else  hs->FillTH1("HBRechittimeE10", GetCorTDCTime(k));
+    }
+
+    if(fabs(cell->getPosition().eta())  > 1.6 && fabs(cell->getPosition().eta())  < 2.5)
+    {
+
+      hs->FillTH1("HERechittime", GetCorTDCTime(k));
+      if (k->energy() < 3) hs->FillTH1("HERechittimeE3", GetCorTDCTime(k));
+      else if (k->energy() < 10) hs->FillTH1("HERechittimeE310", GetCorTDCTime(k));
+      else  hs->FillTH1("HERechittimeE10", GetCorTDCTime(k));
+    }
+
+
     for (unsigned int i = 0; i < GenIdx.size(); ++i)
     {
       reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
@@ -727,6 +761,7 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
   }
 
 
+  int matchcount=0;
   //Get the PFTrack assocaite with the GenPion
   for(std::map<unsigned int, std::list<std::pair<double, unsigned int> > >::iterator it=GenPionPFTrack.begin();
     it!=GenPionPFTrack.end(); it++)
@@ -747,15 +782,15 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
     {
       //std::cout << atHCAL.detId() << std::endl;
       //std::cout << " find one " <<  HcalDetId(atHCAL.detId()).ieta() << "      " << HcalDetId(atHCAL.detId()).iphi() << std::endl;
-      PFTrackMap[atHCAL.detId()] = it->second.front().second;
+      PFTrackMap[matchcount++] = it->second.front().second;
       PFTrack2DMap.push_back(std::make_pair(atHCAL.positionREP().eta(), atHCAL.positionREP().phi()));
     }
   }
 
+
   return true;
 }       // -----  end of function SinglePion::PFTracks  -----
 
-// ===  FUNCTION  ============================================================
 //         Name:  SinglePion::HcalLocalCluster
 //  Description:  
 // ===========================================================================
@@ -764,10 +799,12 @@ bool SinglePion::HcalLocalCluster(double cone)
 
   HCalLCluster.clear();
 
-  
+  std::vector<std::vector<HBHERecHitCollection::const_iterator> > RHCollection;
   for(unsigned int i=0; i < PFTrack2DMap.size(); i++)
   {
     HCalLCluster.push_back(0);
+    std::vector<HBHERecHitCollection::const_iterator> temp;
+    RHCollection.push_back(temp);
   }
 
   const CaloGeometry *geom = (const CaloGeometry*)calo.product();
@@ -777,7 +814,6 @@ bool SinglePion::HcalLocalCluster(double cone)
     const CaloCellGeometry *cell = geom->getGeometry(rhit->second->detid());
     double RHeta = cell->getPosition().eta();
     double RHphi = cell->getPosition().phi();
-
 
     //std::cout << " RH 2D " << RHieta <<"  " <<RHiphi << std::endl;
     for(unsigned int i=0; i < PFTrack2DMap.size(); i++)
@@ -790,16 +826,62 @@ bool SinglePion::HcalLocalCluster(double cone)
       if ( reco::deltaR(PFeta, PFphi, RHeta, RHphi ) < cone)
       {
         HCalLCluster.at(i) += rhit->second->energy();
+        RHCollection.at(i).push_back(rhit->second);
       }
     }
   }
+  
+
+  assert(PFTrack2DMap.size() == PFTrackMap.size());
+  // Check the PFEcalcluster
+  
+  // Remove the PFEcal > 2 GeV for full hadronize pion
+  std::map<unsigned int, bool> PassECal;
+  for(unsigned int i=0; i < PFTrackMap.size(); i++)
+  {
+    PassECal[i]=false;
+    reco::PFRecTrack rtrk = PFTrackHdl->at(PFTrackMap[i]);
+
+    const reco::PFTrajectoryPoint& atECAL = 
+      rtrk.extrapolatedPoint(reco::PFTrajectoryPoint::ECALEntrance);
+
+    if (atECAL.isValid())
+    {
+      for(unsigned int j=0; j < EcalPFClusterHdl->size(); j++)
+      {
+        reco::PFCluster ecal = EcalPFClusterHdl->at(j);
+        if ( reco::deltaR(atECAL.positionREP().eta(), atECAL.positionREP().phi(), ecal.eta(), ecal.phi() ) < 0.05)
+        {
+          if (ecal.energy() > 2)  PassECal[i]=false;
+          else PassECal[i]=true;
+          break;
+        }
+      }
+    }
+  }
+  
+  assert(PassECal.size() == HCalLCluster.size());
 
   std::stringstream  ss;
   ss << "HCalLocalCluster" << cone*10;
   for(unsigned int i=0; i < HCalLCluster.size(); i++)
   {
-    hs->FillTH1(ss.str(), HCalLCluster.at(i));
-  }
+    if (PassECal[i]) 
+    {
+      hs->FillTH1(ss.str(), HCalLCluster.at(i));
 
+      const CaloGeometry *geom = (const CaloGeometry*)calo.product();
+      for(unsigned int j=0; j < RHCollection.at(i).size(); j++)
+      {
+        double RHtime =GetCorTDCTime(RHCollection.at(i).at(j));
+        hs->FillTH1("LocalClusterRechittime", RHtime);
+        const CaloCellGeometry *cell = geom->getGeometry(RHCollection.at(i).at(j)->detid());
+        if(fabs(cell->getPosition().eta())  < 1.4 )
+          hs->FillTH1("LocalClusterHBRechittime", RHtime );
+        if(fabs(cell->getPosition().eta())  > 1.6 && fabs(cell->getPosition().eta())  < 2.5)
+          hs->FillTH1("LocalClusterHERechittime", RHtime );
+      }
+    }
+  }
   return true;
 }       // -----  end of function SinglePion::HcalLocalCluster  -----
