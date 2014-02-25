@@ -105,7 +105,7 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("PFTracksP", "PFTracksP", 400, 0, 100);
   hs->AddTH1("PFTracksZ", "PFTracksZ", 400, -20, 20);
   hs->AddTH1("PFTracksPAroundGen", "PFTracks Mometum within 0.3 around GenPion", 400, 0, 100);
-  hs->AddTH1("PFTracksZAroundGen", "Z of PFTracks  within 0.3 around GenPion", 400, 20, -20);
+  hs->AddTH1("PFTracksZAroundGen", "Z of PFTracks  within 0.3 around GenPion", 400, -20, 20);
   hs->AddTH1("HBPFTracksP", "HB PFTracksP", 400, 0, 100);
   hs->AddTH1("HBPFTracksPAroundGen", "HB PFTracks Mometum within 0.3 around GenPion", 400, 0, 100);
   hs->AddTH1("HEPFTracksP", "HE PFTracksP", 400, 0, 100);
@@ -777,7 +777,7 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
     it->second.sort();
 
     reco::PFRecTrack rtrk = PFTrackHdl->at(it->second.front().second);
-    std::cout << rtrk.trackId() << std::endl;
+    //std::cout << rtrk.trackId() << std::endl;
     // extra polate
     const reco::PFTrajectoryPoint& atHCAL = 
       rtrk.extrapolatedPoint(reco::PFTrajectoryPoint::HCALEntrance);
@@ -883,7 +883,7 @@ bool SinglePion::HcalLocalCluster(double cone)
         double RHtime =GetCorTDCTime(RHCollection.at(i).at(j));
         double TCRHtime =GetCorTDCTime(RHCollection.at(i).at(j), true);
         hs->FillTH1("LocalClusterRechittime", RHtime);
-        hs->FillTH1("TCLocalClusterRechittime", RHtime);
+        hs->FillTH1("TCLocalClusterRechittime", TCRHtime);
         const CaloCellGeometry *cell = geom->getGeometry(RHCollection.at(i).at(j)->detid());
         if(fabs(cell->getPosition().eta())  < 1.4 )
         {
