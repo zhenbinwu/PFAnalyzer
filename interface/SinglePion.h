@@ -17,7 +17,7 @@
 
 /**\class SinglePion
 
-Description: <+one line class summary+>
+Description: 
 
 Implementation:
 <+Notes on implementation+>
@@ -54,6 +54,8 @@ Implementation:
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "UserCode/PFAnalyzer/interface/HistTool.h"
 #include "UserCode/PFAnalyzer/interface/TDCTimeCorr.h"
+#include "DataFormats/ParticleFlowReco/interface/PFRecTrack.h"
+#include "DataFormats/ParticleFlowReco/interface/PFTrajectoryPoint.h"
 #include "TH1.h"
 #include "TH2.h"
 //
@@ -93,6 +95,12 @@ class SinglePion : public edm::EDAnalyzer {
     bool GetHitMapGen( std::vector<unsigned int> GenIdx );
     std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
     // ----------member data ---------------------------
+    //
+    
+
+    bool HcalLocalCluster(double cone);
+    bool PFTracks( std::vector<unsigned int> GenIdx );
+
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
     double GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) const;
@@ -112,6 +120,12 @@ class SinglePion : public edm::EDAnalyzer {
     edm::ESHandle<CaloGeometry> calo;
     std::map<DetId, edm::SortedCollection<CaloTower>::const_iterator> CaloTowerMap;
     std::map<DetId, HBHERecHitCollection::const_iterator> RecHitMap;
+
+    std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPionPFTrack;
+    std::map<DetId, unsigned int > PFTrackMap;
+    std::vector<std::pair<double, double> > PFTrack2DMap;
+    std::vector<double> HCalLCluster;
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Handler ~~~~~
     edm::InputTag TracksTag_;
     edm::Handle<std::vector<reco::Track> >  TracksHdl;
@@ -125,9 +139,17 @@ class SinglePion : public edm::EDAnalyzer {
     edm::InputTag PFBlockTag_;
     edm::Handle<std::vector<reco::PFBlock> >  PFBlockHdl;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Handler ~~~~~
+    edm::InputTag PFTrackTag_;
+    edm::Handle<std::vector<reco::PFRecTrack> >  PFTrackHdl;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
 
 
 
+//----------------------------------------------------------------------------
+//  Local Cluster
+//----------------------------------------------------------------------------
+    
 
     HistTool* hs;
 

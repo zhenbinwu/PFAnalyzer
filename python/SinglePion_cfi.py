@@ -28,6 +28,7 @@ SinglePion = cms.EDAnalyzer('SinglePion',
                             PFCandidateInputTag = cms.InputTag("particleFlow"),
                             SimCaloHitInputTag = cms.InputTag("g4SimHits", "HcalHits",  "SIM" ), 
                             PFBlockTag = cms.InputTag("particleFlowBlock"),
+                            PFTrackTag = cms.InputTag("pfTrack"),
                             #minTracks = cms.untracked.uint32(1000)
                            )
 
