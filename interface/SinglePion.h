@@ -91,6 +91,7 @@ class SinglePion : public edm::EDAnalyzer {
     std::vector<unsigned int> FilterPUPion();
     bool GeneralTracks( std::vector<unsigned int> GenIdx ) const;
     bool HcalPFCluster( std::vector<unsigned int> GenIdx ) const;
+    double GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit, bool timecut=false) const;
     bool EcalPFCluster( std::vector<unsigned int> GenIdx ) const;
     bool GetHitMapGen( std::vector<unsigned int> GenIdx );
     std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
@@ -103,7 +104,6 @@ class SinglePion : public edm::EDAnalyzer {
 
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
-    double GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) const;
     edm::InputTag GenParticleInputTag_;
     edm::Handle<reco::GenParticleCollection> GenParticleHdl;
 

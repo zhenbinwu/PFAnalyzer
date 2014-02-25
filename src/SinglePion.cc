@@ -77,6 +77,10 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("LocalClusterHBRechittime", "Time of HB Rechit associated to the Local Cluster", "Time", "No. of HB Rechit", 400, -100, 100);
   hs->AddTH1("LocalClusterHERechittime", "Time of HE Rechit associated to the Local Cluster", "Time", "No. of HE Rechit", 400, -100, 100);
 
+  hs->AddTH1("TCLocalClusterRechittime", "Time of Rechit associated to the Local Cluster with Timing Cut", "Time", "No. of Rechit", 400, -100, 100);
+  hs->AddTH1("TCLocalClusterHBRechittime", "Time of HB Rechit associated to the Local Cluster with Timing Cut", "Time", "No. of HB Rechit", 400, -100, 100);
+  hs->AddTH1("TCLocalClusterHERechittime", "Time of HE Rechit associated to the Local Cluster with Timing Cut", "Time", "No. of HE Rechit", 400, -100, 100);
+
   hs->AddTH2("RHTimeEnergyD1", "Rechit Time vs. Energy Depth1", "Energy", "Time", 400, 0, 100, 400, -100, 100);
   hs->AddTH2("RHTimeEnergyD2", "Rechit Time vs. Energy Depth2", "Energy", "Time", 400, 0, 100, 400, -100, 100);
   hs->AddTH2("RHTimeEnergyD3", "Rechit Time vs. Energy Depth3", "Energy", "Time", 400, 0, 100, 400, -100, 100);
@@ -509,7 +513,7 @@ std::vector<unsigned int> SinglePion::FilterPUPion()
 //         Name:  SinglePion::GetCorTDCTime
 //  Description:  
 // ===========================================================================
-double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) const
+double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit, bool timecut) const
 {
   
   DetId detId = recHit->detid();
@@ -521,8 +525,11 @@ double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit) c
           tTime = TDCTimeCorr::tdcCorrHE(tTime, recHit->energy(), HcalDetId(detId).depth());
         else if (tHcalSubDet==HcalBarrel) 
           tTime = TDCTimeCorr::tdcCorrHB(tTime, recHit->energy(), HcalDetId(detId).depth());
-        //if (tTime > 12 || tTime< -13) 
-          //return -999;  // this is the cut for all depths for th first try
+        if (timecut)
+        {
+          if (tTime > 12 || tTime< -13) 
+            return -999;  // this is the cut for all depths for th first try
+        }
     }
   }
   return tTime;
@@ -874,12 +881,20 @@ bool SinglePion::HcalLocalCluster(double cone)
       for(unsigned int j=0; j < RHCollection.at(i).size(); j++)
       {
         double RHtime =GetCorTDCTime(RHCollection.at(i).at(j));
+        double TCRHtime =GetCorTDCTime(RHCollection.at(i).at(j), true);
         hs->FillTH1("LocalClusterRechittime", RHtime);
+        hs->FillTH1("TCLocalClusterRechittime", RHtime);
         const CaloCellGeometry *cell = geom->getGeometry(RHCollection.at(i).at(j)->detid());
         if(fabs(cell->getPosition().eta())  < 1.4 )
+        {
           hs->FillTH1("LocalClusterHBRechittime", RHtime );
+          hs->FillTH1("TCLocalClusterHBRechittime", TCRHtime );
+        }
         if(fabs(cell->getPosition().eta())  > 1.6 && fabs(cell->getPosition().eta())  < 2.5)
+        {
           hs->FillTH1("LocalClusterHERechittime", RHtime );
+          hs->FillTH1("TCLocalClusterHERechittime", TCRHtime );
+        }
       }
     }
   }
