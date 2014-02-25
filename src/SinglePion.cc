@@ -156,14 +156,13 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   std::vector<unsigned int> GenIdx;
 
-  double GenE = 0;
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
   {
     reco::GenParticle gen = GenParticleHdl->at(i);
-    if (fabs(gen.pdgId()) == 211  || fabs(gen.pdgId()) == 12)
+    //if (fabs(gen.pdgId()) == 211  || fabs(gen.pdgId()) == 12)
+    if (fabs(gen.pdgId()) == 211 )
     {
       GenIdx.push_back(i);
-      GenE = gen.p4().E();
       PionGen_Pt->Fill(gen.p4().pt());
       PionGen_Eta->Fill(gen.p4().Eta());
       PionGen_Phi->Fill(gen.p4().Phi());
@@ -174,7 +173,6 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   HcalPFCluster(GenIdx);
   EcalPFCluster(GenIdx);
   GetHitMapGen(GenIdx);
-
   PFTracks(GenIdx);
   HcalLocalCluster(0.2); // 3 by 3 cluster
   //HcalLocalCluster(0.3); // 5 by 5 cluster
@@ -196,16 +194,14 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
   
 
-  assert(GenE != 0);
-
-  //std::cout << " how many 211? " << GenIdx.size() << std::endl;
 
   std::vector<unsigned int> CanIdx;
 
   if (IsPion)
     CanIdx = FilterTurePion(GenIdx);
-  else
-    CanIdx = FilterPUPion();
+  // Don't do PUPion for Nv 
+  //else
+    //CanIdx = FilterPUPion();
 
 
   HCalTiming(CanIdx);
@@ -806,6 +802,9 @@ bool SinglePion::HcalLocalCluster(double cone)
 
   HCalLCluster.clear();
 
+  assert(PFTrack2DMap.size() == PFTrackMap.size());
+  if (PFTrack2DMap.size() == 0) return false;
+
   std::vector<std::vector<HBHERecHitCollection::const_iterator> > RHCollection;
   for(unsigned int i=0; i < PFTrack2DMap.size(); i++)
   {
@@ -839,7 +838,6 @@ bool SinglePion::HcalLocalCluster(double cone)
   }
   
 
-  assert(PFTrack2DMap.size() == PFTrackMap.size());
   // Check the PFEcalcluster
   
   // Remove the PFEcal > 2 GeV for full hadronize pion
