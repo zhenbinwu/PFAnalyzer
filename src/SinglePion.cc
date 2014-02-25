@@ -112,6 +112,9 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("HEPFTracksPAroundGen", "HE PFTracks Mometum within 0.3 around GenPion", 400, 0, 100);
 
   hs->AddTH1("HCalLocalCluster2", "HCalLocalCluster cone 0.2", 400, 0, 100);
+  hs->AddTH1("HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2", 400, 0, 2);
+  hs->AddTH1("TCHCalLocalCluster2", "HCalLocalCluster cone 0.2 with Time Cut", 400, 0, 100);
+  hs->AddTH1("TCHCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with Time Cut", 400, 0, 2);
   hs->AddTH1("HCalLocalCluster3", "HCalLocalCluster cone 0.3", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster4", "HCalLocalCluster cone 0.4", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster5", "HCalLocalCluster cone 0.5", 400, 0, 100);
@@ -801,6 +804,8 @@ bool SinglePion::HcalLocalCluster(double cone)
 {
 
   HCalLCluster.clear();
+  std::vector<double> HCalLClusterTC;
+
 
   assert(PFTrack2DMap.size() == PFTrackMap.size());
   if (PFTrack2DMap.size() == 0) return false;
@@ -809,6 +814,8 @@ bool SinglePion::HcalLocalCluster(double cone)
   for(unsigned int i=0; i < PFTrack2DMap.size(); i++)
   {
     HCalLCluster.push_back(0);
+    HCalLClusterTC.push_back(0);
+
     std::vector<HBHERecHitCollection::const_iterator> temp;
     RHCollection.push_back(temp);
   }
@@ -833,6 +840,10 @@ bool SinglePion::HcalLocalCluster(double cone)
       {
         HCalLCluster.at(i) += rhit->second->energy();
         RHCollection.at(i).push_back(rhit->second);
+
+        HBHERecHitCollection::const_iterator localhit = rhit->second;
+        if (GetCorTDCTime(localhit, true) != -999.)
+          HCalLClusterTC.at(i) += rhit->second->energy();
       }
     }
   }
@@ -842,10 +853,12 @@ bool SinglePion::HcalLocalCluster(double cone)
   
   // Remove the PFEcal > 2 GeV for full hadronize pion
   std::map<unsigned int, bool> PassECal;
+  std::map<unsigned int, double> TrkMometum;
   for(unsigned int i=0; i < PFTrackMap.size(); i++)
   {
     PassECal[i]=false;
     reco::PFRecTrack rtrk = PFTrackHdl->at(PFTrackMap[i]);
+    TrkMometum[i]=rtrk.trackRef()->outerP();
 
     const reco::PFTrajectoryPoint& atECAL = 
       rtrk.extrapolatedPoint(reco::PFTrajectoryPoint::ECALEntrance);
@@ -874,6 +887,9 @@ bool SinglePion::HcalLocalCluster(double cone)
     if (PassECal[i]) 
     {
       hs->FillTH1(ss.str(), HCalLCluster.at(i));
+      hs->FillTH1("TCHCalLocalCluster2", HCalLClusterTC.at(i));
+      hs->FillTH1("HCalLocalClusterHP2", HCalLCluster.at(i)/ TrkMometum.at(i) );
+      hs->FillTH1("TCHCalLocalClusterHP2", HCalLClusterTC.at(i)/ TrkMometum.at(i) );
 
       const CaloGeometry *geom = (const CaloGeometry*)calo.product();
       for(unsigned int j=0; j < RHCollection.at(i).size(); j++)
