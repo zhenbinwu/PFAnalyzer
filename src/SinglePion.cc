@@ -14,14 +14,7 @@
 // 
 // ===========================================================================
 
-#include <bitset>
 #include "UserCode/PFAnalyzer/interface/SinglePion.h"
-#include "DataFormats/Math/interface/deltaR.h"
-#include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
-#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
-#include "DataFormats/ParticleFlowReco/interface/PFBlockElement.h"
-#include "DataFormats/ParticleFlowReco/interface/PFBlockElementCluster.h"
-#include "DataFormats/Common/interface/Ref.h"
 //
 // constructors and destructor
 //
@@ -29,6 +22,33 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
 {
   hs = new HistTool("fdf");
 
+  // Get all the input tags from iConfig
+  GetInputTag(iConfig);
+
+  // Book Histogram
+  BookHistogram();
+}
+
+
+SinglePion::~SinglePion()
+{
+
+  // do anything here that needs to be done at desctruction time
+  // (e.g. close files, deallocate resources etc.)
+
+}
+
+
+//
+// member functions
+//
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GetInputTag
+//  Description:  Get all the input tag from iConfig
+// ===========================================================================
+bool SinglePion::GetInputTag(const edm::ParameterSet& iConfig) const
+{
   PFTrackTag_ = iConfig.getParameter<edm::InputTag>("PFTrackTag");
   GenParticleInputTag_= iConfig.getParameter<edm::InputTag>("GenParticleInputTag");
   PFCandidateInputTag_= iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
@@ -39,8 +59,16 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   EcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("EcalPFClusterTag");
   PFBlockTag_ = iConfig.getParameter<edm::InputTag>("PFBlockTag");
 
+  return true;
+}       // -----  end of function SinglePion::GetInputTag  -----
 
 
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::BookHistogram
+//  Description:  
+// ===========================================================================
+bool SinglePion::BookHistogram() const
+{
   HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkP", 600, 0, 1.5);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 100);
   PionHcal =fs->make<TH1D>("PionHcal", "PionHCal", 100, 0, 100);
@@ -54,6 +82,7 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   PionGenCan_Pt = fs->make<TH1D>("PionGenCan_Pt", "PionGenCan_Pt", 100, 0, 100);
   PionGenCan_Eta = fs->make<TH1D>("PionGenCan_Eta", "PionGenCan_Eta", 100, -5, 5);
   PionGenCan_Phi = fs->make<TH1D>("PionGenCan_Phi", "PionGenCan_Phi", 140, -7, 7);
+
   hs->AddTH1("PionTrkP2", "PionTrk P for all PFCandidates", 500, 0, 100);
   hs->AddTH1("NEvents", "Number of Events", 2, 0, 2);
   hs->AddTH1("Rechittime", "Rechit Time from PFCandidate associated with GenPion", "Time", "No. of RecHit", 400, -100, 100);
@@ -120,27 +149,16 @@ SinglePion::SinglePion(const edm::ParameterSet& iConfig)
   hs->AddTH1("HCalLocalCluster5", "HCalLocalCluster cone 0.5", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster6", "HCalLocalCluster cone 0.6", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster7", "HCalLocalCluster cone 0.7", 400, 0, 100);
-}
 
-SinglePion::~SinglePion()
+  return true;
+}       // -----  end of function SinglePion::BookHistogram  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  SinglePion::GetHandler
+//  Description:  
+// ===========================================================================
+bool SinglePion::GetHandler(const edm::Event& iEvent) const
 {
-
-  // do anything here that needs to be done at desctruction time
-  // (e.g. close files, deallocate resources etc.)
-
-}
-
-
-//
-// member functions
-//
-
-// ------------ method called for each event  ------------
-  void
-SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
-{
-  using namespace edm;
-  
   iEvent.getByLabel(GenParticleInputTag_, GenParticleHdl); 
   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
   iEvent.getByLabel(HbHeRecHitTag_, HbHeRecHitHdl); 
@@ -149,14 +167,23 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel(HcalPFClusterTag_, HcalPFClusterHdl); 
   iEvent.getByLabel(EcalPFClusterTag_, EcalPFClusterHdl); 
   iEvent.getByLabel(PFBlockTag_, PFBlockHdl); 
-    iEvent.getByLabel(PFTrackTag_, PFTrackHdl); 
+  iEvent.getByLabel(PFTrackTag_, PFTrackHdl); 
+
+  return true;
+}       // -----  end of function SinglePion::GetHandler  -----
+
+
+// ------------ method called for each event  ------------
+  void
+SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+  using namespace edm;
+  
 
   iSetup.get<CaloGeometryRecord>().get(calo);
   
   hs->FillTH1("NEvents", 1);
 
-
- 
   std::vector<unsigned int> GenIdx;
 
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
@@ -209,18 +236,6 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   HCalTiming(CanIdx);
   
-
-#ifdef THIS_IS_AN_EVENT_EXAMPLE
-  Handle<ExampleData> pIn;
-  iEvent.getByLabel("example",pIn);
-#endif
-
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-  ESHandle<SetupData> pSetup;
-  iSetup.get<SetupRecord>().get(pSetup);
-#endif
-
-
 }
 
 
@@ -277,7 +292,7 @@ SinglePion::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 bool SinglePion::HCalTiming(std::vector<unsigned int> CanIdx)
 {
 
-  //GetHitMap(CanIdx);
+  //GetHitMapCan(CanIdx);
 
   for (unsigned int i = 0; i < CanIdx.size(); ++i)
   {
@@ -316,10 +331,10 @@ bool SinglePion::HCalTiming(std::vector<unsigned int> CanIdx)
 
 
 // ===  FUNCTION  ============================================================
-//         Name:  SinglePion::GetHitMap
+//         Name:  SinglePion::GetHitMapCan
 //  Description:  
 // ===========================================================================
-bool SinglePion::GetHitMap(std::vector<unsigned int> CanIdx)
+bool SinglePion::GetHitMapCan(std::vector<unsigned int> CanIdx)
 {
   CaloTowerMap.clear();
   
@@ -354,7 +369,7 @@ bool SinglePion::GetHitMap(std::vector<unsigned int> CanIdx)
 
   //std::cout << " Tower size " << CaloTowerMap.size() <<" RECHit size " << RecHitMap.size() << std::endl;
   return true;
-}       // -----  end of function SinglePion::GetHitMap  -----
+}       // -----  end of function SinglePion::GetHitMapCan  -----
 
 // ===  FUNCTION  ============================================================
 //         Name:  SinglePion::PFClusterRef
@@ -612,26 +627,6 @@ bool SinglePion::EcalPFCluster( std::vector<unsigned int> GenIdx ) const
   return true;
 }       // -----  end of function SinglePion::EcalPFCluster  -----
 
-
-//// ===  FUNCTION  ============================================================
-////         Name:  SinglePion::SPPFBlock
-////  Description:  
-//// ===========================================================================
-//bool SinglePion::SPPFBlock( std::vector<unsigned int> GenIdx ) const
-//{
-  
-  //for(unsigned int i=0; i < PFBlockHdl->size(); i++)
-  //{
-    //reco::PFBlock blk = PFBlockHdl->at(i);
-    
-    //blk.LINKTEST_RECHIT
-  //}
-
-  //return true;
-//}       // -----  end of function SinglePion::SPPFBlock  -----
-//
-
-
 // ===  FUNCTION  ============================================================
 //         Name:  SinglePion::GetHitMapGen
 //  Description:  
@@ -747,7 +742,8 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
       // Use the extrapolatedPoint for matching? or should I use the
       // closestApproach for matching?
       //if (deltaR(gen.eta(), gen.phi(), atHCAL.momentum().eta(), atHCAL.momentum().phi()) < 0.5)
-      if (deltaR(gen.eta(), gen.phi(), rtrk.trackRef()->innerMomentum().Eta(), rtrk.trackRef()->innerMomentum().Phi()) < 0.3)
+      if (deltaR(gen.eta(), gen.phi(), rtrk.trackRef()->innerMomentum().Eta(), 
+            rtrk.trackRef()->innerMomentum().Phi()) < 0.3)
       {
 
         //std::cout << " ---------------------------------" << rtrk.trackRef()->innerPosition().z() << std::endl;
@@ -765,7 +761,6 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
       }
     }
   }
-
 
   int matchcount=0;
   //Get the PFTrack assocaite with the GenPion
@@ -797,6 +792,7 @@ bool SinglePion::PFTracks( std::vector<unsigned int> GenIdx )
   return true;
 }       // -----  end of function SinglePion::PFTracks  -----
 
+// ===  FUNCTION  ============================================================
 //         Name:  SinglePion::HcalLocalCluster
 //  Description:  
 // ===========================================================================
