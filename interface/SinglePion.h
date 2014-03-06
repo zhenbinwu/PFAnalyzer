@@ -132,6 +132,8 @@ class SinglePion : public edm::EDAnalyzer {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
 
     HistTool* hs;
+    edm::ESHandle<CaloGeometry> calo;
+    double MatchingdR;
 
     TH1D* HcalTrk;
     //TH1D* HcalTrk_GenPt;
@@ -149,11 +151,19 @@ class SinglePion : public edm::EDAnalyzer {
     TH1D* PionGenCan_Phi;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Local members ~~~~~
+    // A struct for containing
+    struct PionAso {
+      reco::GenParticleCollection::const_iterator GenPion;
+      std::vector<std::vector<reco::Track>::const_iterator> vTracks;
+    };				// ----------  end of struct PionAso  ----------
+
+    std::map<unsigned int, PionAso> PionMap;
+
+
     std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPion_deltaR;
-    edm::ESHandle<CaloGeometry> calo;
+    std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPionPFTrack;
     std::map<DetId, edm::SortedCollection<CaloTower>::const_iterator> CaloTowerMap;
     std::map<DetId, HBHERecHitCollection::const_iterator> RecHitMap;
-    std::map<unsigned int, std::list<std::pair<double, unsigned int> > > GenPionPFTrack;
     std::map<unsigned int, unsigned int > PFTrackMap;
     std::vector<std::pair<double, double> > PFTrack2DMap;
     std::vector<double> HCalLCluster;
@@ -163,11 +173,11 @@ class SinglePion : public edm::EDAnalyzer {
 //  Member Functions
 //----------------------------------------------------------------------------
     /// General function to get the input tag from iConfig
-    bool GetInputTag(const edm::ParameterSet& iConfig) const;
+    bool GetInputTag(const edm::ParameterSet& iConfig);
     /// General function to get the handler from iEvent
-    bool GetHandler(const edm::Event& iEvent) const;
+    bool GetHandler(const edm::Event& iEvent);
     /// General function for booking histograms
-    bool BookHistogram() const;
+    bool BookHistogram();
     
     /// Get the Corrected TDC Time from Anton's method
     double GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit, bool timecut=false) const;

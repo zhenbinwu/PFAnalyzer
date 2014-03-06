@@ -26,10 +26,12 @@ SinglePion = cms.EDAnalyzer('SinglePion',
                             CaloMETInputTag = cms.InputTag("met"),
                             GenParticleInputTag = cms.InputTag("genParticles"),
                             PFCandidateInputTag = cms.InputTag("particleFlow"),
-                            SimCaloHitInputTag = cms.InputTag("g4SimHits", "HcalHits",  "SIM" ), 
+                            SimCaloHitInputTag = cms.InputTag("g4SimHits", "HcalHits",  "SIM" ),
                             PFBlockTag = cms.InputTag("particleFlowBlock"),
                             PFTrackTag = cms.InputTag("pfTrack"),
                             #minTracks = cms.untracked.uint32(1000)
+
+                            MatchingDeltaR = cms.untracked.double(0.3)
                            )
 
 

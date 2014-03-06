@@ -47,7 +47,7 @@ SinglePion::~SinglePion()
 //         Name:  SinglePion::GetInputTag
 //  Description:  Get all the input tag from iConfig
 // ===========================================================================
-bool SinglePion::GetInputTag(const edm::ParameterSet& iConfig) const
+bool SinglePion::GetInputTag(const edm::ParameterSet& iConfig)
 {
   PFTrackTag_ = iConfig.getParameter<edm::InputTag>("PFTrackTag");
   GenParticleInputTag_= iConfig.getParameter<edm::InputTag>("GenParticleInputTag");
@@ -59,6 +59,9 @@ bool SinglePion::GetInputTag(const edm::ParameterSet& iConfig) const
   EcalPFClusterTag_ = iConfig.getParameter<edm::InputTag>("EcalPFClusterTag");
   PFBlockTag_ = iConfig.getParameter<edm::InputTag>("PFBlockTag");
 
+
+  MatchingdR = iConfig.getUntrackedParameter<double>("MatchingDeltaR");
+
   return true;
 }       // -----  end of function SinglePion::GetInputTag  -----
 
@@ -67,7 +70,7 @@ bool SinglePion::GetInputTag(const edm::ParameterSet& iConfig) const
 //         Name:  SinglePion::BookHistogram
 //  Description:  
 // ===========================================================================
-bool SinglePion::BookHistogram() const
+bool SinglePion::BookHistogram()
 {
   HcalTrk =fs->make<TH1D>("HcalTrk", "Hcal/TrkP", 600, 0, 1.5);
   PionEcal =fs->make<TH1D>("PionEcal", "PionECal", 100, 0, 100);
@@ -144,6 +147,8 @@ bool SinglePion::BookHistogram() const
   hs->AddTH1("HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2", 400, 0, 2);
   hs->AddTH1("TCHCalLocalCluster2", "HCalLocalCluster cone 0.2 with Time Cut", 400, 0, 100);
   hs->AddTH1("TCHCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with Time Cut", 400, 0, 2);
+  hs->AddTH1("NTHCalLocalCluster2", "HCalLocalCluster cone 0.2 without noTime Rechit", 400, 0, 100);
+  hs->AddTH1("NTHCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 without noTime Rechit", 400, 0, 2);
   hs->AddTH1("HCalLocalCluster3", "HCalLocalCluster cone 0.3", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster4", "HCalLocalCluster cone 0.4", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster5", "HCalLocalCluster cone 0.5", 400, 0, 100);
@@ -157,7 +162,7 @@ bool SinglePion::BookHistogram() const
 //         Name:  SinglePion::GetHandler
 //  Description:  
 // ===========================================================================
-bool SinglePion::GetHandler(const edm::Event& iEvent) const
+bool SinglePion::GetHandler(const edm::Event& iEvent)
 {
   iEvent.getByLabel(GenParticleInputTag_, GenParticleHdl); 
   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
@@ -177,22 +182,29 @@ bool SinglePion::GetHandler(const edm::Event& iEvent) const
   void
 SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  using namespace edm;
-  
 
+//----------------------------------------------------------------------------
+//  Global Setup 
+//----------------------------------------------------------------------------
+  GetHandler(iEvent);
   iSetup.get<CaloGeometryRecord>().get(calo);
-  
-  hs->FillTH1("NEvents", 1);
 
+  hs->FillTH1("NEvents", 1);
+//----------------------------------------------------------------------------
+//  Start the analyzer
+//----------------------------------------------------------------------------
+
+  PionMap.clear();
   std::vector<unsigned int> GenIdx;
 
   for(unsigned int i=0; i < GenParticleHdl->size(); i++)
   {
     reco::GenParticle gen = GenParticleHdl->at(i);
-    //if (fabs(gen.pdgId()) == 211  || fabs(gen.pdgId()) == 12)
     if (fabs(gen.pdgId()) == 211 )
     {
       GenIdx.push_back(i);
+      PionMap[i] = PionAso();
+      PionMap[i].GenPion = GenParticleHdl->begin() + i;
       PionGen_Pt->Fill(gen.p4().pt());
       PionGen_Eta->Fill(gen.p4().Eta());
       PionGen_Phi->Fill(gen.p4().Phi());
@@ -236,7 +248,7 @@ SinglePion::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   HCalTiming(CanIdx);
   
-}
+} // End of Analyzer
 
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -552,7 +564,7 @@ double SinglePion::GetCorTDCTime(HBHERecHitCollection::const_iterator& recHit, b
 
 // ===  FUNCTION  ============================================================
 //         Name:  SinglePion::GeneralTracks
-//  Description:  
+//  Description:  Search the general tracks matching to Gen Pion
 // ===========================================================================
 bool SinglePion::GeneralTracks( std::vector<unsigned int> GenIdx ) const
 {
@@ -592,7 +604,6 @@ bool SinglePion::HcalPFCluster( std::vector<unsigned int> GenIdx ) const
   {
     reco::PFCluster cluster = HcalPFClusterHdl->at(i);
     hs->FillTH1("HcalClusterE", cluster.energy());
-
 
     for(unsigned int i=0; i < GenIdx.size(); i++)
     {
@@ -801,6 +812,7 @@ bool SinglePion::HcalLocalCluster(double cone)
 
   HCalLCluster.clear();
   std::vector<double> HCalLClusterTC;
+  std::vector<double> HCalLClusterNT;
 
 
   assert(PFTrack2DMap.size() == PFTrackMap.size());
@@ -811,6 +823,7 @@ bool SinglePion::HcalLocalCluster(double cone)
   {
     HCalLCluster.push_back(0);
     HCalLClusterTC.push_back(0);
+    HCalLClusterNT.push_back(0);
 
     std::vector<HBHERecHitCollection::const_iterator> temp;
     RHCollection.push_back(temp);
@@ -840,6 +853,8 @@ bool SinglePion::HcalLocalCluster(double cone)
         HBHERecHitCollection::const_iterator localhit = rhit->second;
         if (GetCorTDCTime(localhit, true) != -999.)
           HCalLClusterTC.at(i) += rhit->second->energy();
+        if (GetCorTDCTime(localhit, false) != -999.) //No time cut, but remove notime 
+          HCalLClusterNT.at(i) += rhit->second->energy();
       }
     }
   }
@@ -884,8 +899,10 @@ bool SinglePion::HcalLocalCluster(double cone)
     {
       hs->FillTH1(ss.str(), HCalLCluster.at(i));
       hs->FillTH1("TCHCalLocalCluster2", HCalLClusterTC.at(i));
+      hs->FillTH1("NTHCalLocalCluster2", HCalLClusterNT.at(i));
       hs->FillTH1("HCalLocalClusterHP2", HCalLCluster.at(i)/ TrkMometum.at(i) );
       hs->FillTH1("TCHCalLocalClusterHP2", HCalLClusterTC.at(i)/ TrkMometum.at(i) );
+      hs->FillTH1("NTHCalLocalClusterHP2", HCalLClusterNT.at(i)/ TrkMometum.at(i) );
 
       const CaloGeometry *geom = (const CaloGeometry*)calo.product();
       for(unsigned int j=0; j < RHCollection.at(i).size(); j++)
