@@ -31,6 +31,8 @@ SinglePion = cms.EDAnalyzer('SinglePion',
                             PFTrackTag = cms.InputTag("pfTrack"),
                             #minTracks = cms.untracked.uint32(1000)
 
+                            EBRecHitTag = cms.InputTag("ecalRecHit" ,"EcalRecHitsEB", "RECO"),
+                            EERecHitTag = cms.InputTag("ecalRecHit" ,"EcalRecHitsEE", "RECO"),
                             MatchingDeltaR = cms.untracked.double(0.3)
                            )
 

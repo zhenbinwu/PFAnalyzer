@@ -44,11 +44,11 @@ Implementation:
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 
-
 // CMSSW DataFormats Headers
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowReco/interface/CalibrationResultWrapper.h"
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PFCluster.h"
@@ -116,6 +116,11 @@ class SinglePion : public edm::EDAnalyzer {
     edm::InputTag CaloTowerTag_;
     edm::Handle<edm::SortedCollection<CaloTower,edm::StrictWeakOrdering<CaloTower> > >  CaloTowerHdl;
 
+    edm::InputTag EBRecHitTag_;
+    edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> > >  EBRecHitHdl;
+    edm::InputTag EERecHitTag_;
+    edm::Handle<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> > >  EERecHitHdl;
+
     edm::InputTag TracksTag_;
     edm::Handle<std::vector<reco::Track> >  TracksHdl;
 
@@ -155,6 +160,13 @@ class SinglePion : public edm::EDAnalyzer {
     struct PionAso {
       reco::GenParticleCollection::const_iterator GenPion;
       std::vector<std::vector<reco::Track>::const_iterator> vTracks;
+      std::vector<std::vector<reco::PFCluster>::const_iterator> vHcalPFCluster;
+      std::vector<std::vector<reco::PFCluster>::const_iterator> vEcalPFCluster;
+      std::vector<edm::SortedCollection<CaloTower>::const_iterator> vCaloTower;
+      std::vector<HBHERecHitCollection::const_iterator> vRecHit;
+      std::vector<edm::SortedCollection<EcalRecHit>::const_iterator> vEcalRecHit;
+      //std::vector<edm::SortedCollection<EcalRecHit>::const_iterator> vEERecHit;
+
     };				// ----------  end of struct PionAso  ----------
 
     std::map<unsigned int, PionAso> PionMap;
@@ -187,13 +199,15 @@ class SinglePion : public edm::EDAnalyzer {
     bool GetHitMapGen( std::vector<unsigned int> GenIdx );
     bool PFClusterRef(reco::PFClusterRef CRef);
     std::vector<unsigned int> FilterPUPion();
-    bool GeneralTracks( std::vector<unsigned int> GenIdx ) const;
-    bool HcalPFCluster( std::vector<unsigned int> GenIdx ) const;
-    bool EcalPFCluster( std::vector<unsigned int> GenIdx ) const;
+    std::map<std::string, double> HcalNoTimeHit(HBHERecHitCollection::const_iterator hcalhit);
+    bool GeneralTracks( std::vector<unsigned int> GenIdx );
+    bool HcalPFCluster( std::vector<unsigned int> GenIdx );
+    bool EcalPFCluster( std::vector<unsigned int> GenIdx );
     std::vector<unsigned int> FilterTurePion(std::vector<unsigned int> GenIdx);
     bool HcalLocalCluster(double cone);
     bool PFTracks( std::vector<unsigned int> GenIdx );
 
+    bool HcalNoTimeHit();
 };
 
 //
