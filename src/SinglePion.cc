@@ -154,12 +154,6 @@ bool SinglePion::BookHistogram()
   hs->AddTH1("TCHCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with Time Cut", 400, 0, 2);
   hs->AddTH1("NTHCalLocalCluster2", "HCalLocalCluster cone 0.2 without noTime Rechit", 400, 0, 100);
   hs->AddTH1("NTHCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 without noTime Rechit", 400, 0, 2);
-  hs->AddTH1("NT1HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of ADC time", 400, 0, 100);
-  hs->AddTH1("NT1HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of ADC time", 400, 0, 2);
-  hs->AddTH1("NT2HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of ECAl hittime", 400, 0, 100);
-  hs->AddTH1("NT2HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of ECAl hittime", 400, 0, 2);
-  hs->AddTH1("NT3HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of HCAl hittime", 400, 0, 100);
-  hs->AddTH1("NT3HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of HCAl hittime", 400, 0, 2);
   hs->AddTH1("HCalLocalCluster3", "HCalLocalCluster cone 0.3", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster4", "HCalLocalCluster cone 0.4", 400, 0, 100);
   hs->AddTH1("HCalLocalCluster5", "HCalLocalCluster cone 0.5", 400, 0, 100);
@@ -168,6 +162,17 @@ bool SinglePion::BookHistogram()
   
 
   // No time rechit studies
+  hs->AddTH1("NT1HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of ADC time", 400, 0, 100);
+  hs->AddTH1("NT1HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of ADC time", 400, 0, 2);
+  hs->AddTH1("NT2HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of ECAl hittime", 400, 0, 100);
+  hs->AddTH1("NT2HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of ECAl hittime", 400, 0, 2);
+  hs->AddTH1("NT3HCalLocalCluster2", "HCalLocalCluster cone 0.2 with noTime Rechit of HCAl hittime", 400, 0, 100);
+  hs->AddTH1("NT3HCalLocalClusterHP2", "HCalLocalCluster Hcal/P cone 0.2 with noTime Rechit of HCAl hittime", 400, 0, 2);
+
+
+  hs->AddTH1("ADCRechittime", "Time of noTime Rechit associated to the Local Cluster with ADC Time", "Time", "No. of Rechit", 400, -100, 100);
+  hs->AddTH1("EcalRechittime", "Time of noTime Rechit associated to the Local Cluster with ECAl Time", "Time", "No. of Rechit", 400, -100, 100);
+  hs->AddTH1("HcalRechittime", "Time of noTime Rechit associated to the Local Cluster with HCAl Time", "Time", "No. of Rechit", 400, -100, 100);
 
   return true;
 }       // -----  end of function SinglePion::BookHistogram  -----
@@ -937,11 +942,21 @@ bool SinglePion::HcalLocalCluster(double cone)
 #ifdef  TIMEADC
          if ( newTime["ADC"] != -999.)
          {
-           hs->
-           
+           HCalLClusterNT1.at(i) += rhit->second->energy();
+           hs->FillTH1("ADCRechittime", newTime["ADC"]);
          } 
 #endif     // -----  not TIMEADC  -----
 
+         if ( newTime["ECAL"] != -999.)
+         {
+           HCalLClusterNT2.at(i) += rhit->second->energy();
+           hs->FillTH1("EcalRechittime", newTime["ECAL"]);
+         }
+         if ( newTime["HCAL"] != -999.)
+         {
+           HCalLClusterNT3.at(i) += rhit->second->energy();
+           hs->FillTH1("HcalRechittime", newTime["HCAL"]);
+         }
 
         }
 
