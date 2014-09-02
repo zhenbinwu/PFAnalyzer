@@ -108,6 +108,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
       //----------------------------------------------------------------------------
       //  Object handler
       //----------------------------------------------------------------------------
+      edm::InputTag PFJetTag_;
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
       edm::InputTag HbHeRecHitTag_;
       edm::Handle<HBHERecHitCollection>  HbHeRecHitHdl;
@@ -191,6 +192,10 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* PFJet_Pt;
       TH1D* PFJet_Eta;
       TH1D* PFJet_Phi;
+      TH1D* PFJetRaw_Pt;
+      TH1D* PFJetRaw_Eta;
+      TH1D* PFJetRaw_Phi;
+      
       
       TH1D* CaloJet_Pt;
       TH1D* CaloJet_Eta;
@@ -199,6 +204,20 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* GenJet_Pt;
       TH1D* GenJet_Eta;
       TH1D* GenJet_Phi;
+
+      TH1D* GenJet10_Eta;
+      TH1D* GenJet20_Eta;
+      TH1D* GenJet30_Eta;
+      TH1D* GenJet40_Eta;
+      TH1D* GenJet50_Eta;
+
+      TH1D* PFJet10_Eta;
+      TH1D* PFJet20_Eta;
+      TH1D* PFJet30_Eta;
+      TH1D* PFJet40_Eta;
+      TH1D* PFJet50_Eta;
+      TH1D* PFJet80_Eta;
+      TH1D* PFJet100_Eta;
 
       std::map<unsigned int, std::list<std::pair<double, unsigned int> > > PFGenJet_deltaR;
       // GenJet -> PFJet
@@ -357,6 +376,33 @@ class PFAnalyzer : public edm::EDAnalyzer {
       TH1D* HcalPFCL_SumPt_Phi;
 
 
+
+
+      TH1D* PFJetG_Eta_M5_M4;
+      TH1D* PFJetG_Eta_M4_M3;
+      TH1D* PFJetG_Eta_M3_M2;
+      TH1D* PFJetG_Eta_M2_M1;
+      TH1D* PFJetG_Eta_M1_M0;
+      TH1D* PFJetG_Eta_P5_P4;
+      TH1D* PFJetG_Eta_P4_P3;
+      TH1D* PFJetG_Eta_P3_P2;
+      TH1D* PFJetG_Eta_P2_P1;
+      TH1D* PFJetG_Eta_P1_P0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 TH1D* GenJetRes0_Pt;
 TH1D* GenJetRes0_Eta;
 TH1D* GenJetRes0_Phi;
@@ -407,6 +453,48 @@ TH1D* CaloJetG_Gen150_200_Pt;
 TH1D* CaloJetG_Gen200_500_Pt;
 TH1D* CaloJetG_Gen500_1000_Pt;
 TH2D* HcalRH_iEtaiPhi;
+
+TH1D* PFJetG1_Gen10_20_Pt;
+TH1D* PFJetG1_Gen20_30_Pt;
+TH1D* PFJetG1_Gen30_40_Pt;
+TH1D* PFJetG1_Gen40_50_Pt;
+TH1D* PFJetG1_Gen50_60_Pt;
+TH1D* PFJetG1_Gen60_70_Pt;
+TH1D* PFJetG1_Gen70_80_Pt;
+TH1D* PFJetG1_Gen80_100_Pt;
+TH1D* PFJetG1_Gen100_120_Pt;
+TH1D* PFJetG1_Gen120_150_Pt;
+TH1D* PFJetG1_Gen150_200_Pt;
+TH1D* PFJetG1_Gen200_500_Pt;
+TH1D* PFJetG1_Gen500_1000_Pt;
+
+TH1D* PFJetG2_Gen10_20_Pt;
+TH1D* PFJetG2_Gen20_30_Pt;
+TH1D* PFJetG2_Gen30_40_Pt;
+TH1D* PFJetG2_Gen40_50_Pt;
+TH1D* PFJetG2_Gen50_60_Pt;
+TH1D* PFJetG2_Gen60_70_Pt;
+TH1D* PFJetG2_Gen70_80_Pt;
+TH1D* PFJetG2_Gen80_100_Pt;
+TH1D* PFJetG2_Gen100_120_Pt;
+TH1D* PFJetG2_Gen120_150_Pt;
+TH1D* PFJetG2_Gen150_200_Pt;
+TH1D* PFJetG2_Gen200_500_Pt;
+TH1D* PFJetG2_Gen500_1000_Pt;
+
+TH1D* PFJetG3_Gen10_20_Pt;
+TH1D* PFJetG3_Gen20_30_Pt;
+TH1D* PFJetG3_Gen30_40_Pt;
+TH1D* PFJetG3_Gen40_50_Pt;
+TH1D* PFJetG3_Gen50_60_Pt;
+TH1D* PFJetG3_Gen60_70_Pt;
+TH1D* PFJetG3_Gen70_80_Pt;
+TH1D* PFJetG3_Gen80_100_Pt;
+TH1D* PFJetG3_Gen100_120_Pt;
+TH1D* PFJetG3_Gen120_150_Pt;
+TH1D* PFJetG3_Gen150_200_Pt;
+TH1D* PFJetG3_Gen200_500_Pt;
+TH1D* PFJetG3_Gen500_1000_Pt;
 };
 
 //define this as a plug-in

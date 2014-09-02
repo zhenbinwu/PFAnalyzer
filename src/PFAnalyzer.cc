@@ -39,10 +39,20 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
    //now do what ever initialization is needed
   demohisto = fs->make<TH1D>("tracks" , "Tracks" , 100 , 0 , 5000 );
   RH_Energy = fs->make<TH1D>("Rechit_energy" , "Rechit_Energy" , 100 , 0 , 5000 );
+  PFJetRaw_Pt = fs->make<TH1D>("PFJetRaw_PT", "PF JetRaw_Pt " ,  100, 0, 500);
+  PFJetRaw_Eta =fs->make<TH1D>("PFJetRaw_Eta", "PF JetRaw Eta", 100, -5, 5);
+  PFJetRaw_Phi = fs->make<TH1D>("PFJetRaw_Phi", "PF jetRaw Phi", 100, -5, 5);
 
   PFJet_Pt = fs->make<TH1D>("PFJet_PT", "PF Jet_Pt " ,  100, 0, 500);
   PFJet_Eta =fs->make<TH1D>("PFJet_Eta", "PF Jet Eta", 100, -5, 5);
   PFJet_Phi = fs->make<TH1D>("PFJet_Phi", "PF jet Phi", 100, -5, 5);
+  PFJet10_Eta =fs->make<TH1D>("PFJet10_Eta", "PF Jet Eta (PT>10)", 100, -5, 5);
+  PFJet20_Eta =fs->make<TH1D>("PFJet20_Eta", "PF Jet Eta (PT>20)", 100, -5, 5);
+  PFJet30_Eta =fs->make<TH1D>("PFJet30_Eta", "PF Jet Eta (PT>30)", 100, -5, 5);
+  PFJet40_Eta =fs->make<TH1D>("PFJet40_Eta", "PF Jet Eta (PT>40)", 100, -5, 5);
+  PFJet50_Eta =fs->make<TH1D>("PFJet50_Eta", "PF Jet Eta (PT>50)", 100, -5, 5);
+  PFJet80_Eta =fs->make<TH1D>("PFJet80_Eta", "PF Jet Eta (PT>80)", 100, -5, 5);
+  PFJet100_Eta =fs->make<TH1D>("PFJet100_Eta", "PF Jet Eta (PT>100)", 100, -5, 5);
 
   PFJetRes_Pt = fs->make<TH1D>("PFJetRes_PT", "PF Jet_Pt " ,  100, 0, 500);
   PFJetRes_Eta =fs->make<TH1D>("PFJetRes_Eta", "PF Jet Eta", 100, -5, 5);
@@ -51,6 +61,11 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   GenJet_Pt = fs->make<TH1D>("GenJet_PT", "Gen Jet_Pt " ,  100, 0, 500);
   GenJet_Eta =fs->make<TH1D>("GenJet_Eta", "Gen Jet Eta", 100, -5, 5);
   GenJet_Phi = fs->make<TH1D>("GenJet_Phi", "Gen jet Phi", 100, -5, 5);
+  GenJet10_Eta =fs->make<TH1D>("GenJet10_Eta", "Gen Jet Eta (PT>10)", 100, -5, 5);
+  GenJet20_Eta =fs->make<TH1D>("GenJet20_Eta", "Gen Jet Eta (PT>20)", 100, -5, 5);
+  GenJet30_Eta =fs->make<TH1D>("GenJet30_Eta", "Gen Jet Eta (PT>30)", 100, -5, 5);
+  GenJet40_Eta =fs->make<TH1D>("GenJet40_Eta", "Gen Jet Eta (PT>40)", 100, -5, 5);
+  GenJet50_Eta =fs->make<TH1D>("GenJet50_Eta", "Gen Jet Eta (PT>50)", 100, -5, 5);
 
   GenJetRes0_Pt = fs->make<TH1D>("GenJetRes0_PT", "Gen Jet_Pt " ,  100, 0, 500);
   GenJetRes0_Eta =fs->make<TH1D>("GenJetRes0_Eta", "Gen Jet Eta", 100, -5, 5);
@@ -87,6 +102,20 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJet_Gen200_500_Pt = fs->make<TH1D>("PFJet_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, 0, 1000);
   PFJet_Gen500_1000_Pt = fs->make<TH1D>("PFJet_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, 0, 1000);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   CaloJet_Gen10_20_Pt = fs->make<TH1D>("CaloJet_Gen10_20_Pt", "CaloJet (GenJet 10~20) Pt " ,  100, 0, 500);
   CaloJet_Gen20_30_Pt = fs->make<TH1D>("CaloJet_Gen20_30_Pt", "CaloJet (GenJet 20~30) Pt " ,  100, 0, 500);
   CaloJet_Gen30_40_Pt = fs->make<TH1D>("CaloJet_Gen30_40_Pt", "CaloJet (GenJet 30~40) Pt " ,  100, 0, 500);
@@ -119,6 +148,63 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetG_Gen150_200_Pt = fs->make<TH1D>("PFJetG_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
   PFJetG_Gen200_500_Pt = fs->make<TH1D>("PFJetG_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
   PFJetG_Gen500_1000_Pt = fs->make<TH1D>("PFJetG_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
+
+
+
+  PFJetG1_Gen10_20_Pt = fs->make<TH1D>("PFJetG1_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -5, 5);
+  PFJetG1_Gen20_30_Pt = fs->make<TH1D>("PFJetG1_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -5, 5);
+  PFJetG1_Gen30_40_Pt = fs->make<TH1D>("PFJetG1_Gen30_40_Pt", "PFJet (GenJet 30~40) Pt " ,  100, -5, 5);
+  PFJetG1_Gen40_50_Pt = fs->make<TH1D>("PFJetG1_Gen40_50_Pt", "PFJet (GenJet 40~50) Pt " ,  100, -5, 5);
+  PFJetG1_Gen50_60_Pt = fs->make<TH1D>("PFJetG1_Gen50_60_Pt", "PFJet (GenJet 50~60) Pt " ,  100, -5, 5);
+  PFJetG1_Gen60_70_Pt = fs->make<TH1D>("PFJetG1_Gen60_70_Pt", "PFJet (GenJet 60~70) Pt " ,  100, -5, 5);
+  PFJetG1_Gen70_80_Pt = fs->make<TH1D>("PFJetG1_Gen70_80_Pt", "PFJet (GenJet 70~80) Pt " ,  100, -5, 5);
+  PFJetG1_Gen80_100_Pt = fs->make<TH1D>("PFJetG1_Gen80_100_Pt", "PFJet (GenJet 80~100) Pt " ,  100, -5, 5);
+  PFJetG1_Gen100_120_Pt = fs->make<TH1D>("PFJetG1_Gen100_120_Pt", "PFJet (GenJet 100~120) Pt " ,  100, -5, 5);
+  PFJetG1_Gen120_150_Pt = fs->make<TH1D>("PFJetG1_Gen120_150_Pt", "PFJet (GenJet 120~150) Pt " ,  100, -5, 5);
+  PFJetG1_Gen150_200_Pt = fs->make<TH1D>("PFJetG1_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
+  PFJetG1_Gen200_500_Pt = fs->make<TH1D>("PFJetG1_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
+  PFJetG1_Gen500_1000_Pt = fs->make<TH1D>("PFJetG1_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
+
+  PFJetG2_Gen10_20_Pt = fs->make<TH1D>("PFJetG2_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -5, 5);
+  PFJetG2_Gen20_30_Pt = fs->make<TH1D>("PFJetG2_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -5, 5);
+  PFJetG2_Gen30_40_Pt = fs->make<TH1D>("PFJetG2_Gen30_40_Pt", "PFJet (GenJet 30~40) Pt " ,  100, -5, 5);
+  PFJetG2_Gen40_50_Pt = fs->make<TH1D>("PFJetG2_Gen40_50_Pt", "PFJet (GenJet 40~50) Pt " ,  100, -5, 5);
+  PFJetG2_Gen50_60_Pt = fs->make<TH1D>("PFJetG2_Gen50_60_Pt", "PFJet (GenJet 50~60) Pt " ,  100, -5, 5);
+  PFJetG2_Gen60_70_Pt = fs->make<TH1D>("PFJetG2_Gen60_70_Pt", "PFJet (GenJet 60~70) Pt " ,  100, -5, 5);
+  PFJetG2_Gen70_80_Pt = fs->make<TH1D>("PFJetG2_Gen70_80_Pt", "PFJet (GenJet 70~80) Pt " ,  100, -5, 5);
+  PFJetG2_Gen80_100_Pt = fs->make<TH1D>("PFJetG2_Gen80_100_Pt", "PFJet (GenJet 80~100) Pt " ,  100, -5, 5);
+  PFJetG2_Gen100_120_Pt = fs->make<TH1D>("PFJetG2_Gen100_120_Pt", "PFJet (GenJet 100~120) Pt " ,  100, -5, 5);
+  PFJetG2_Gen120_150_Pt = fs->make<TH1D>("PFJetG2_Gen120_150_Pt", "PFJet (GenJet 120~150) Pt " ,  100, -5, 5);
+  PFJetG2_Gen150_200_Pt = fs->make<TH1D>("PFJetG2_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
+  PFJetG2_Gen200_500_Pt = fs->make<TH1D>("PFJetG2_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
+  PFJetG2_Gen500_1000_Pt = fs->make<TH1D>("PFJetG2_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
+
+  PFJetG3_Gen10_20_Pt = fs->make<TH1D>("PFJetG3_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -5, 5);
+  PFJetG3_Gen20_30_Pt = fs->make<TH1D>("PFJetG3_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -5, 5);
+  PFJetG3_Gen30_40_Pt = fs->make<TH1D>("PFJetG3_Gen30_40_Pt", "PFJet (GenJet 30~40) Pt " ,  100, -5, 5);
+  PFJetG3_Gen40_50_Pt = fs->make<TH1D>("PFJetG3_Gen40_50_Pt", "PFJet (GenJet 40~50) Pt " ,  100, -5, 5);
+  PFJetG3_Gen50_60_Pt = fs->make<TH1D>("PFJetG3_Gen50_60_Pt", "PFJet (GenJet 50~60) Pt " ,  100, -5, 5);
+  PFJetG3_Gen60_70_Pt = fs->make<TH1D>("PFJetG3_Gen60_70_Pt", "PFJet (GenJet 60~70) Pt " ,  100, -5, 5);
+  PFJetG3_Gen70_80_Pt = fs->make<TH1D>("PFJetG3_Gen70_80_Pt", "PFJet (GenJet 70~80) Pt " ,  100, -5, 5);
+  PFJetG3_Gen80_100_Pt = fs->make<TH1D>("PFJetG3_Gen80_100_Pt", "PFJet (GenJet 80~100) Pt " ,  100, -5, 5);
+  PFJetG3_Gen100_120_Pt = fs->make<TH1D>("PFJetG3_Gen100_120_Pt", "PFJet (GenJet 100~120) Pt " ,  100, -5, 5);
+  PFJetG3_Gen120_150_Pt = fs->make<TH1D>("PFJetG3_Gen120_150_Pt", "PFJet (GenJet 120~150) Pt " ,  100, -5, 5);
+  PFJetG3_Gen150_200_Pt = fs->make<TH1D>("PFJetG3_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
+  PFJetG3_Gen200_500_Pt = fs->make<TH1D>("PFJetG3_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
+  PFJetG3_Gen500_1000_Pt = fs->make<TH1D>("PFJetG3_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
+
+
+
+  PFJetG_Eta_M5_M4 = fs->make<TH1D>("PFJetG_Eta_M5_M4 ", "PFJet ( -5 < eta < -4 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_M4_M3 = fs->make<TH1D>("PFJetG_Eta_M4_M3 ", "PFJet ( -4 < eta < -3 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_M3_M2 = fs->make<TH1D>("PFJetG_Eta_M3_M2 ", "PFJet ( -3 < eta < -2 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_M2_M1 = fs->make<TH1D>("PFJetG_Eta_M2_M1 ", "PFJet ( -2 < eta < -1 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_M1_M0 = fs->make<TH1D>("PFJetG_Eta_M1_M0 ", "PFJet ( -1 < eta < 0 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_P5_P4 = fs->make<TH1D>("PFJetG_Eta_P5_P4 ", "PFJet ( +5 > eta > +4 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_P4_P3 = fs->make<TH1D>("PFJetG_Eta_P4_P3 ", "PFJet ( +4 > eta > +3 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_P3_P2 = fs->make<TH1D>("PFJetG_Eta_P3_P2 ", "PFJet ( +3 > eta > +2 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_P2_P1 = fs->make<TH1D>("PFJetG_Eta_P2_P1 ", "PFJet ( +2 > eta > +1 ) Pt > 15GeV " ,  100, -5, 5);
+  PFJetG_Eta_P1_P0 = fs->make<TH1D>("PFJetG_Eta_P1_P0 ", "PFJet ( +1 > eta > 0 ) Pt > 15GeV " ,  100, -5, 5);
 
   CaloJetG_Gen10_20_Pt = fs->make<TH1D>("CaloJetG_Gen10_20_Pt", "CaloJet (GenJet 10~20) Pt " ,  100, -5, 5);
   CaloJetG_Gen20_30_Pt = fs->make<TH1D>("CaloJetG_Gen20_30_Pt", "CaloJet (GenJet 20~30) Pt " ,  100, -5, 5);
@@ -385,6 +471,7 @@ PFAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 int PFAnalyzer::GetInputTag(const edm::ParameterSet& iConfig)
 {
   
+  PFJetTag_ = iConfig.getParameter<edm::InputTag>("PFJetTag");
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
   HbHeRecHitTag_ = iConfig.getParameter<edm::InputTag>("HbHeRecHitTag");
   HfRecHitTag_ = iConfig.getParameter<edm::InputTag>("HfRecHitTag");
@@ -501,19 +588,22 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   std::vector<reco::PFJet> PFJetV;
 
-  const JetCorrector* corrector = JetCorrector::getJetCorrector ("ak5PFchsL1Fastjet",iSetup);   //Get the jet corrector from the event setup
+  //const JetCorrector* corrector = JetCorrector::getJetCorrector(PFJetTag_.label(),iSetup);   //Get the jet corrector from the event setup
 
   for(reco::PFJetCollection::const_iterator it=PFJetHdl->begin();
     it!=PFJetHdl->end(); it++)
   {
     
     reco::PFJet  correctedJet = *it;
-    double jec = corrector->correction(correctedJet,iEvent,iSetup);
-    correctedJet.scaleEnergy(jec);
-    if (correctedJet.pt() > 0 && fabs(correctedJet.eta()) < 1.3 )
-    {
-      PFJetV.push_back(correctedJet);
-    }
+    //PFJetRaw_Pt->Fill(it->pt());
+    //PFJetRaw_Eta->Fill(it->eta());
+    //PFJetRaw_Phi->Fill(it->phi());
+
+    //double jec = corrector->correction(correctedJet,iEvent,iSetup);
+    //correctedJet.scaleEnergy(jec);
+    //if (correctedJet.pt() > 0 && fabs(correctedJet.eta()) < 1.3 )
+    PFJetV.push_back(correctedJet);
+
   }
 
   //Gen PF Jet matching
@@ -528,6 +618,14 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     PFJet_Pt->Fill(jet.pt());
     PFJet_Eta->Fill(jet.eta());
     PFJet_Phi->Fill(jet.phi());
+
+    if (jet.pt() > 10) PFJet10_Eta->Fill(jet.eta());
+    if (jet.pt() > 20) PFJet20_Eta->Fill(jet.eta());
+    if (jet.pt() > 30) PFJet30_Eta->Fill(jet.eta());
+    if (jet.pt() > 40) PFJet40_Eta->Fill(jet.eta());
+    if (jet.pt() > 50) PFJet50_Eta->Fill(jet.eta());
+    if (jet.pt() > 80) PFJet80_Eta->Fill(jet.eta());
+    if (jet.pt() >100) PFJet100_Eta->Fill(jet.eta());
 
     for(unsigned int j=0; j < GenJetHdl->size(); j++)
     {
@@ -581,7 +679,8 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     if (gjet.pt() >= 200 && gjet.pt() < 500) PFJet_Gen200_500_Pt->Fill(jet.pt());
     if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJet_Gen500_1000_Pt->Fill(jet.pt());
 
-    double res = (jet.pt()-gjet.pt())/gjet.pt();
+    double res = (jet.pt()/gjet.pt());
+
     if (gjet.pt() >= 10 && gjet.pt() < 20) PFJetG_Gen10_20_Pt->Fill(res);
     if (gjet.pt() >= 20 && gjet.pt() < 30) PFJetG_Gen20_30_Pt->Fill(res);
     if (gjet.pt() >= 30 && gjet.pt() < 40) PFJetG_Gen30_40_Pt->Fill(res);
@@ -595,6 +694,77 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG_Gen150_200_Pt->Fill(res);
     if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG_Gen200_500_Pt->Fill(res);
     if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG_Gen500_1000_Pt->Fill(res);
+
+    if (fabs(gjet.eta() ) <= 1.3)
+    {
+      //double res = (jet.pt()-gjet.pt())/gjet.pt();
+      if (gjet.pt() >= 10 && gjet.pt() < 20) PFJetG1_Gen10_20_Pt->Fill(res);
+      if (gjet.pt() >= 20 && gjet.pt() < 30) PFJetG1_Gen20_30_Pt->Fill(res);
+      if (gjet.pt() >= 30 && gjet.pt() < 40) PFJetG1_Gen30_40_Pt->Fill(res);
+      if (gjet.pt() >= 40 && gjet.pt() < 50) PFJetG1_Gen40_50_Pt->Fill(res);
+      if (gjet.pt() >= 50 && gjet.pt() < 60) PFJetG1_Gen50_60_Pt->Fill(res);
+      if (gjet.pt() >= 60 && gjet.pt() < 70) PFJetG1_Gen60_70_Pt->Fill(res);
+      if (gjet.pt() >= 70 && gjet.pt() < 80) PFJetG1_Gen70_80_Pt->Fill(res);
+      if (gjet.pt() >= 80 && gjet.pt() < 100) PFJetG1_Gen80_100_Pt->Fill(res);
+      if (gjet.pt() >= 100 && gjet.pt() < 120) PFJetG1_Gen100_120_Pt->Fill(res);
+      if (gjet.pt() >= 120 && gjet.pt() < 150) PFJetG1_Gen120_150_Pt->Fill(res);
+      if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG1_Gen150_200_Pt->Fill(res);
+      if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG1_Gen200_500_Pt->Fill(res);
+      if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG1_Gen500_1000_Pt->Fill(res);
+    }
+
+    if (fabs(gjet.eta() ) >= 1.5 && fabs(gjet.eta() ) < 3.0 )
+    {
+      //double res = (jet.pt()-gjet.pt())/gjet.pt();
+      if (gjet.pt() >= 10 && gjet.pt() < 20) PFJetG2_Gen10_20_Pt->Fill(res);
+      if (gjet.pt() >= 20 && gjet.pt() < 30) PFJetG2_Gen20_30_Pt->Fill(res);
+      if (gjet.pt() >= 30 && gjet.pt() < 40) PFJetG2_Gen30_40_Pt->Fill(res);
+      if (gjet.pt() >= 40 && gjet.pt() < 50) PFJetG2_Gen40_50_Pt->Fill(res);
+      if (gjet.pt() >= 50 && gjet.pt() < 60) PFJetG2_Gen50_60_Pt->Fill(res);
+      if (gjet.pt() >= 60 && gjet.pt() < 70) PFJetG2_Gen60_70_Pt->Fill(res);
+      if (gjet.pt() >= 70 && gjet.pt() < 80) PFJetG2_Gen70_80_Pt->Fill(res);
+      if (gjet.pt() >= 80 && gjet.pt() < 100) PFJetG2_Gen80_100_Pt->Fill(res);
+      if (gjet.pt() >= 100 && gjet.pt() < 120) PFJetG2_Gen100_120_Pt->Fill(res);
+      if (gjet.pt() >= 120 && gjet.pt() < 150) PFJetG2_Gen120_150_Pt->Fill(res);
+      if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG2_Gen150_200_Pt->Fill(res);
+      if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG2_Gen200_500_Pt->Fill(res);
+      if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG2_Gen500_1000_Pt->Fill(res);
+    }
+
+
+    if (fabs(gjet.eta() ) >= 3.0 && fabs(gjet.eta() ) < 5.0 )
+    {
+      //double res = (jet.pt()-gjet.pt())/gjet.pt();
+      if (gjet.pt() >= 10 && gjet.pt() < 20) PFJetG3_Gen10_20_Pt->Fill(res);
+      if (gjet.pt() >= 20 && gjet.pt() < 30) PFJetG3_Gen20_30_Pt->Fill(res);
+      if (gjet.pt() >= 30 && gjet.pt() < 40) PFJetG3_Gen30_40_Pt->Fill(res);
+      if (gjet.pt() >= 40 && gjet.pt() < 50) PFJetG3_Gen40_50_Pt->Fill(res);
+      if (gjet.pt() >= 50 && gjet.pt() < 60) PFJetG3_Gen50_60_Pt->Fill(res);
+      if (gjet.pt() >= 60 && gjet.pt() < 70) PFJetG3_Gen60_70_Pt->Fill(res);
+      if (gjet.pt() >= 70 && gjet.pt() < 80) PFJetG3_Gen70_80_Pt->Fill(res);
+      if (gjet.pt() >= 80 && gjet.pt() < 100) PFJetG3_Gen80_100_Pt->Fill(res);
+      if (gjet.pt() >= 100 && gjet.pt() < 120) PFJetG3_Gen100_120_Pt->Fill(res);
+      if (gjet.pt() >= 120 && gjet.pt() < 150) PFJetG3_Gen120_150_Pt->Fill(res);
+      if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG3_Gen150_200_Pt->Fill(res);
+      if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG3_Gen200_500_Pt->Fill(res);
+      if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG3_Gen500_1000_Pt->Fill(res);
+    }
+
+    if (gjet.pt() >= 15)
+    {
+      if (gjet.eta() >= -5 && gjet.eta() < -4) PFJetG_Eta_M5_M4->Fill(res);
+      if (gjet.eta() >= -4 && gjet.eta() < -3) PFJetG_Eta_M4_M3->Fill(res);
+      if (gjet.eta() >= -3 && gjet.eta() < -2) PFJetG_Eta_M3_M2->Fill(res);
+      if (gjet.eta() >= -2 && gjet.eta() < -1) PFJetG_Eta_M2_M1->Fill(res);
+      if (gjet.eta() >= -1 && gjet.eta() < 0) PFJetG_Eta_M1_M0->Fill(res);
+      if (gjet.eta() < 5 && gjet.eta() >= 4) PFJetG_Eta_P5_P4->Fill(res);
+      if (gjet.eta() < 4 && gjet.eta() >= 3) PFJetG_Eta_P4_P3->Fill(res);
+      if (gjet.eta() < 3 && gjet.eta() >= 2) PFJetG_Eta_P3_P2->Fill(res);
+      if (gjet.eta() < 2 && gjet.eta() >= 1) PFJetG_Eta_P2_P1->Fill(res);
+      if (gjet.eta() < 1 && gjet.eta() >= 0) PFJetG_Eta_P1_P0->Fill(res);
+
+    }
+
   }
 
   return 1;
@@ -617,6 +787,12 @@ int PFAnalyzer::GenJetAna()
     GenJet_Pt->Fill(it->pt());
     GenJet_Eta->Fill(it->eta());
     GenJet_Phi->Fill(it->phi());
+
+    if (it->pt() > 10) GenJet10_Eta->Fill(it->eta());
+    if (it->pt() > 20) GenJet20_Eta->Fill(it->eta());
+    if (it->pt() > 30) GenJet30_Eta->Fill(it->eta());
+    if (it->pt() > 40) GenJet40_Eta->Fill(it->eta());
+    if (it->pt() > 50) GenJet50_Eta->Fill(it->eta());
   }
   return 1;
 }       // -----  end of function PFJetAna::GenJetAna  -----
