@@ -387,7 +387,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   GenMETAna();
   CaloMETAna();
   //PCaloHitAna();
-  PFClusterAna();
+  //PFClusterAna();
   //RecHitAna->Analyze();
   //for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
   //{
@@ -523,12 +523,13 @@ int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
    iEvent.getByLabel(PSPFRecHitTag_, PSPFRecHitHdl); 
 
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFCluster ~~~~~
-   iEvent.getByLabel(EcalPFClusterTag_, EcalPFClusterHdl); 
-   iEvent.getByLabel(HcalPFClusterTag_, HcalPFClusterHdl); 
-   iEvent.getByLabel(HOPFClusterTag_, HOPFClusterHdl); 
-   iEvent.getByLabel(PSPFClusterTag_, PSPFClusterHdl); 
-
+   //iEvent.getByLabel(EcalPFClusterTag_, EcalPFClusterHdl); 
+   //iEvent.getByLabel(HcalPFClusterTag_, HcalPFClusterHdl); 
+   //iEvent.getByLabel(HOPFClusterTag_, HOPFClusterHdl); 
+   //iEvent.getByLabel(PSPFClusterTag_, PSPFClusterHdl); 
+   
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFJet ~~~~~
+   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
    iEvent.getByLabel(GenJetInputTag_, GenJetHdl); 
    iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
    iEvent.getByLabel(CaloJetInputTag_, CaloJetHdl); 

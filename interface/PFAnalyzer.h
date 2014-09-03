@@ -28,6 +28,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/Common/interface/SortedCollection.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
@@ -147,6 +148,9 @@ class PFAnalyzer : public edm::EDAnalyzer {
       edm::Handle<std::vector<reco::PFCluster> >  PSPFClusterHdl;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFJet ~~~~~
+      edm::InputTag PFCandidateInputTag_;
+      edm::Handle<std::vector<reco::PFCandidate> > PFCandidateHdl;
+
       edm::InputTag GenJetInputTag_;
       edm::Handle<reco::GenJetCollection> GenJetHdl;
 
