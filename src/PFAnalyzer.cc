@@ -102,20 +102,6 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJet_Gen200_500_Pt = fs->make<TH1D>("PFJet_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, 0, 1000);
   PFJet_Gen500_1000_Pt = fs->make<TH1D>("PFJet_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, 0, 1000);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   CaloJet_Gen10_20_Pt = fs->make<TH1D>("CaloJet_Gen10_20_Pt", "CaloJet (GenJet 10~20) Pt " ,  100, 0, 500);
   CaloJet_Gen20_30_Pt = fs->make<TH1D>("CaloJet_Gen20_30_Pt", "CaloJet (GenJet 20~30) Pt " ,  100, 0, 500);
   CaloJet_Gen30_40_Pt = fs->make<TH1D>("CaloJet_Gen30_40_Pt", "CaloJet (GenJet 30~40) Pt " ,  100, 0, 500);
@@ -149,7 +135,12 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetG_Gen200_500_Pt = fs->make<TH1D>("PFJetG_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
   PFJetG_Gen500_1000_Pt = fs->make<TH1D>("PFJetG_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
 
-
+  PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
+  PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
+  PFJetEff_Pt            = fs->make<TH1D>("PFJetEff_Pt           ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
+  PFJetEff_Eta_Numerator = fs->make<TH1D>("PFJetEff_Eta_Numerator", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
+  PFJetEff_Eta_Deminator = fs->make<TH1D>("PFJetEff_Eta_Deminator", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
+  PFJetEff_Eta           = fs->make<TH1D>("PFJetEff_Eta          ", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
 
   PFJetG1_Gen10_20_Pt = fs->make<TH1D>("PFJetG1_Gen10_20_Pt", "PFJet (GenJet 10~20) Pt " ,  100, -5, 5);
   PFJetG1_Gen20_30_Pt = fs->make<TH1D>("PFJetG1_Gen20_30_Pt", "PFJet (GenJet 20~30) Pt " ,  100, -5, 5);
@@ -192,7 +183,6 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetG3_Gen150_200_Pt = fs->make<TH1D>("PFJetG3_Gen150_200_Pt", "PFJet (GenJet 150~200) Pt " ,  100, -5, 5);
   PFJetG3_Gen200_500_Pt = fs->make<TH1D>("PFJetG3_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
   PFJetG3_Gen500_1000_Pt = fs->make<TH1D>("PFJetG3_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
-
 
 
   PFJetG_Eta_M5_M4 = fs->make<TH1D>("PFJetG_Eta_M5_M4 ", "PFJet ( -5 < eta < -4 ) Pt > 15GeV " ,  100, -5, 5);
@@ -332,6 +322,26 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   //HcalPFSPCL_EtaPhi_N= fs->make<TH2D>("HcalPFSPCL_EtaPhi_N" , "Eta of Hbhe PFSPCluster",  80, -4, 4, 140, -7, 7);
   //HcalPFSPCL_EtaPhi_Energy= fs->make<TH2D>("HcalPFSPCL_EtaPhi_Energy" , "Eta of Hbhe PFSPCluster",  80, -4, 4, 140, -7, 7);
   //HcalPFSPCL_EtaPhi_Pt= fs->make<TH2D>("HcalPFSPCL_EtaPhi_Pt" , "Eta of Hbhe PFSPCluster",  80, -4, 4, 140, -7, 7);
+  //
+
+
+
+
+  //----------------------------------------------------------------------------
+  //  Bloody hell!! Need to book all the histogram, this is stupid
+  //----------------------------------------------------------------------------
+
+
+
+  PFJet_PUCh  = fs->make<TProfile>("PFJet_PUCh " , "PFJet_PUCh  Energy Fraction",  100, -5, 5);
+  PFJet_LVCh  = fs->make<TProfile>("PFJet_LVCh " , "PFJet_LVCh  Energy Fraction",  100, -5, 5);
+  PFJet_Ch    = fs->make<TProfile>("PFJet_Ch   " , "PFJet_Ch    Energy Fraction",  100, -5, 5);
+  PFJet_Nh    = fs->make<TProfile>("PFJet_Nh   " , "PFJet_Nh    Energy Fraction",  100, -5, 5);
+  PFJet_Ele   = fs->make<TProfile>("PFJet_Ele  " , "PFJet_Ele   Energy Fraction",  100, -5, 5);
+  PFJet_Photon= fs->make<TProfile>("PFJet_Photon " , "PFJet_Photon  Energy Fraction",  100, -5, 5);
+  PFJet_Muon  = fs->make<TProfile>("PFJet_Muon " , "PFJet_Muon  Energy Fraction",  100, -5, 5);
+  PFJet_HFEM  = fs->make<TProfile>("PFJet_HFEM " , "PFJet_HFEM  Energy Fraction",  100, -5, 5);
+  PFJet_HFHad = fs->make<TProfile>("PFJet_HFHad" , "PFJet_HFHad Energy Fraction",  100, -5, 5);
 
   GetInputTag(iConfig);
   //PFJetAna->Test();
@@ -388,6 +398,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   CaloMETAna();
   //PCaloHitAna();
   //PFClusterAna();
+  PFCandidateAna();
   //RecHitAna->Analyze();
   //for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
   //{
@@ -419,6 +430,8 @@ PFAnalyzer::beginJob()
 void 
 PFAnalyzer::endJob() 
 {
+  PFJetEff_Pt->Divide(PFJetEff_Pt_Numerator, PFJetEff_Pt_Deminator);
+  PFJetEff_Eta->Divide(PFJetEff_Eta_Numerator, PFJetEff_Eta_Deminator);
 }
 
 
@@ -496,10 +509,12 @@ int PFAnalyzer::GetInputTag(const edm::ParameterSet& iConfig)
   GenMETInputTag_ = iConfig.getParameter<edm::InputTag>("GenMETInputTag");
   CaloMETInputTag_ = iConfig.getParameter<edm::InputTag>("CaloMETInputTag");
   PFMETInputTag_ = iConfig.getParameter<edm::InputTag>("PFMETInputTag");
+  PFCandidateInputTag_ =iConfig.getParameter<edm::InputTag>("PFCandidateInputTag");
 
   GenParticleInputTag_= iConfig.getParameter<edm::InputTag>("GenParticleInputTag");
   SimCaloHitInputTag_ = iConfig.getParameter<edm::InputTag>("SimCaloHitInputTag");
   //caloJetInputTag_ = iConfig.getParameter<edm::InputTag>("caloJetInputTag");
+  VertexTag_ = iConfig.getParameter<edm::InputTag>("VertexTag");
 
   return 1;
 }       // -----  end of function PFAnalyzer::GetConfigFlag  -----
@@ -511,6 +526,7 @@ int PFAnalyzer::GetInputTag(const edm::ParameterSet& iConfig)
 int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
 {
 
+  iEvent.getByLabel(VertexTag_, VertexHdl); 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecHit ~~~~~
    iEvent.getByLabel(HbHeRecHitTag_, HbHeRecHitHdl); 
    iEvent.getByLabel(HfRecHitTag_, HfRecHitHdl); 
@@ -588,6 +604,7 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
   }
 
   std::vector<reco::PFJet> PFJetV;
+
 
   //const JetCorrector* corrector = JetCorrector::getJetCorrector(PFJetTag_.label(),iSetup);   //Get the jet corrector from the event setup
 
@@ -768,6 +785,80 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   }
 
+
+
+  for(unsigned int i=0; i < PFJetV.size(); ++i)
+  {
+    reco::PFJet jet = PFJetV.at(i);
+    if (jet.pt() < 30) continue;
+
+    PFJet_Ch->Fill(jet.eta(), jet.chargedHadronEnergyFraction()) ;
+    PFJet_Nh->Fill(jet.eta(), jet.neutralHadronEnergyFraction()) ;
+    PFJet_Ele->Fill(jet.eta(), jet.electronEnergyFraction()) ;
+    PFJet_Muon->Fill(jet.eta(), jet.muonEnergyFraction()) ;
+    PFJet_Photon->Fill(jet.eta(), jet.photonEnergyFraction()) ;
+    PFJet_HFEM->Fill(jet.eta(), jet.HFEMEnergyFraction()) ;
+    PFJet_HFHad->Fill(jet.eta(), jet.HFHadronEnergyFraction()) ;
+
+    std::vector<reco::PFCandidatePtr> JetPFCands = jet.getPFConstituents();
+    double LVCh = 0.0;
+    double PUCh = 0.0;
+    for (unsigned int j = 0; j < JetPFCands.size(); ++j)
+    {
+      if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
+      {
+       int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
+       if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
+       else PUCh += JetPFCands.at(j)->energy();
+      }
+    }
+
+    PFJet_LVCh->Fill(jet.eta(),  LVCh/jet.energy());
+    PFJet_PUCh->Fill(jet.eta(),  PUCh/jet.energy());
+  }
+
+
+
+
+//----------------------------------------------------------------------------
+//  Jet Efficiency
+//----------------------------------------------------------------------------
+
+  for(unsigned int i=0; i < GenJetHdl->size(); ++i)
+  {
+    reco::GenJet gjet = GenJetHdl->at(i);
+
+    if (fabs(gjet.eta()) < 3.0 && fabs(gjet.eta()) > 1.5)
+    {
+      PFJetEff_Pt_Deminator->Fill(gjet.pt());
+    }
+
+    if (gjet.pt() > 15)
+    {
+      PFJetEff_Eta_Deminator->Fill(gjet.eta());
+    }
+  }
+
+
+
+  for(std::map<unsigned int, std::list<std::pair<double, unsigned int> > >::iterator it=PFGenJet_deltaR.begin();
+    it!=PFGenJet_deltaR.end(); it++)
+  {
+    reco::GenJet gjet = GenJetHdl->at(it->first);
+    if (fabs(gjet.eta()) < 3.0 && fabs(gjet.eta()) > 1.5)
+    {
+      PFJetEff_Pt_Numerator->Fill(gjet.pt());
+    }
+
+    if (gjet.pt() > 15)
+    {
+      PFJetEff_Eta_Numerator->Fill(gjet.eta());
+    }
+
+  }
+
+
+
   return 1;
 }       // -----  end of function PFAnalyzer::PFJetAna  -----
 
@@ -794,6 +885,8 @@ int PFAnalyzer::GenJetAna()
     if (it->pt() > 30) GenJet30_Eta->Fill(it->eta());
     if (it->pt() > 40) GenJet40_Eta->Fill(it->eta());
     if (it->pt() > 50) GenJet50_Eta->Fill(it->eta());
+
+
   }
   return 1;
 }       // -----  end of function PFJetAna::GenJetAna  -----
@@ -1137,3 +1230,24 @@ int PFAnalyzer::PFClusterAna()
   //}
   //return 1;
 //}       // -----  end of function PFAnalyzer::PFSPClusterAna  -----
+//
+// ===  FUNCTION  ============================================================
+//         Name:  PFAnalyzer::PFCandidateAna
+//  Description:  
+// ===========================================================================
+bool PFAnalyzer::PFCandidateAna() 
+{
+  return false;
+
+  for(unsigned int i=0; i < PFCandidateHdl->size(); ++i)
+  {
+    reco::PFCandidate can = PFCandidateHdl->at(i);
+    std::cout << can.particleId()  << std::endl;
+    if (can.particleId() == reco::PFCandidate::h )
+    {
+      std::cout << PFPUAlgo.chargedHadronVertex(*VertexHdl, can) << std::endl;
+    }
+  }
+
+  return true;
+}       // -----  end of function PFAnalyzer::PFCandidateAna  -----
