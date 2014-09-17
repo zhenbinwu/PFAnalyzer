@@ -533,9 +533,7 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TH1D* PFJetEff_Eta          ;
 
 
-
-
-
+    TH2D* PFCH_EtaVsNPV;
 
 
 };

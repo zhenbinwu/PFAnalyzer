@@ -343,6 +343,9 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJet_HFEM  = fs->make<TProfile>("PFJet_HFEM " , "PFJet_HFEM  Energy Fraction",  100, -5, 5);
   PFJet_HFHad = fs->make<TProfile>("PFJet_HFHad" , "PFJet_HFHad Energy Fraction",  100, -5, 5);
 
+  PFCH_EtaVsNPV = fs->make<TH2D>("PFCH_EtaVsNPV " , "PFCH_Eta Vs NPV ",  100, -5, 5, 122, -2, 120);
+
+
   GetInputTag(iConfig);
   //PFJetAna->Test();
   //RecHitAna->SetupHandler(HbHeRecHitHdl, HfRecHitHdl, HoRecHitHdl);
@@ -808,6 +811,7 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
       {
        int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
+       PFCH_EtaVsNPV->Fill(JetPFCands.at(j)->eta(), vtxid);
        if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
        else PUCh += JetPFCands.at(j)->energy();
       }
@@ -1204,40 +1208,12 @@ int PFAnalyzer::PFClusterAna()
   return 1;
 }       // -----  end of function PFAnalyzer::PFClusterAna  -----
 
-//// ===  FUNCTION  ============================================================
-////         Name:  PFAnalyzer::PFSPClusterAna
-////  Description:  
-//// ===========================================================================
-//int PFAnalyzer::PFSPClusterAna()
-//{
-  //HcalPFSPCL_N->Fill(HcalPFSPClusterHdl->size());
-  //for(unsigned int i=0; i < HcalPFSPClusterHdl->size(); i++)
-  //{
-    //reco::PFSuperCluster SPclus = HcalPFSPClusterHdl->at(i);
-    ////HcalPFSPCL_Nhits->Fill(SPclus.hitsAndFractions().size());
-    //HcalPFSPCL_Size->Fill(SPclus.size());
-    //HcalPFSPCL_Eta->Fill(SPclus.eta());
-    //HcalPFSPCL_Phi->Fill(SPclus.phi());
-    //HcalPFSPCL_EtaPhi_N->Fill(SPclus.eta(), SPclus.phi());
-    //HcalPFSPCL_EtaPhi_Energy->Fill(SPclus.eta(), SPclus.phi(), SPclus.energy());
-    //HcalPFSPCL_EtaPhi_Pt->Fill(SPclus.eta(), SPclus.phi(), SPclus.pt());
-    //HcalPFSPCL_Energy->Fill(SPclus.energy());
-    //HcalPFSPCL_Pt->Fill(SPclus.pt());
-    //HcalPFSPCL_SumE_Eta->Fill(SPclus.eta(), SPclus.energy());
-    //HcalPFSPCL_SumE_Phi->Fill(SPclus.phi(), SPclus.energy());
-    //HcalPFSPCL_SumPt_Eta->Fill(SPclus.eta(), SPclus.pt());
-    //HcalPFSPCL_SumPt_Phi->Fill(SPclus.phi(), SPclus.pt());
-  //}
-  //return 1;
-//}       // -----  end of function PFAnalyzer::PFSPClusterAna  -----
-//
 // ===  FUNCTION  ============================================================
 //         Name:  PFAnalyzer::PFCandidateAna
 //  Description:  
 // ===========================================================================
 bool PFAnalyzer::PFCandidateAna() 
 {
-  return false;
 
   for(unsigned int i=0; i < PFCandidateHdl->size(); ++i)
   {
