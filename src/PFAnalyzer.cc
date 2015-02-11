@@ -548,7 +548,6 @@ int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
    //iEvent.getByLabel(PSPFClusterTag_, PSPFClusterHdl); 
    
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PFJet ~~~~~
-   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
    iEvent.getByLabel(GenJetInputTag_, GenJetHdl); 
    iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
    iEvent.getByLabel(CaloJetInputTag_, CaloJetHdl); 
