@@ -322,7 +322,6 @@ bool JetPerformance::JetEffRate()
   for(unsigned int i=0; i < GenJetHdl->size(); ++i)
   {
     reco::GenJet gjet = GenJetHdl->at(i);
-
   }
 
   return true;

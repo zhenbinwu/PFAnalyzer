@@ -32,6 +32,11 @@ Implementation:
 #include <vector>
 #include <iostream>
 
+// Include ROOT
+#include "TH2D.h"
+#include "TH1D.h"
+#include "TLorentzVector.h"
+
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -41,6 +46,13 @@ Implementation:
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "DataFormats/MuonReco/interface/Muon.h"
+
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "DataFormats/JetReco/interface/PFJetCollection.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 //
 // class declaration
 //
@@ -63,6 +75,12 @@ class METPerformance : public edm::EDAnalyzer {
     virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
+    bool IsDiMuon() const;
+    bool BookHistogram();
+    TLorentzVector GetRecoZ();
+
+    bool PassZCut() const;
+    bool RecoEvent();
     // ----------member data ---------------------------
     edm::InputTag MuonInputTag_;
     edm::Handle<std::vector<reco::Muon> > MuonHdl;
@@ -80,28 +98,29 @@ class METPerformance : public edm::EDAnalyzer {
     edm::Service<TFileService> fs;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Local Variable ~~~~~
+    double SumEt;
     TLorentzVector RecoZ;
     TLorentzVector MET;
     TLorentzVector Recoil;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plots ~~~~~
     //Reconstructed Z
-    TH1D ZMass;
-    TH1D ZPT;
-    TH1D ZEta;
-    TH1D ZPhi;
+    TH1D* hZMass;
+    TH1D* hZPT;
+    TH1D* hZEta;
+    TH1D* hZPhi;
 
     //Reconstructed MET
-    TH1D MET;
-    TH1D METPhi;
-    TH1D METx;
-    TH1D METy;
-    TH1D SumET;
-    TH1D SumHT;
-    TH1D METSig;
+    TH1D* hMETPT;
+    TH1D* hMETPhi;
+    TH1D* hMETx;
+    TH1D* hMETy;
+    TH1D* hSumET;
+    TH1D* hSumHT;
+    TH1D* hMETSig;
 
     //Recoil 
-    TH1D RecoilPT;
-    TH1D Parrallel;
+    TH1D* hRecoilPT;
+    TH1D* hParrallel;
 
 
 
