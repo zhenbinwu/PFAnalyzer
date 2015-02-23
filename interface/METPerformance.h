@@ -75,12 +75,17 @@ class METPerformance : public edm::EDAnalyzer {
     virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
+    bool GetInputTag(const edm::ParameterSet& iConfig);
+    bool GetHandleByLabel(const edm::Event& iEvent);
     bool IsDiMuon() const;
     bool BookHistogram();
     TLorentzVector GetRecoZ();
 
     bool PassZCut() const;
     bool RecoEvent();
+    std::vector<reco::PFJet> GetCorrectedJets();
+    double GetCorrFactor( FactorizedJetCorrector *JetCorrector, reco::PFJet &jet, double rho);
+    bool FillMETPerf();
     // ----------member data ---------------------------
     edm::InputTag MuonInputTag_;
     edm::Handle<std::vector<reco::Muon> > MuonHdl;
@@ -91,6 +96,11 @@ class METPerformance : public edm::EDAnalyzer {
     edm::InputTag srcRhoInputTag_;
     edm::Handle<double> srcRhoHdl;
 
+    edm::InputTag PileUpInfoTag_;
+    edm::Handle<fd>  PileUpInfoHdl;
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
+
     std::string L1JECTag_;
     std::string L2JECTag_;
     std::string L3JECTag_;
@@ -98,10 +108,14 @@ class METPerformance : public edm::EDAnalyzer {
     edm::Service<TFileService> fs;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Local Variable ~~~~~
-    double SumEt;
+    std::vector<reco::PFJet> CorredJets;
     TLorentzVector RecoZ;
-    TLorentzVector MET;
+    TVector2 MET;
     TLorentzVector Recoil;
+    double SumEt;
+    double Parrallel;
+    double Perpendicular;
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plots ~~~~~
     //Reconstructed Z
     TH1D* hZMass;
@@ -115,14 +129,16 @@ class METPerformance : public edm::EDAnalyzer {
     TH1D* hMETx;
     TH1D* hMETy;
     TH1D* hSumET;
-    TH1D* hSumHT;
     TH1D* hMETSig;
 
     //Recoil 
     TH1D* hRecoilPT;
     TH1D* hParrallel;
+    TH1D* hPerpendicular;
+    TH1D* hParrallelZPT;
 
-
+    TH2D* h2D_Parrallel;
+    TH2D* h2D_Perperndicular;
 
 };
 

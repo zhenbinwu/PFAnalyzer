@@ -24,6 +24,7 @@
 METPerformance::METPerformance(const edm::ParameterSet& iConfig)
 {
   //now do what ever initialization is needed
+  GetInputTag(iConfig);
   BookHistogram();
 
 }
@@ -46,7 +47,7 @@ METPerformance::~METPerformance()
 METPerformance::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
-
+  GetHandleByLabel(iEvent);
 
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -62,7 +63,9 @@ METPerformance::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (! IsDiMuon ()) return;
 
   GetRecoZ();
-  if(! PassZCut()) return;
+
+  RecoEvent();
+  FillMETPerf();
 }
 
 
@@ -160,6 +163,21 @@ bool METPerformance::BookHistogram()
   hZEta  = fs->make<TH1D>("ZEta", "ZEta;Z Eta;Number of Event", 200, 0, 200);
   hZPhi  = fs->make<TH1D>("ZPhi", "ZPhi;Z Phi;Number of Event", 200, 0, 200);
 
+  hMETPT  = fs->make<TH1D>("METPT",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
+  hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 500, 0 , 500);
+  hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 500, 0 , 500);
+  hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 500, 0 , 500);
+  hSumET  = fs->make<TH1D>("SumET",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
+  hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
+
+  hRecoilPT = fs->make<TH1D>("RecoilPT",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+  hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+  hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+  hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+
+  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 15, 0, 150, 200, -200, 200);
+  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 15, 0, 150, 200, -200, 200);
+
   return true;
 }       // -----  end of function METPerformance::BookHistogram  -----
 
@@ -169,7 +187,17 @@ bool METPerformance::BookHistogram()
 // ===========================================================================
 bool METPerformance::RecoEvent()
 {
+  // Clear up event default 
+  GetCorrectedJets();
+  RecoZ.SetXYZT(0.0, 0.0, 0.0, 0.0);
+  MET.SetMagPhi(0.0, 0.0);
+  Recoil.SetXYZT(0.0, 0.0, 0.0, 0.0);
   SumEt = 0;
+  Parrallel = 0;
+  Perpendicular = 0;
+
+
+  // Local temp variable.
   TLorentzVector lVec(0,0,0,0);
   TLorentzVector lUT(0,0,0,0);
   TLorentzVector lQT(0,0,0,0);
@@ -196,16 +224,12 @@ bool METPerformance::RecoEvent()
 
   assert( lQT == RecoZ );
   Recoil = lUT;
-  MET 
+  MET.SetMagPhi(lVec.Pt(), lVec.Phi());
 
-
-  iMET.fSumEt  = SumEt;
-  iMET.fMet    = lVec.Pt();
-  iMET.fMetPhi = lVec.Phi();
   double Dphi =  lUT.DeltaPhi(lQT);
-  iMET.fU2 = lUT.Pt() * std::sin(Dphi);
-  iMET.fU1 = lUT.Pt() * std::cos(Dphi);
-  
+  Perpendicular = lUT.Pt() * std::sin(Dphi);
+  Parrallel = lUT.Pt() * std::cos(Dphi);
+
   return true;
 }       // -----  end of function METPerformance::RecoEvent  -----
 
@@ -272,12 +296,70 @@ double METPerformance::GetCorrFactor( FactorizedJetCorrector *JetCorrector, reco
   return JetCorrector->getCorrection();
 }       // -----  end of function METPerformance::GetCorrFactor  -----
 
+
 // ===  FUNCTION  ============================================================
-//         Name:  METPerformance::BookHistogram
+//         Name:  METPerformance::FillMETPerf
 //  Description:  
 // ===========================================================================
-bool METPerformance::BookHistogram()
+bool METPerformance::FillMETPerf()
 {
   
+  if(! PassZCut()) return false;
+
+  // Reco Z
+  hZMass->Fill(RecoZ.M());
+  hZPT->Fill(RecoZ.Pt());
+  hZEta->Fill(RecoZ.Eta());
+  hZPhi->Fill(RecoZ.Phi());
+
+  // MET
+  hMETPT->Fill(MET.Mod());
+  hMETPhi->Fill(MET.Phi());
+  hMETx->Fill(MET.Px());
+  hMETy->Fill(MET.Py());
+  hSumET->Fill(SumEt);
+  hMETSig->Fill(MET.Mod()/SumEt);
+
+  // Recoil
+  hRecoilPT->Fill(Recoil.Pt());
+  hParrallel->Fill(Parrallel);
+  hParrallelZPT->Fill(Parrallel + RecoZ.Pt());
+  hPerpendicular->Fill(Perpendicular);
+
+  // 2D Performance
+  h2D_Parrallel ->Fill(RecoZ.Pt(), Parrallel + RecoZ.Pt());
+  h2D_Perperndicular ->Fill(RecoZ.Pt(), Perpendicular);
+
   return true;
-}       // -----  end of function METPerformance::BookHistogram  -----
+}       // -----  end of function METPerformance::FillMETPerf  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  METPerformance::GetInputTag
+//  Description:  
+// ===========================================================================
+bool METPerformance::GetInputTag(const edm::ParameterSet& iConfig)
+{
+  MuonInputTag_   = iConfig.getParameter<edm::InputTag>("MuonInputTag");
+  PFJetInputTag_  = iConfig.getParameter<edm::InputTag>("PFJetInputTag");
+  srcRhoInputTag_ = iConfig.getParameter<edm::InputTag>("srcRhoTag");
+  PileUpInfoTag_  = iConfig.getParameter<edm::InputTag>("PileUpInfoTag");
+
+  L1JECTag_ = iConfig.getParameter<std::string>("L1JECTag");
+  L2JECTag_ = iConfig.getParameter<std::string>("L2JECTag");
+  L3JECTag_ = iConfig.getParameter<std::string>("L3JECTag");
+
+  return true;
+}       // -----  end of function METPerformance::GetInputTag  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  METPerformance::GetHandleByLabel
+//  Description:  
+// ===========================================================================
+bool METPerformance::GetHandleByLabel(const edm::Event& iEvent)
+{
+  iEvent.getByLabel(MuonInputTag_, MuonHdl); 
+  iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
+  iEvent.getByLabel(srcRhoInputTag_, srcRhoHdl); 
+  iEvent.getByLabel(PileUpInfoTag_, PileUpInfoHdl); 
+  return true;
+}       // -----  end of function METPerformance::GetHandleByLabel  -----

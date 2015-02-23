@@ -4,7 +4,7 @@ process = cms.Process("OWNPARTICLES")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load("CommonTools.ParticleFlow.goodOfflinePrimaryVertices_cfi")
-process.load("Dummy/Puppi/Puppi_PhaseII_cff")
+#process.load("Dummy/Puppi/Puppi_PhaseII_cff")
 
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
@@ -13,8 +13,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        '/store/mc/TP2023SHCALDR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/00000/003E69A0-89A7-E411-82FC-0025905B8606.root',
+        "file:/Users/benwu/Data/Dataset/SLHC/SLHC23p1/DYMM_SHCAL_PU140_SLHC23p1.root"
     )
+
 )
 
 process.ZMMProducer = cms.EDProducer('ZMMFilter',
