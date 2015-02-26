@@ -48,6 +48,7 @@ Implementation:
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -97,7 +98,8 @@ class METPerformance : public edm::EDAnalyzer {
     edm::Handle<double> srcRhoHdl;
 
     edm::InputTag PileUpInfoTag_;
-    edm::Handle<fd>  PileUpInfoHdl;
+    edm::Handle<std::vector<PileupSummaryInfo> >  PileUpInfoHdl;
+
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
 

@@ -122,6 +122,7 @@ METPerformance::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 // ===========================================================================
 bool METPerformance::IsDiMuon() const
 {
+  std::cout << " size? " << MuonHdl->size() << std::endl;
   return MuonHdl->size() == 2;
 }       // -----  end of function METPerformance::IsDiMuon  -----
 // ===  FUNCTION  ============================================================
@@ -159,24 +160,24 @@ bool METPerformance::BookHistogram()
 {
   
   hZMass  = fs->make<TH1D>("ZMass", "ZMass;Z mass;Number of Event", 200, 0, 200);
-  hZPT  = fs->make<TH1D>("ZPT", "ZPT;Z PT;Number of Event", 200, 0, 200);
-  hZEta  = fs->make<TH1D>("ZEta", "ZEta;Z Eta;Number of Event", 200, 0, 200);
-  hZPhi  = fs->make<TH1D>("ZPhi", "ZPhi;Z Phi;Number of Event", 200, 0, 200);
+  hZPT  = fs->make<TH1D>("ZPT", "ZPT;Z PT;Number of Event", 500, 0, 500);
+  hZEta  = fs->make<TH1D>("ZEta", "ZEta;Z Eta;Number of Event", 40, -5, 5);
+  hZPhi  = fs->make<TH1D>("ZPhi", "ZPhi;Z Phi;Number of Event", 28, -7, 7);
 
   hMETPT  = fs->make<TH1D>("METPT",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
-  hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 500, 0 , 500);
-  hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 500, 0 , 500);
-  hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 500, 0 , 500);
-  hSumET  = fs->make<TH1D>("SumET",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
+  hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 28, -7, 7);
+  hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 400, -200, 200);
+  hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 400, -200, 200);
+  hSumET  = fs->make<TH1D>("SumET",  "MET PT; MET PT; Number of Event", 500, 0 , 5000);
   hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
 
   hRecoilPT = fs->make<TH1D>("RecoilPT",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
-  hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+  hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 1000, -500 , 500);
   hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
   hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
 
-  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 15, 0, 150, 200, -200, 200);
-  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 15, 0, 150, 200, -200, 200);
+  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 200, -200, 200);
+  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 200, -200, 200);
 
   return true;
 }       // -----  end of function METPerformance::BookHistogram  -----
@@ -206,7 +207,7 @@ bool METPerformance::RecoEvent()
   {
     reco::PFJet jet = CorredJets.at(i);
     TLorentzVector jetv(jet.px(), jet.py(), jet.pz(), jet.energy());
-    assert(jetv.Pt() == jet.pt());
+    assert(fabs(jetv.Pt() - jet.pt() ) < 0.01);
     lVec -= jetv;
     lUT += jetv;
     SumEt += jetv.Pt();
@@ -216,12 +217,14 @@ bool METPerformance::RecoEvent()
   {
     reco::Muon muon = MuonHdl->at(i);
     TLorentzVector muonv(muon.px(), muon.py(), muon.pz(), muon.energy());
-    assert(muonv.Pt() == muon.pt());
+    //assert(muonv.Pt() == muon.pt());
+    assert(fabs(muonv.Pt() - muon.pt() ) < 0.01);
     lVec -= muonv;
     lQT += muonv;
     SumEt += muonv.Pt();
   }
 
+  RecoZ = lQT;
   assert( lQT == RecoZ );
   Recoil = lUT;
   MET.SetMagPhi(lVec.Pt(), lVec.Phi());
@@ -241,7 +244,11 @@ std::vector<reco::PFJet> METPerformance::GetCorrectedJets()
 {
   CorredJets.clear();
 
-  double rho = *srcRhoHdl.product();
+  double rho = 0.0;
+  if (srcRhoHdl.isValid())
+  {
+    rho = *srcRhoHdl.product();
+  }
   //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
   std::vector<JetCorrectorParameters> vPar;
   if (L1JECTag_ != "")
@@ -307,6 +314,7 @@ bool METPerformance::FillMETPerf()
   if(! PassZCut()) return false;
 
   // Reco Z
+  //std::cout << " Reco Z " << RecoZ.M() << " pt " << RecoZ.Pt() << std::endl;
   hZMass->Fill(RecoZ.M());
   hZPT->Fill(RecoZ.Pt());
   hZEta->Fill(RecoZ.Eta());
@@ -360,6 +368,6 @@ bool METPerformance::GetHandleByLabel(const edm::Event& iEvent)
   iEvent.getByLabel(MuonInputTag_, MuonHdl); 
   iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
   iEvent.getByLabel(srcRhoInputTag_, srcRhoHdl); 
-  iEvent.getByLabel(PileUpInfoTag_, PileUpInfoHdl); 
+  //iEvent.getByLabel(PileUpInfoTag_, PileUpInfoHdl); 
   return true;
 }       // -----  end of function METPerformance::GetHandleByLabel  -----

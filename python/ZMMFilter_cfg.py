@@ -7,13 +7,15 @@ process.load("CommonTools.ParticleFlow.goodOfflinePrimaryVertices_cfi")
 #process.load("Dummy/Puppi/Puppi_PhaseII_cff")
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+##process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        "file:/Users/benwu/Data/Dataset/SLHC/SLHC23p1/DYMM_SHCAL_PU140_SLHC23p1.root"
+        #"file:/Users/benwu/Data/Dataset/SLHC/SLHC23p1/DYMM_SHCAL_PU140_SLHC23p1.root"
+        'file:/data/nbay04/c/benwu/JetMET_TP/SLHC23p1/DYMM_SHCAL_PU140_SLHC23p1.root'
     )
 
 )
@@ -29,6 +31,11 @@ process.ZMMProducer = cms.EDProducer('ZMMFilter',
 process.out = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('myOutputFile.root'),
     outputCommands = cms.untracked.vstring('drop *',
+                                           "keep *_addPileupInfo_*_*",
+                                           "keep *_offlinePrimaryVertices_*_*",
+                                           "keep *_genParticles_*_*",
+                                           "keep *_kt6PFJets_rho_*",
+                                           #"keep *_particleFlow__*",
                                            "keep *_ZMMProducer_*_*",
                                            )
 

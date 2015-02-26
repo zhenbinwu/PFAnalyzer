@@ -175,8 +175,8 @@ bool ZMMFilter::passTightMuon(reco::Muon &muon) const
   if(fabs(pvMap["d0"])  > 0.045)      return false;
 
   // Isolation: checking with Muon POG: DeltaBeta Isolation
-  double totalIso =  ComputeMuonIsolation(muon);
-  if(totalIso/muon.pt() > 0.20) return false; //tight cut 0.12, loost cut 0.20 
+  //double totalIso =  ComputeMuonIsolation(muon);
+  //if(totalIso/muon.pt() > 0.20) return false; //tight cut 0.12, loost cut 0.20 
   return true;
 
 }       // -----  end of function ZMMFilter::passTightMuon  -----
@@ -232,7 +232,6 @@ std::vector<reco::Muon> ZMMFilter::GetTightMuons() const
     if (passTightMuon(muon))
       temp.push_back(muon);
   }
-
   return temp;
 }       // -----  end of function ZMMFilter::GetTightMuons  -----
 
