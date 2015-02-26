@@ -135,9 +135,9 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetG_Gen200_500_Pt = fs->make<TH1D>("PFJetG_Gen200_500_Pt", "PFJet (GenJet 200~500) Pt " ,  100, -5, 5);
   PFJetG_Gen500_1000_Pt = fs->make<TH1D>("PFJetG_Gen500_1000_Pt", "PFJet (GenJet 500~1000) Pt " ,  100, -5, 5);
 
-  PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
-  PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
-  PFJetEff_Pt            = fs->make<TH1D>("PFJetEff_Pt           ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  100, 0, 500);
+  PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  400, 0, 200);
+  PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  400, 0, 200);
+  PFJetEff_Pt            = fs->make<TH1D>("PFJetEff_Pt           ", "PFJet Pt (1.5 < GenJetEta < 3.0)" ,  400, 0, 200);
   PFJetEff_Eta_Numerator = fs->make<TH1D>("PFJetEff_Eta_Numerator", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
   PFJetEff_Eta_Deminator = fs->make<TH1D>("PFJetEff_Eta_Deminator", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
   PFJetEff_Eta           = fs->make<TH1D>("PFJetEff_Eta          ", "PFJet Eta (GenJetPt > 15)" ,  100, -5, 5);
@@ -345,6 +345,25 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 
   PFCH_EtaVsNPV = fs->make<TH2D>("PFCH_EtaVsNPV " , "PFCH_Eta Vs NPV ",  100, -5, 5, 122, -2, 120);
 
+  PFJetB_PUCh  = fs->make<TProfile>("PFJetB_PUCh " , "PFJetB_PUCh  Energy Fraction",  500, 0, 500);
+  PFJetB_LVCh  = fs->make<TProfile>("PFJetB_LVCh " , "PFJetB_LVCh  Energy Fraction",  500, 0, 500);
+  PFJetB_Ch    = fs->make<TProfile>("PFJetB_Ch   " , "PFJetB_Ch    Energy Fraction",  500, 0, 500);
+  PFJetB_Nh    = fs->make<TProfile>("PFJetB_Nh   " , "PFJetB_Nh    Energy Fraction",  500, 0, 500);
+  PFJetB_Ele   = fs->make<TProfile>("PFJetB_Ele  " , "PFJetB_Ele   Energy Fraction",  500, 0, 500);
+  PFJetB_Photon= fs->make<TProfile>("PFJetB_Photon " , "PFJetB_Photon  Energy Fraction",  500, 0, 500);
+  PFJetB_Muon  = fs->make<TProfile>("PFJetB_Muon " , "PFJetB_Muon  Energy Fraction",  500, 0, 500);
+  PFJetB_HFEM  = fs->make<TProfile>("PFJetB_HFEM " , "PFJetB_HFEM  Energy Fraction",  500, 0, 500);
+  PFJetB_HFHad = fs->make<TProfile>("PFJetB_HFHad" , "PFJetB_HFHad Energy Fraction",  500, 0, 500);
+
+  PFJetE_PUCh  = fs->make<TProfile>("PFJetE_PUCh " , "PFJetE_PUCh  Energy Fraction",  500, 0, 500);
+  PFJetE_LVCh  = fs->make<TProfile>("PFJetE_LVCh " , "PFJetE_LVCh  Energy Fraction",  500, 0, 500);
+  PFJetE_Ch    = fs->make<TProfile>("PFJetE_Ch   " , "PFJetE_Ch    Energy Fraction",  500, 0, 500);
+  PFJetE_Nh    = fs->make<TProfile>("PFJetE_Nh   " , "PFJetE_Nh    Energy Fraction",  500, 0, 500);
+  PFJetE_Ele   = fs->make<TProfile>("PFJetE_Ele  " , "PFJetE_Ele   Energy Fraction",  500, 0, 500);
+  PFJetE_Photon= fs->make<TProfile>("PFJetE_Photon " , "PFJetE_Photon  Energy Fraction", 500, 0, 500);
+  PFJetE_Muon  = fs->make<TProfile>("PFJetE_Muon " , "PFJetE_Muon  Energy Fraction",  500, 0, 500);
+  PFJetE_HFEM  = fs->make<TProfile>("PFJetE_HFEM " , "PFJetE_HFEM  Energy Fraction",  500, 0, 500);
+  PFJetE_HFHad = fs->make<TProfile>("PFJetE_HFHad" , "PFJetE_HFHad Energy Fraction",  500, 0, 500);
 
   GetInputTag(iConfig);
   //PFJetAna->Test();
@@ -401,7 +420,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   CaloMETAna();
   //PCaloHitAna();
   //PFClusterAna();
-  PFCandidateAna();
+  //PFCandidateAna();
   //RecHitAna->Analyze();
   //for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
   //{
@@ -678,6 +697,8 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
     GenJetRes1_Pt->Fill(gjet.pt(), jet.pt()/gjet.pt());
     GenJetRes1_Eta->Fill(gjet.eta(), jet.pt()/gjet.pt());
     GenJetRes1_Phi->Fill(gjet.phi(), jet.pt()/gjet.pt());
+
+
   }
 
 
@@ -732,6 +753,35 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG1_Gen150_200_Pt->Fill(res);
       if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG1_Gen200_500_Pt->Fill(res);
       if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG1_Gen500_1000_Pt->Fill(res);
+
+
+      //**************************************************************************//
+      //                            Check Jet Component                           //
+      //**************************************************************************//
+
+      PFJetB_Ch->Fill(gjet.pt(), jet.chargedHadronEnergyFraction()) ;
+      PFJetB_Nh->Fill(gjet.pt(), jet.neutralHadronEnergyFraction()) ;
+      PFJetB_Ele->Fill(gjet.pt(), jet.electronEnergyFraction()) ;
+      PFJetB_Muon->Fill(gjet.pt(), jet.muonEnergyFraction()) ;
+      PFJetB_Photon->Fill(gjet.pt(), jet.photonEnergyFraction()) ;
+      PFJetB_HFEM->Fill(gjet.pt(), jet.HFEMEnergyFraction()) ;
+      PFJetB_HFHad->Fill(gjet.pt(), jet.HFHadronEnergyFraction()) ;
+
+      std::vector<reco::PFCandidatePtr> JetPFCands = jet.getPFConstituents();
+      double LVCh = 0.0;
+      double PUCh = 0.0;
+      for (unsigned int j = 0; j < JetPFCands.size(); ++j)
+      {
+        if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
+        {
+          int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
+          PFCH_EtaVsNPV->Fill(JetPFCands.at(j)->eta(), vtxid);
+          if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
+          else PUCh += JetPFCands.at(j)->energy();
+        }
+      }
+      PFJetB_LVCh->Fill(gjet.pt(),   LVCh/jet.energy());
+      PFJetB_PUCh->Fill(gjet.pt(), PUCh/jet.energy());
     }
 
     if (fabs(gjet.eta() ) >= 1.5 && fabs(gjet.eta() ) < 3.0 )
@@ -750,6 +800,34 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG2_Gen150_200_Pt->Fill(res);
       if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG2_Gen200_500_Pt->Fill(res);
       if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG2_Gen500_1000_Pt->Fill(res);
+
+      //**************************************************************************//
+      //                            Check Jet Component                           //
+      //**************************************************************************//
+
+      PFJetE_Ch->Fill(gjet.pt(), jet.chargedHadronEnergyFraction()) ;
+      PFJetE_Nh->Fill(gjet.pt(), jet.neutralHadronEnergyFraction()) ;
+      PFJetE_Ele->Fill(gjet.pt(), jet.electronEnergyFraction()) ;
+      PFJetE_Muon->Fill(gjet.pt(), jet.muonEnergyFraction()) ;
+      PFJetE_Photon->Fill(gjet.pt(), jet.photonEnergyFraction()) ;
+      PFJetE_HFEM->Fill(gjet.pt(), jet.HFEMEnergyFraction()) ;
+      PFJetE_HFHad->Fill(gjet.pt(), jet.HFHadronEnergyFraction()) ;
+
+      std::vector<reco::PFCandidatePtr> JetPFCands = jet.getPFConstituents();
+      double LVCh = 0.0;
+      double PUCh = 0.0;
+      for (unsigned int j = 0; j < JetPFCands.size(); ++j)
+      {
+        if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
+        {
+          int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
+          PFCH_EtaVsNPV->Fill(JetPFCands.at(j)->eta(), vtxid);
+          if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
+          else PUCh += JetPFCands.at(j)->energy();
+        }
+      }
+      PFJetE_LVCh->Fill(gjet.pt(),   LVCh/jet.energy());
+      PFJetE_PUCh->Fill(gjet.pt(), PUCh/jet.energy());
     }
 
 
@@ -793,7 +871,7 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
   for(unsigned int i=0; i < PFJetV.size(); ++i)
   {
     reco::PFJet jet = PFJetV.at(i);
-    if (jet.pt() < 30) continue;
+    if (jet.pt() < 100) continue;
 
     PFJet_Ch->Fill(jet.eta(), jet.chargedHadronEnergyFraction()) ;
     PFJet_Nh->Fill(jet.eta(), jet.neutralHadronEnergyFraction()) ;

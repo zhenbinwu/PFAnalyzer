@@ -522,9 +522,6 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TProfile* PFJet_HFHad;
 
 
-
-
-
     TH1D* PFJetEff_Pt_Numerator ;
     TH1D* PFJetEff_Pt_Deminator ;
     TH1D* PFJetEff_Pt           ;
@@ -535,7 +532,25 @@ class PFAnalyzer : public edm::EDAnalyzer {
 
     TH2D* PFCH_EtaVsNPV;
 
+    TProfile* PFJetB_PUCh;
+    TProfile* PFJetB_LVCh;
+    TProfile* PFJetB_Ch;
+    TProfile* PFJetB_Nh;
+    TProfile* PFJetB_Ele;
+    TProfile* PFJetB_Muon;
+    TProfile* PFJetB_Photon;
+    TProfile* PFJetB_HFEM;
+    TProfile* PFJetB_HFHad;
 
+    TProfile* PFJetE_PUCh;
+    TProfile* PFJetE_LVCh;
+    TProfile* PFJetE_Ch;
+    TProfile* PFJetE_Nh;
+    TProfile* PFJetE_Ele;
+    TProfile* PFJetE_Muon;
+    TProfile* PFJetE_Photon;
+    TProfile* PFJetE_HFEM;
+    TProfile* PFJetE_HFHad;
 };
 
 //define this as a plug-in
