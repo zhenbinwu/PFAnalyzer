@@ -122,6 +122,7 @@ bool JetPerformance::GetHandleByLabel(const edm::Event& iEvent)
   iEvent.getByLabel(GenJetInputTag_, GenJetHdl); 
   iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
   iEvent.getByLabel(srcRhoInputTag_, srcRhoHdl); 
+  iEvent.getByLabel(PileupInputTag_, PileupHdl); 
   return true;
 }       // -----  end of function JetPerformance::GetHandleByLabel  -----
 
@@ -134,6 +135,7 @@ bool JetPerformance::GetInputTag(const edm::ParameterSet& iConfig)
   GenJetInputTag_ = iConfig.getParameter<edm::InputTag>("GenJetInputTag");
   PFJetInputTag_ = iConfig.getParameter<edm::InputTag>("PFJetInputTag");
   srcRhoInputTag_ = iConfig.getParameter<edm::InputTag>("srcRhoTag");
+  PileupInputTag_ =  iConfig.getParameter<edm::InputTag>("addPileupInfo");
 
   L1JECTag_ = iConfig.getParameter<std::string>("L1JECTag");
   L2JECTag_ = iConfig.getParameter<std::string>("L2JECTag");
@@ -248,40 +250,48 @@ bool JetPerformance::CleanPerEvent()
 // ===========================================================================
 bool JetPerformance::BookHistogram()
 {
+  const int NPtBins = 18;
+  const double vpt[NPtBins+1] = {20, 25, 30,35,40,45,57,72,90,120,150,200,300,400,550,750,1000,1500,2000};
+
   // Jet response and resolution
-  JetPTPerf = fs->make<TH2D>("JetPTPerf" , "2D for Jet PT Performance", 1200, 0, 1200, 300, -3, 3);
-  JetMassPerf = fs->make<TH2D>("JetMassPerf" , "2D for Jet Mass Performance", 600, 0, 600, 300, -3, 3);
+  JetPTPerf = fs->make<TH2D>("JetPTPerf" , "2D for Jet PT Performance", NPtBins, vpt, 300, -3, 3);
+  JetPTPerf_BB = fs->make<TH2D>("JetPTPerf_BB" , "2D for Jet PT Performance", NPtBins, vpt, 300, -3, 3);
+  JetPTPerf_EC = fs->make<TH2D>("JetPTPerf_EC" , "2D for Jet PT Performance", NPtBins, vpt, 300, -3, 3);
+  JetPTPerf_FW = fs->make<TH2D>("JetPTPerf_FW" , "2D for Jet PT Performance", NPtBins, vpt, 300, -3, 3);
+  JetPTPerf_NPU_LowBB = fs->make<TH2D>("JetPTPerf_NPU_LowBB" , "2D for Jet PT Performance vs NPU", 50, 0, 250, 300, -3, 3);
+  JetPTPerf_NPU_LowEC = fs->make<TH2D>("JetPTPerf_NPU_LowEC" , "2D for Jet PT Performance vs NPU", 50, 0, 250, 300, -3, 3);
+  JetPTPerf_NPU_LowFW = fs->make<TH2D>("JetPTPerf_NPU_LowFW" , "2D for Jet PT Performance vs NPU", 50, 0, 250, 300, -3, 3);
 
-  //JetPTPerf = fs->make<TH2D>("JetPTPerf" , "2D for Jet PT Performance",  "GenJet PT" , "PFJet / GenJet PT", 1200, 0, 1200, 300, -3, 3);
-  //JetMassPerf = fs->make<TH2D>("JetMassPerf" , "2D for Jet Mass Performance",  "GenJet Mass" , "MassJet / GenJet Mass", 600, 0, 600, 300, -3, 3);
+  JetMassPerf = fs->make<TH2D>("JetMassPerf" , "2D for Jet Mass Performance", 60, 0, 60, 300, -3, 3);
+
   // Jet Efficiency and PU Rate
-  PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 1000, 0, 500);
-  PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 1000, 0, 500);
+  PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
+  PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
 
-  PFJetEff_PtBB_Numerator  = fs->make<TH1D>("PFJetEff_PtBB_Numerator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 1000, 0, 500);
-  PFJetEff_PtBB_Deminator  = fs->make<TH1D>("PFJetEff_PtBB_Deminator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 1000, 0, 500);
+  PFJetEff_PtBB_Numerator  = fs->make<TH1D>("PFJetEff_PtBB_Numerator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 100, 0, 500);
+  PFJetEff_PtBB_Deminator  = fs->make<TH1D>("PFJetEff_PtBB_Deminator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 100, 0, 500);
 
-  PFJetEff_PtEC_Numerator  = fs->make<TH1D>("PFJetEff_PtEC_Numerator ", "PFJet Pt Endcap;Number of GenJe;GenJet PT ( 1.5 < GenJet Eta < 3)", 1000, 0, 500);
-  PFJetEff_PtEC_Deminator  = fs->make<TH1D>("PFJetEff_PtEC_Deminator ", "PFJet Pt Endcap;Number of GenJe;GenJet PT ( 1.5 < GenJet Eta < 3)", 1000, 0, 500);
+  PFJetEff_PtEC_Numerator  = fs->make<TH1D>("PFJetEff_PtEC_Numerator ", "PFJet Pt Endcap;Number of GenJe;GenJet PT ( 1.5 < GenJet Eta < 3)", 100, 0, 500);
+  PFJetEff_PtEC_Deminator  = fs->make<TH1D>("PFJetEff_PtEC_Deminator ", "PFJet Pt Endcap;Number of GenJe;GenJet PT ( 1.5 < GenJet Eta < 3)", 100, 0, 500);
 
-  PFJetEff_PtFW_Numerator  = fs->make<TH1D>("PFJetEff_PtFW_Numerator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 1000, 0, 500);
-  PFJetEff_PtFW_Deminator  = fs->make<TH1D>("PFJetEff_PtFW_Deminator ", "PFJet Pt Forward;Number of GenJe;GenJet PT ( 3 < GenJet Eta < 5)", 1000, 0, 500);
+  PFJetEff_PtFW_Numerator  = fs->make<TH1D>("PFJetEff_PtFW_Numerator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 100, 0, 500);
+  PFJetEff_PtFW_Deminator  = fs->make<TH1D>("PFJetEff_PtFW_Deminator ", "PFJet Pt Forward;Number of GenJe;GenJet PT ( 3 < GenJet Eta < 5)", 100, 0, 500);
 
   PFJetEff_Eta_Numerator = fs->make<TH1D>("PFJetEff_Eta_Numerator", "PFJet Eta ;Number of GenJet;GenJet Eta (GenJetPt > 15)",  100, -5, 5);
   PFJetEff_Eta_Deminator = fs->make<TH1D>("PFJetEff_Eta_Deminator", "PFJet Eta;Number of GenJet;GenJet Eta (GenJetPt > 15)", 100, -5, 5);
 
   // Jet PU Rate
-  PFJetRate_Pt_Numerator  = fs->make<TH1D>("PFJetRate_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 1000, 0, 500);
-  PFJetRate_Pt_Deminator  = fs->make<TH1D>("PFJetRate_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 1000, 0, 500);
+  PFJetRate_Pt_Numerator  = fs->make<TH1D>("PFJetRate_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
+  PFJetRate_Pt_Deminator  = fs->make<TH1D>("PFJetRate_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
 
-  PFJetRate_PtBB_Numerator  = fs->make<TH1D>("PFJetRate_PtBB_Numerator ", "PFJet Pt Barrel;Number of GenJet;GenJet PT ( 0 < GenJet Eta < 1.5)", 1000, 0, 500);
-  PFJetRate_PtBB_Deminator  = fs->make<TH1D>("PFJetRate_PtBB_Deminator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 1000, 0, 500);
+  PFJetRate_PtBB_Numerator  = fs->make<TH1D>("PFJetRate_PtBB_Numerator ", "PFJet Pt Barrel;Number of GenJet;GenJet PT ( 0 < GenJet Eta < 1.5)", 100, 0, 500);
+  PFJetRate_PtBB_Deminator  = fs->make<TH1D>("PFJetRate_PtBB_Deminator ", "PFJet Pt Barrel;Number of GenJe;GenJet PT ( 0 < GenJet Eta < 1.5)", 100, 0, 500);
 
-  PFJetRate_PtEC_Numerator  = fs->make<TH1D>("PFJetRate_PtEC_Numerator ", "PFJet Pt Endcap;Number of GenJet;GenJet PT ( 1.5 < GenJet Eta < 3)", 1000, 0, 500);
-  PFJetRate_PtEC_Deminator  = fs->make<TH1D>("PFJetRate_PtEC_Deminator ", "PFJet Pt Endcap;Number of GenJet;GenJet PT ( 1.5 < GenJet Eta < 3)", 1000, 0, 500);
+  PFJetRate_PtEC_Numerator  = fs->make<TH1D>("PFJetRate_PtEC_Numerator ", "PFJet Pt Endcap;Number of GenJet;GenJet PT ( 1.5 < GenJet Eta < 3)", 100, 0, 500);
+  PFJetRate_PtEC_Deminator  = fs->make<TH1D>("PFJetRate_PtEC_Deminator ", "PFJet Pt Endcap;Number of GenJet;GenJet PT ( 1.5 < GenJet Eta < 3)", 100, 0, 500);
 
-  PFJetRate_PtFW_Numerator  = fs->make<TH1D>("PFJetRate_PtFW_Numerator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 1000, 0, 500);
-  PFJetRate_PtFW_Deminator  = fs->make<TH1D>("PFJetRate_PtFW_Deminator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 1000, 0, 500);
+  PFJetRate_PtFW_Numerator  = fs->make<TH1D>("PFJetRate_PtFW_Numerator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 100, 0, 500);
+  PFJetRate_PtFW_Deminator  = fs->make<TH1D>("PFJetRate_PtFW_Deminator ", "PFJet Pt Forward;Number of GenJet;GenJet PT ( 3 < GenJet Eta < 5)", 100, 0, 500);
 
   PFJetRate_Eta_Numerator = fs->make<TH1D>("PFJetRate_Eta_Numerator", "PFJet Eta;Number of GenJet;GenJet Eta (GenJetPt > 15)",  100, -5, 5);
   PFJetRate_Eta_Deminator = fs->make<TH1D>("PFJetRate_Eta_Deminator", "PFJet Eta;Number of GenJet;GenJet Eta (GenJetPt > 15)", 100, -5, 5);
@@ -295,6 +305,50 @@ bool JetPerformance::BookHistogram()
 // ===========================================================================
 bool JetPerformance::JetPTMassPerf()
 {
+
+  int NPU = -99;
+  for(unsigned int i=0; i < PileupHdl->size(); ++i)
+  {
+    if (PileupHdl->at(i).getBunchCrossing() == 0)
+    {
+      NPU = PileupHdl->at(i).getPU_NumInteractions();
+      break;
+    }  
+  }
+
+  assert(NPU != -99);
+
+  for(std::map<unsigned int, unsigned int>::const_iterator it=PFGenJet.begin();
+    it!=PFGenJet.end(); ++it)
+  {
+    reco::GenJet gjet = GenJetHdl->at(it->first);
+    reco::PFJet pjet = CorredJets.at(it->second);
+    double ptratio = pjet.pt() / gjet.pt();
+    double massratio = pjet.mass() / gjet.mass();
+    JetPTPerf->Fill(gjet.pt(), ptratio );
+    JetMassPerf->Fill(gjet.mass(), massratio );
+    if (fabs(gjet.eta()) <= 1.3)
+    {
+      JetPTPerf_BB->Fill(gjet.pt(), ptratio);
+      if (gjet.pt() > 30 && gjet.pt() < 150)
+        JetPTPerf_NPU_LowBB->Fill(NPU, ptratio);
+    }
+
+    if (fabs(gjet.eta()) > 1.3 && fabs(gjet.eta()) <= 3.0)
+    {
+      JetPTPerf_EC->Fill(gjet.pt(), ptratio);
+      if (gjet.pt() > 30 && gjet.pt() < 150)
+        JetPTPerf_NPU_LowEC->Fill(NPU, ptratio);
+    }
+
+    if (fabs(gjet.eta()) > 3)
+    {
+      JetPTPerf_FW->Fill(gjet.pt(), ptratio);
+      if (gjet.pt() > 30 && gjet.pt() < 150)
+        JetPTPerf_NPU_LowFW->Fill(NPU, ptratio);
+    }
+  }
+
   
   return true;
 }       // -----  end of function JetPerformance::JetPTMassPerf  -----
