@@ -53,6 +53,7 @@ Implementation:
 
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 //
 // class declaration
 //
@@ -91,6 +92,9 @@ class JetPerformance : public edm::EDAnalyzer {
     edm::InputTag PFJetInputTag_;
     edm::Handle<reco::PFJetCollection> PFJetHdl;
 
+    edm::InputTag PileupInputTag_;
+    edm::Handle<std::vector<PileupSummaryInfo> > PileupHdl;
+
     edm::InputTag srcRhoInputTag_;
     edm::Handle<double> srcRhoHdl;
 
@@ -110,7 +114,17 @@ class JetPerformance : public edm::EDAnalyzer {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plots ~~~~~
     // Jet response and resolution
     TH2D* JetPTPerf;
+    TH2D* JetPTPerf_BB;
+    TH2D* JetPTPerf_EC;
+    TH2D* JetPTPerf_FW;
+    TH2D* JetPTPerf_NPU_LowBB;
+    TH2D* JetPTPerf_NPU_LowEC;
+    TH2D* JetPTPerf_NPU_LowFW;
     TH2D* JetMassPerf;
+    TH2D* JetMassPerf_BB;
+    TH2D* JetMassPerf_EC;
+    TH2D* JetMassPerf_FW;
+
 
     // Jet Efficiency 
     TH1D* PFJetEff_Pt_Numerator ;

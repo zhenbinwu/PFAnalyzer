@@ -122,7 +122,7 @@ METPerformance::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 // ===========================================================================
 bool METPerformance::IsDiMuon() const
 {
-  std::cout << " size? " << MuonHdl->size() << std::endl;
+  //std::cout << " size? " << MuonHdl->size() << std::endl;
   return MuonHdl->size() == 2;
 }       // -----  end of function METPerformance::IsDiMuon  -----
 // ===  FUNCTION  ============================================================
@@ -160,24 +160,24 @@ bool METPerformance::BookHistogram()
 {
   
   hZMass  = fs->make<TH1D>("ZMass", "ZMass;Z mass;Number of Event", 200, 0, 200);
-  hZPT  = fs->make<TH1D>("ZPT", "ZPT;Z PT;Number of Event", 500, 0, 500);
+  hZPT  = fs->make<TH1D>("ZPT", "ZPT;Z PT;Number of Event", 150, 0, 150);
   hZEta  = fs->make<TH1D>("ZEta", "ZEta;Z Eta;Number of Event", 40, -5, 5);
   hZPhi  = fs->make<TH1D>("ZPhi", "ZPhi;Z Phi;Number of Event", 28, -7, 7);
 
-  hMETPT  = fs->make<TH1D>("METPT",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
-  hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 28, -7, 7);
-  hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 400, -200, 200);
-  hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 400, -200, 200);
-  hSumET  = fs->make<TH1D>("SumET",  "MET PT; MET PT; Number of Event", 500, 0 , 5000);
-  hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 500, 0 , 500);
+  hMETPT  = fs->make<TH1D>("METPT",  "MET PT; MET PT; Number of Event", 100, 0 , 500);
+  hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 28, 0, 7);
+  hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 100, -200, 200);
+  hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 100, -200, 200);
+  hSumET  = fs->make<TH1D>("SumET",  "MET PT; SumET; Number of Event", 1000, 0 , 20000);
+  hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 500, 0, 1);
 
-  hRecoilPT = fs->make<TH1D>("RecoilPT",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
-  hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 1000, -500 , 500);
-  hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
-  hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 500, 0 , 500);
+  hRecoilPT = fs->make<TH1D>("RecoilPT",  "Recoil PT; MET PT; Number of Event", 200, 0 , 200);
+  hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 80, -200 , 200);
+  hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 80, -200 , 200);
+  hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 80, -200, 200);
 
-  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 200, -200, 200);
-  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 200, -200, 200);
+  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 200, -200, 200);
+  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 200, -200, 200);
 
   return true;
 }       // -----  end of function METPerformance::BookHistogram  -----
