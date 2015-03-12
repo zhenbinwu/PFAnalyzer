@@ -206,13 +206,20 @@ std::map<std::string, double> ZMMFilter::CheckMuonPV(reco::Muon &muon) const
 {
   // Use tracker track if available, otherwise use STA track
   const reco::TrackRef muTrack = muon.innerTrack().isNonnull() ? muon.innerTrack() : muon.standAloneMuon();
+  std::map<std::string, double> reMap;
+  
+  if (VertexHdl->size()  == 0)
+  {
+    reMap["d0"] = 999.;
+    reMap["dz"] = 999.;
+    return reMap;
+  }
   const reco::Vertex pv = VertexHdl->at(0);
   //
   // Impact Parameter
   //==============================
   double d0 = -muTrack->dxy(pv.position());  // note: d0 = -dxy
   double dz =  muTrack->dz(pv.position());
-  std::map<std::string, double> reMap;
 
   reMap["d0"] = d0;
   reMap["dz"] = dz;
@@ -254,6 +261,7 @@ std::vector<reco::PFCandidate> ZMMFilter::GetPFCandidatesNoMuon(const std::vecto
       double delR = deltaR(can, muon);
       if (delR > 0.05 ) continue;
       if (fabs(can.pt() - muon.pt()) > 0.1) continue;
+      if (can.particleId() != reco::PFCandidate::mu) continue;
       lMatch= true;
       matchcount ++ ;
     }
@@ -262,10 +270,10 @@ std::vector<reco::PFCandidate> ZMMFilter::GetPFCandidatesNoMuon(const std::vecto
       temp.push_back(can);
     }
   }
+
   assert(matchcount == ZMMTightMuon.size());
-  assert( PFCandidateHdl->size() - temp.size() == matchcount);
+  assert(PFCandidateHdl->size() - temp.size() == matchcount);
 
   return temp;
 }       // -----  end of function ZMMFilter::GetPFCandidatesNoMuon  -----
-
 

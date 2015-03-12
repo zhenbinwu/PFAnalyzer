@@ -168,16 +168,21 @@ bool METPerformance::BookHistogram()
   hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 28, 0, 7);
   hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 100, -200, 200);
   hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 100, -200, 200);
-  hSumET  = fs->make<TH1D>("SumET",  "MET PT; SumET; Number of Event", 1000, 0 , 20000);
-  hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 500, 0, 1);
+  hSumET  = fs->make<TH1D>("SumET",  "MET PT; SumET; Number of Event", 500, 0, 10000);
+  hlogSumET  = fs->make<TH1D>("logSumET",  "MET PT; logSumET; Number of Event", 200, 0, log10(10000));
+  hMETSig  = fs->make<TH1D>("METSig",  "MET PT; MET PT; Number of Event", 50, 0, 1);
 
   hRecoilPT = fs->make<TH1D>("RecoilPT",  "Recoil PT; MET PT; Number of Event", 200, 0 , 200);
   hParrallel = fs->make<TH1D>("Parrallel ",  "Recoil PT; MET PT; Number of Event", 80, -200 , 200);
   hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 80, -200 , 200);
   hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 80, -200, 200);
 
-  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 200, -200, 200);
-  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 200, -200, 200);
+  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 100, -200, 200);
+  h2D_ParrallelZpt = fs->make<TH2D>("h2D_ParrallelZpt",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 100, -20, 20);
+  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 150, 0, 150, 100, -200, 200);
+
+  h2D_METx_SumET= fs->make<TH2D>("h2D_METx_SumET",  "h2D_METx_SumET PT; MET PT; Number of Event", 500, 0, 10000, 100, -200, 200);
+  h2D_METy_SumET= fs->make<TH2D>("h2D_METy_SumET",  "h2D_METy_SumET PT; MET PT; Number of Event", 500, 0, 10000, 100, -200, 200);
 
   return true;
 }       // -----  end of function METPerformance::BookHistogram  -----
@@ -251,22 +256,29 @@ std::vector<reco::PFJet> METPerformance::GetCorrectedJets()
   }
   //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
   std::vector<JetCorrectorParameters> vPar;
+  char* CMSPath = getenv("CMSSW_BASE");
   if (L1JECTag_ != "")
   {
-    JetCorrectorParameters L1JetPar(L1JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/JEC/"<< L1JECTag_;
+    JetCorrectorParameters L1JetPar(ss.str());
     vPar.push_back(L1JetPar);
   }
   if (L2JECTag_ != "")
   {
     assert(L1JECTag_ != "");
-    JetCorrectorParameters L2JetPar(L2JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/JEC/"<< L2JECTag_;
+    JetCorrectorParameters L2JetPar(ss.str());
     vPar.push_back(L2JetPar);
   }
   if (L3JECTag_ != "")
   {
     assert(L1JECTag_ != "");
     assert(L2JECTag_ != "");
-    JetCorrectorParameters L3JetPar(L3JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/JEC/"<< L3JECTag_;
+    JetCorrectorParameters L3JetPar(ss.str());
     vPar.push_back(L3JetPar);
   }
 
@@ -276,7 +288,9 @@ std::vector<reco::PFJet> METPerformance::GetCorrectedJets()
       it!=PFJetHdl->end(); it++)
   {
 
-    reco::PFJet  correctedJet = *it;
+    reco::PFJet rawJet = *it;
+    reco::PFJet correctedJet = rawJet;
+
     double jec  = 1.0;
     if (vPar.size() != 0)
     {
@@ -284,7 +298,15 @@ std::vector<reco::PFJet> METPerformance::GetCorrectedJets()
     }
     correctedJet.scaleEnergy(jec);
 
-    CorredJets.push_back(correctedJet);
+    //----------------------------------------------------------------------------
+    //  Type1 MET in CMS has corrected jet PT > 10GeV
+    //  We keep this as we don't really trust the JEC for jets below 10GeV
+    //----------------------------------------------------------------------------
+    if (correctedJet.pt() > 10)
+      CorredJets.push_back(correctedJet);
+    else
+      CorredJets.push_back(rawJet);
+
   }
 
   return CorredJets;
@@ -336,7 +358,11 @@ bool METPerformance::FillMETPerf()
 
   // 2D Performance
   h2D_Parrallel ->Fill(RecoZ.Pt(), Parrallel + RecoZ.Pt());
+  h2D_ParrallelZpt ->Fill(RecoZ.Pt(), -1 * Parrallel / RecoZ.Pt());
   h2D_Perperndicular ->Fill(RecoZ.Pt(), Perpendicular);
+
+  h2D_METx_SumET->Fill(SumEt, MET.Px());
+  h2D_METy_SumET->Fill(SumEt, MET.Py());
 
   return true;
 }       // -----  end of function METPerformance::FillMETPerf  -----

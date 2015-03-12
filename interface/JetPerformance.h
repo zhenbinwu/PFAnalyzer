@@ -83,6 +83,7 @@ class JetPerformance : public edm::EDAnalyzer {
     bool CleanPerEvent();
     bool BookHistogram();
     bool JetPTMassPerf();
+    bool PlotJets();
     double GetCorrFactor( FactorizedJetCorrector *JetCorrector, reco::PFJet &jet, double rho);
     bool JetEffRate();
     // ----------member data ---------------------------
@@ -113,6 +114,7 @@ class JetPerformance : public edm::EDAnalyzer {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plots ~~~~~
     // Jet response and resolution
+    TH1D* JetEtaPT30;
     TH2D* JetPTPerf;
     TH2D* JetPTPerf_BB;
     TH2D* JetPTPerf_EC;

@@ -61,6 +61,7 @@ JetPerformance::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   GetCorrectedJets();
   JetMatching();
   JetPTMassPerf();
+  PlotJets();
 
 }
 
@@ -135,7 +136,7 @@ bool JetPerformance::GetInputTag(const edm::ParameterSet& iConfig)
   GenJetInputTag_ = iConfig.getParameter<edm::InputTag>("GenJetInputTag");
   PFJetInputTag_ = iConfig.getParameter<edm::InputTag>("PFJetInputTag");
   srcRhoInputTag_ = iConfig.getParameter<edm::InputTag>("srcRhoTag");
-  PileupInputTag_ =  iConfig.getParameter<edm::InputTag>("addPileupInfo");
+  PileupInputTag_ =  iConfig.getParameter<edm::InputTag>("PileUpInfoTag");
 
   L1JECTag_ = iConfig.getParameter<std::string>("L1JECTag");
   L2JECTag_ = iConfig.getParameter<std::string>("L2JECTag");
@@ -264,6 +265,7 @@ bool JetPerformance::BookHistogram()
 
   JetMassPerf = fs->make<TH2D>("JetMassPerf" , "2D for Jet Mass Performance", 60, 0, 60, 300, -3, 3);
 
+  JetEtaPT30 = fs->make<TH1D>("JetEtaPT30" , "JetEtaPT30", 120, -6, 6);
   // Jet Efficiency and PU Rate
   PFJetEff_Pt_Numerator  = fs->make<TH1D>("PFJetEff_Pt_Numerator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
   PFJetEff_Pt_Deminator  = fs->make<TH1D>("PFJetEff_Pt_Deminator ", "PFJet Pt (1.5 < GenJetEta < 3.0);Number of GenJet;GenJet PT", 100, 0, 500);
@@ -380,3 +382,21 @@ bool JetPerformance::JetEffRate()
 
   return true;
 }       // -----  end of function JetPerformance::JetEffRate  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  JetPerformance::PlotJets
+//  Description:  
+// ===========================================================================
+bool JetPerformance::PlotJets()
+{
+
+  for(unsigned int i=0; i < CorredJets.size(); ++i)
+  {
+    reco::PFJet jet = CorredJets.at(i);
+    if (jet.pt() > 30)
+    {
+      JetEtaPT30->Fill(jet.eta());
+    }
+  }
+  return true;
+}       // -----  end of function JetPerformance::PlotJets  -----

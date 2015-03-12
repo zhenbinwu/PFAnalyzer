@@ -31,6 +31,7 @@ Implementation:
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
 
 // Include ROOT
 #include "TH2D.h"
@@ -131,6 +132,7 @@ class METPerformance : public edm::EDAnalyzer {
     TH1D* hMETx;
     TH1D* hMETy;
     TH1D* hSumET;
+    TH1D* hlogSumET;
     TH1D* hMETSig;
 
     //Recoil 
@@ -140,7 +142,11 @@ class METPerformance : public edm::EDAnalyzer {
     TH1D* hParrallelZPT;
 
     TH2D* h2D_Parrallel;
+    TH2D* h2D_ParrallelZpt;
     TH2D* h2D_Perperndicular;
+
+    TH2D* h2D_METx_SumET;
+    TH2D* h2D_METy_SumET;
 
 };
 
