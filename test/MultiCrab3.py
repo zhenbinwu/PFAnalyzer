@@ -12,7 +12,7 @@
 import copy, os, time
 
 from CRABAPI.RawCommand import crabCommand
-from SHCal_DYMM_crab3Config import config as config
+from crab3Config import config as config
 
 workArea = 'CrabTest'
 outDir =  '/store/user/benwu/JetMET_TP/MET/First/'
