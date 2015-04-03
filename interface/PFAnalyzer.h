@@ -183,6 +183,10 @@ class PFAnalyzer : public edm::EDAnalyzer {
     edm::InputTag GenParticleInputTag_;
     edm::Handle<reco::GenParticleCollection> GenParticleHdl;
 
+    std::string L1JECTag_;
+    std::string L2JECTag_;
+    std::string L3JECTag_;
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GenParticle ~~~~~
     edm::InputTag SimCaloHitInputTag_;
     edm::Handle<std::vector<PCaloHit> > SimCaloHitHdl;
@@ -511,6 +515,22 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TH1D* PFJetG3_Gen200_500_Pt;
     TH1D* PFJetG3_Gen500_1000_Pt;
 
+
+
+    TH1D* PFJetG4_Gen10_20_Pt;
+    TH1D* PFJetG4_Gen20_30_Pt;
+    TH1D* PFJetG4_Gen30_40_Pt;
+    TH1D* PFJetG4_Gen40_50_Pt;
+    TH1D* PFJetG4_Gen50_60_Pt;
+    TH1D* PFJetG4_Gen60_70_Pt;
+    TH1D* PFJetG4_Gen70_80_Pt;
+    TH1D* PFJetG4_Gen80_100_Pt;
+    TH1D* PFJetG4_Gen100_120_Pt;
+    TH1D* PFJetG4_Gen120_150_Pt;
+    TH1D* PFJetG4_Gen150_200_Pt;
+    TH1D* PFJetG4_Gen200_500_Pt;
+    TH1D* PFJetG4_Gen500_1000_Pt;
+
     TProfile* PFJet_PUCh;
     TProfile* PFJet_LVCh;
     TProfile* PFJet_Ch;
@@ -551,6 +571,16 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TProfile* PFJetE_Photon;
     TProfile* PFJetE_HFEM;
     TProfile* PFJetE_HFHad;
+
+    TH1D* PUJetRate_BR_Pt_Numerator ;
+    TH1D* PUJetRate_BR_Pt_Deminator ;
+    TH1D* PUJetRate_BR_Pt           ;
+    TH1D* PUJetRate_EC_Pt_Numerator ;
+    TH1D* PUJetRate_EC_Pt_Deminator ;
+    TH1D* PUJetRate_EC_Pt           ;
+    TH1D* PUJetRate_FW_Pt_Numerator ;
+    TH1D* PUJetRate_FW_Pt_Deminator ;
+    TH1D* PUJetRate_FW_Pt           ;
 };
 
 //define this as a plug-in

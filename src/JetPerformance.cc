@@ -190,25 +190,38 @@ std::vector<reco::PFJet> JetPerformance::GetCorrectedJets()
 {
   CorredJets.clear();
 
-  double rho = *srcRhoHdl.product();
+  double rho = 0.0;
+  if (srcRhoHdl.isValid())
+  {
+    rho = *srcRhoHdl.product();
+  }
   //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
   std::vector<JetCorrectorParameters> vPar;
+  char* CMSPath = getenv("CMSSW_BASE");
   if (L1JECTag_ != "")
   {
-    JetCorrectorParameters L1JetPar(L1JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/data/"<< L1JECTag_;
+    JetCorrectorParameters L1JetPar(ss.str());
+
+    //std::cout << " L1 " << ss.str() << std::endl;
     vPar.push_back(L1JetPar);
   }
   if (L2JECTag_ != "")
   {
     assert(L1JECTag_ != "");
-    JetCorrectorParameters L2JetPar(L2JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/data/"<< L2JECTag_;
+    JetCorrectorParameters L2JetPar(ss.str());
     vPar.push_back(L2JetPar);
   }
   if (L3JECTag_ != "")
   {
     assert(L1JECTag_ != "");
     assert(L2JECTag_ != "");
-    JetCorrectorParameters L3JetPar(L3JECTag_);
+    std::stringstream ss;
+    ss << CMSPath <<"/src/UserCode/PFAnalyzer/data/"<< L3JECTag_;
+    JetCorrectorParameters L3JetPar(ss.str());
     vPar.push_back(L3JetPar);
   }
 

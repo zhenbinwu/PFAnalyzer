@@ -85,7 +85,8 @@ class METPerformance : public edm::EDAnalyzer {
 
     bool PassZCut() const;
     bool RecoEvent();
-    std::vector<reco::PFJet> GetCorrectedJets();
+    std::vector<reco::PFJet> GetRawJets();
+    std::vector<TLorentzVector> GetCorrectedJets();
     double GetCorrFactor( FactorizedJetCorrector *JetCorrector, reco::PFJet &jet, double rho);
     bool FillMETPerf();
     // ----------member data ---------------------------
@@ -107,17 +108,25 @@ class METPerformance : public edm::EDAnalyzer {
     std::string L1JECTag_;
     std::string L2JECTag_;
     std::string L3JECTag_;
+    double JetJECThres;
 
     edm::Service<TFileService> fs;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Local Variable ~~~~~
-    std::vector<reco::PFJet> CorredJets;
+    std::vector<reco::PFJet> RawJets;
+    /// Jet correction factor L1L2L3 - L1
+    std::vector<TLorentzVector> JetsType1;
     TLorentzVector RecoZ;
     TVector2 MET;
     TLorentzVector Recoil;
     double SumEt;
+    double UnCluSumET;
     double Parrallel;
     double Perpendicular;
+    double HT;
+    double EC_HT;
+    double BB_HT;
+    double FW_HT;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plots ~~~~~
     //Reconstructed Z
@@ -126,14 +135,26 @@ class METPerformance : public edm::EDAnalyzer {
     TH1D* hZEta;
     TH1D* hZPhi;
 
+    TH1D* hJetPT;
+    TH1D* hJetEta;
+
     //Reconstructed MET
     TH1D* hMETPT;
     TH1D* hMETPhi;
     TH1D* hMETx;
     TH1D* hMETy;
-    TH1D* hSumET;
     TH1D* hlogSumET;
     TH1D* hMETSig;
+    TH1D* hSumET;
+    TH1D* hSumET1;
+    TH1D* hSumET5;
+    TH1D* hSumET10;
+    TH1D* hSumET30;
+    TH1D* hUnCluSumET;
+    TH1D* hHT;
+    TH1D* hBB_HT;
+    TH1D* hEC_HT;
+    TH1D* hFW_HT;
 
     //Recoil 
     TH1D* hRecoilPT;
@@ -145,9 +166,16 @@ class METPerformance : public edm::EDAnalyzer {
     TH2D* h2D_ParrallelZpt;
     TH2D* h2D_Perperndicular;
 
+    TH2D* h2D_JetEta_JetPT;
     TH2D* h2D_METx_SumET;
     TH2D* h2D_METy_SumET;
 
+    TH2D* h2D_METx_BBHT;
+    TH2D* h2D_METy_BBHT;
+    TH2D* h2D_METx_ECHT;
+    TH2D* h2D_METy_ECHT;
+    TH2D* h2D_METx_FWHT;
+    TH2D* h2D_METy_FWHT;
 };
 
 //
