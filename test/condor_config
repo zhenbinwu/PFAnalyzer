@@ -1,0 +1,13 @@
+universe = vanilla
+Executable = RunCMS.csh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = filelist.tgz
+Output = JOBNAME_$(Cluster)_$(Process).stdout
+Error = JOBNAME_$(Cluster)_$(Process).stderr
+Log = JOBNAME_$(Cluster)_$(Process).log
+use_x509userproxy = true
+notify_user = ${LOGNAME}@FNAL.GOV
+
+Arguments = PYNAME JOBNAME_$(Process) OUTDIR
+queue QUEUE
