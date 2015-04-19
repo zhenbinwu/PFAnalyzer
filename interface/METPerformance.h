@@ -32,6 +32,7 @@ Implementation:
 #include <vector>
 #include <iostream>
 #include <cstdlib>
+#include <set>
 
 // Include ROOT
 #include "TH2D.h"
@@ -52,9 +53,13 @@ Implementation:
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
+#include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "DataFormats/METReco/interface/PFMETCollection.h"
+#include "DataFormats/METReco/interface/PFMET.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "DataFormats/Math/interface/deltaR.h"
 //
 // class declaration
 //
@@ -83,12 +88,14 @@ class METPerformance : public edm::EDAnalyzer {
     bool BookHistogram();
     TLorentzVector GetRecoZ();
 
+    int GetNPU() const;
     bool PassZCut() const;
     bool RecoEvent();
     std::vector<reco::PFJet> GetRawJets();
     std::vector<TLorentzVector> GetCorrectedJets();
     double GetCorrFactor( FactorizedJetCorrector *JetCorrector, reco::PFJet &jet, double rho);
     bool FillMETPerf();
+    bool RecoEventGen();
     // ----------member data ---------------------------
     edm::InputTag MuonInputTag_;
     edm::Handle<std::vector<reco::Muon> > MuonHdl;
@@ -96,12 +103,17 @@ class METPerformance : public edm::EDAnalyzer {
     edm::InputTag PFJetInputTag_;
     edm::Handle<reco::PFJetCollection> PFJetHdl;
 
+    edm::InputTag GenJetInputTag_;
+    edm::Handle<reco::GenJetCollection> GenJetHdl;
+
     edm::InputTag srcRhoInputTag_;
     edm::Handle<double> srcRhoHdl;
 
     edm::InputTag PileUpInfoTag_;
     edm::Handle<std::vector<PileupSummaryInfo> >  PileUpInfoHdl;
 
+    edm::InputTag PFMETInputTag_;
+    edm::Handle<reco::PFMETCollection> PFMETHdl;
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Handler ~~~~~
 
@@ -109,6 +121,9 @@ class METPerformance : public edm::EDAnalyzer {
     std::string L2JECTag_;
     std::string L3JECTag_;
     double JetJECThres;
+    int NPU;
+    bool UseGenJets;
+    bool JetsMatchedGen;
 
     edm::Service<TFileService> fs;
 
@@ -165,6 +180,7 @@ class METPerformance : public edm::EDAnalyzer {
     TH2D* h2D_Parrallel;
     TH2D* h2D_ParrallelZpt;
     TH2D* h2D_Perperndicular;
+    TH2D* h2D_SumET_Zpt;
 
     TH2D* h2D_JetEta_JetPT;
     TH2D* h2D_METx_SumET;
@@ -176,6 +192,9 @@ class METPerformance : public edm::EDAnalyzer {
     TH2D* h2D_METy_ECHT;
     TH2D* h2D_METx_FWHT;
     TH2D* h2D_METy_FWHT;
+
+    TH2D* h2D_METx_NPU;
+    TH2D* h2D_METy_NPU;
 };
 
 //

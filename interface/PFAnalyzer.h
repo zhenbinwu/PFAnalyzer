@@ -531,6 +531,34 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TH1D* PFJetG4_Gen200_500_Pt;
     TH1D* PFJetG4_Gen500_1000_Pt;
 
+    TH1D* PFJetG5_Gen10_20_Pt;
+    TH1D* PFJetG5_Gen20_30_Pt;
+    TH1D* PFJetG5_Gen30_40_Pt;
+    TH1D* PFJetG5_Gen40_50_Pt;
+    TH1D* PFJetG5_Gen50_60_Pt;
+    TH1D* PFJetG5_Gen60_70_Pt;
+    TH1D* PFJetG5_Gen70_80_Pt;
+    TH1D* PFJetG5_Gen80_100_Pt;
+    TH1D* PFJetG5_Gen100_120_Pt;
+    TH1D* PFJetG5_Gen120_150_Pt;
+    TH1D* PFJetG5_Gen150_200_Pt;
+    TH1D* PFJetG5_Gen200_500_Pt;
+    TH1D* PFJetG5_Gen500_1000_Pt;
+
+    TH1D* PFJetG6_Gen10_20_Pt;
+    TH1D* PFJetG6_Gen20_30_Pt;
+    TH1D* PFJetG6_Gen30_40_Pt;
+    TH1D* PFJetG6_Gen40_50_Pt;
+    TH1D* PFJetG6_Gen50_60_Pt;
+    TH1D* PFJetG6_Gen60_70_Pt;
+    TH1D* PFJetG6_Gen70_80_Pt;
+    TH1D* PFJetG6_Gen80_100_Pt;
+    TH1D* PFJetG6_Gen100_120_Pt;
+    TH1D* PFJetG6_Gen120_150_Pt;
+    TH1D* PFJetG6_Gen150_200_Pt;
+    TH1D* PFJetG6_Gen200_500_Pt;
+    TH1D* PFJetG6_Gen500_1000_Pt;
+
     TProfile* PFJet_PUCh;
     TProfile* PFJet_LVCh;
     TProfile* PFJet_Ch;

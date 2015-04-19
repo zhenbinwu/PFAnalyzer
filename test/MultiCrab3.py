@@ -14,21 +14,21 @@ import copy, os, time
 from CRABAPI.RawCommand import crabCommand
 from crab3Config import config as config
 
-workArea = 'CrabTest'
-outDir =  '/store/user/benwu/JetMET_TP/MET/First/'
+workArea = 'CrabTest/April0PU'
+outDir =  '/store/user/benwu/JetMET_TP/MET/ANPAS'
 
 jobslist = {
-    'SLHC23p1_SHCal_140PU_MET' : ['../METPerformance_SHCal_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 3],
-    'SLHC23p1_SHCal_0PU_MET' : ['../METPerformance_SHCal_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_NoPU_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 3],
+    'SLHC23p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           3],
+    'SLHC23p1_SHCal_0PU_MET'   : ['../python/METPerformance_SHCal_NoPU_cfg_RECO.py',   '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_NoPU_PH2_1K_FB_V6-v1/GEN-SIM-RECO',                3],
 
-    'SLHC23p1_Aged_140PU_MET' : ['../METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 3],
-    'SLHC23p1_Aged_0PU_MET' : ['../METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 3],
+    'SLHC23p1_Aged_140PU_MET'  : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 3],
+    'SLHC23p1_Aged_0PU_MET'    : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/GEN-SIM-RECO',      3],
 
-    'SLHC23p1_NoAged_50PU_MET' : ['../METPerformance_Phase1_50PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO', 3],
-    'SLHC23p1_NoAged_0PU_MET' : ['../METPerformance_Phase1_50PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_NoPU_DES19_62_V8-v1/GEN-SIM-RECO', 3],
+    'SLHC23p1_NoAged_50PU_MET' : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',     3],
+    'SLHC23p1_NoAged_0PU_MET'  : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_NoPU_DES19_62_V8-v1/GEN-SIM-RECO',         3],
 
-    'SLHC23p1_HGCal_140PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PU_PH2_1K_FB_V6_UPGHGCalPandPU140-v1/GEN-SIM-RECO', 1],
-    'SLHC23p1_HGCal_0PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PH2_1K_FB_V6_UPGHGCalPand-v1/GEN-SIM-RECO', 1],
+    #'SLHC23p1_HGCal_140PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PU_PH2_1K_FB_V6_UPGHGCalPandPU140-v1/GEN-SIM-RECO', 1],
+    #'SLHC23p1_HGCal_0PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PH2_1K_FB_V6_UPGHGCalPand-v1/GEN-SIM-RECO', 1],
 
 }
 tasklist = {}
@@ -61,8 +61,5 @@ while True:
             print "For task", request, "the job states are", results['jobsPerStatus']
         except:
             pass
-        time.sleep(20)
-
-
-
+        time.sleep(60)
 

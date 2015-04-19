@@ -60,12 +60,17 @@ METPerformance::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   iSetup.get<SetupRecord>().get(pSetup);
 #endif
 
-  if (! IsDiMuon ()) return;
+  if (!UseGenJets)
+  {
+    GetCorrectedJets();
+    RecoEvent();
+  }
+  else
+  {
+    RecoEventGen();
+  }
 
-  GetRecoZ();
-  GetCorrectedJets();
 
-  RecoEvent();
   FillMETPerf();
 }
 
@@ -149,6 +154,7 @@ TLorentzVector METPerformance::GetRecoZ()
 // ===========================================================================
 bool METPerformance::PassZCut() const
 {
+  if (! IsDiMuon ()) return false;
   if (RecoZ.M() < 80 || RecoZ.M() > 200) return false;
   //if (RecoZ.Pt() < 30) return false;
 
@@ -192,12 +198,13 @@ bool METPerformance::BookHistogram()
   hParrallelZPT = fs->make<TH1D>("ParrallelZPT ",  "Recoil PT; MET PT; Number of Event", 80, -200 , 200);
   hPerpendicular = fs->make<TH1D>("Perpendicular ",  "Recoil PT; MET PT; Number of Event", 80, -200, 200);
 
-  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 100, -200, 200);
-  h2D_ParrallelZpt = fs->make<TH2D>("h2D_ParrallelZpt",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 100, -20, 20);
-  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 100, -200, 200);
+  h2D_Parrallel = fs->make<TH2D>("h2D_Parrallel",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 4000, -200, 200);
+  h2D_ParrallelZpt = fs->make<TH2D>("h2D_ParrallelZpt",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 4000, -20, 20);
+  h2D_Perperndicular= fs->make<TH2D>("h2D_Perperndicular",  "Recoil PT; MET PT; Number of Event", 500, 0, 500, 4000, -200, 200);
 
   h2D_METx_SumET= fs->make<TH2D>("h2D_METx_SumET",  "h2D_METx_SumET PT; MET PT; Number of Event", 500, 0, 10000, 100, -200, 200);
   h2D_METy_SumET= fs->make<TH2D>("h2D_METy_SumET",  "h2D_METy_SumET PT; MET PT; Number of Event", 500, 0, 10000, 100, -200, 200);
+  h2D_SumET_Zpt = fs->make<TH2D>("h2D_SumET_Zpt",  "Recoil PT; SumET; Number of Event", 500, 0, 500, 5000, 0, 10000);
 
   h2D_METx_BBHT= fs->make<TH2D>("h2D_METx_BBHT",  "h2D_METx_BBHT PT; HT(BB) / HT; Number of Event", 500, 0, 1, 100, -200, 200);
   h2D_METy_BBHT= fs->make<TH2D>("h2D_METy_BBHT",  "h2D_METy_BBHT PT; HT(BB) / HT; Number of Event", 500, 0, 1, 100, -200, 200);
@@ -205,6 +212,9 @@ bool METPerformance::BookHistogram()
   h2D_METy_ECHT= fs->make<TH2D>("h2D_METy_ECHT",  "h2D_METy_ECHT PT; HT(EC) / HT; Number of Event", 500, 0, 1, 100, -200, 200);
   h2D_METx_FWHT= fs->make<TH2D>("h2D_METx_FWHT",  "h2D_METx_FWHT PT; HT(FW) / HT; Number of Event", 500, 0, 1, 100, -200, 200);
   h2D_METy_FWHT= fs->make<TH2D>("h2D_METy_FWHT",  "h2D_METy_FWHT PT; HT(FW) / HT; Number of Event", 500, 0, 1, 100, -200, 200);
+
+  h2D_METx_NPU= fs->make<TH2D>("h2D_METx_NPU",  "h2D_METx_NPU PT; NPU; Number of Event", 250, 0, 250, 100, -200, 200);
+  h2D_METy_NPU= fs->make<TH2D>("h2D_METy_NPU",  "h2D_METy_NPU PT; NPU; Number of Event", 250, 0, 250, 100, -200, 200);
 
   return true;
 }       // -----  end of function METPerformance::BookHistogram  -----
@@ -225,6 +235,7 @@ bool METPerformance::RecoEvent()
   BB_HT = 0.0;
   EC_HT = 0.0;
   FW_HT = 0.0;
+  NPU = GetNPU();
 
 
   double SumEt1 = 0;
@@ -451,6 +462,8 @@ bool METPerformance::FillMETPerf()
   h2D_METy_ECHT->Fill(EC_HT/SumEt, MET.Py());
   h2D_METx_FWHT->Fill(FW_HT/SumEt, MET.Px());
   h2D_METy_FWHT->Fill(FW_HT/SumEt, MET.Py());
+  h2D_METx_NPU->Fill(NPU, MET.Px());
+  h2D_METy_NPU->Fill(NPU, MET.Py());
 
   if(! PassZCut()) return false;
 
@@ -467,10 +480,12 @@ bool METPerformance::FillMETPerf()
   hParrallelZPT->Fill(Parrallel + RecoZ.Pt());
   hPerpendicular->Fill(Perpendicular);
 
+
   // 2D Performance
   h2D_Parrallel ->Fill(RecoZ.Pt(), Parrallel + RecoZ.Pt());
   h2D_ParrallelZpt ->Fill(RecoZ.Pt(), -1 * Parrallel / RecoZ.Pt());
   h2D_Perperndicular ->Fill(RecoZ.Pt(), Perpendicular);
+  h2D_SumET_Zpt->Fill(RecoZ.Pt(), SumEt);
 
   return true;
 }       // -----  end of function METPerformance::FillMETPerf  -----
@@ -483,13 +498,17 @@ bool METPerformance::GetInputTag(const edm::ParameterSet& iConfig)
 {
   MuonInputTag_   = iConfig.getParameter<edm::InputTag>("MuonInputTag");
   PFJetInputTag_  = iConfig.getParameter<edm::InputTag>("PFJetInputTag");
+  GenJetInputTag_ = iConfig.getParameter<edm::InputTag>("GenJetInputTag");
   srcRhoInputTag_ = iConfig.getParameter<edm::InputTag>("srcRhoTag");
   PileUpInfoTag_  = iConfig.getParameter<edm::InputTag>("PileUpInfoTag");
 
   L1JECTag_ = iConfig.getParameter<std::string>("L1JECTag");
   L2JECTag_ = iConfig.getParameter<std::string>("L2JECTag");
   L3JECTag_ = iConfig.getParameter<std::string>("L3JECTag");
-  JetJECThres= iConfig.getParameter<double>("JetJECThresTag");
+  
+  JetJECThres= iConfig.getUntrackedParameter<double>("JetJECThresTag", 0);
+  UseGenJets =  iConfig.getUntrackedParameter<bool>("UseGenJets", false);
+  JetsMatchedGen =  iConfig.getUntrackedParameter<bool>("JetsMatchedGen", false);
 
   return true;
 }       // -----  end of function METPerformance::GetInputTag  -----
@@ -504,6 +523,7 @@ bool METPerformance::GetHandleByLabel(const edm::Event& iEvent)
   iEvent.getByLabel(PFJetInputTag_, PFJetHdl); 
   iEvent.getByLabel(srcRhoInputTag_, srcRhoHdl); 
   iEvent.getByLabel(PileUpInfoTag_, PileUpInfoHdl); 
+  iEvent.getByLabel(GenJetInputTag_, GenJetHdl); 
   return true;
 }       // -----  end of function METPerformance::GetHandleByLabel  -----
 
@@ -514,13 +534,150 @@ bool METPerformance::GetHandleByLabel(const edm::Event& iEvent)
 std::vector<reco::PFJet> METPerformance::GetRawJets() 
 {
   RawJets.clear();
+
+  // Set doesn't work with reco::PFJet, changed to iterator
+  std::set<reco::PFJetCollection::const_iterator> setJet;
+
   for(reco::PFJetCollection::const_iterator it=PFJetHdl->begin();
       it!=PFJetHdl->end(); it++)
   {
     reco::PFJet rawJet = *it;
-    RawJets.push_back(rawJet);
+    if (!JetsMatchedGen)
+    {
+      RawJets.push_back(rawJet);
+    } else{
+      DeltaR<reco::PFJet, reco::GenJet> deltaR;
+
+      // Using only jets that are matched to genjets
+      // If a single genjet pointing at random direction, look for the exact
+      // oposited for the pileup jet
+
+      TLorentzVector optJet;
+      TLorentzVector rawJetTLV;
+      for(unsigned int i=0; i < GenJetHdl->size(); ++i)
+      {
+        reco::GenJet gjet = GenJetHdl->at(i);
+        if (deltaR(rawJet, gjet) <= 0.2)
+          setJet.insert(it);
+        optJet.SetPtEtaPhiE(gjet.pt(), -1 * gjet.eta(), -1* gjet.phi(), gjet.energy());
+        rawJetTLV.SetPtEtaPhiE(rawJet.pt(), rawJet.eta(), rawJet.phi(), rawJet.energy());
+        if (optJet.DeltaR(rawJetTLV) <= 0.2)
+          setJet.insert(it);
+      }
+
+    }
+  }
+
+  if (JetsMatchedGen && setJet.size() != 0)
+  {
+    for(std::set<reco::PFJetCollection::const_iterator>::const_iterator it=setJet.begin();
+      it!=setJet.end(); ++it)
+    {
+      RawJets.push_back(*(*it));
+    }
   }
   
   return RawJets;
 }       // -----  end of function METPerformance::GetRawJets  -----
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  METPerformance::GetNPU
+//  Description:  
+// ===========================================================================
+int METPerformance::GetNPU() const
+{
+  for(unsigned int i=0; i < PileUpInfoHdl->size(); ++i)
+  {
+    PileupSummaryInfo pu = PileUpInfoHdl->at(i);
+    if (pu.getBunchCrossing() == 0)
+      return pu.getPU_NumInteractions();
+  }
+  return -1;
+}       // -----  end of function METPerformance::GetNPU  -----
+
+
+// ===  FUNCTION  ============================================================
+//         Name:  METPerformance::RecoEventGen
+//  Description:  
+// ===========================================================================
+bool METPerformance::RecoEventGen()
+{
+  // Clear up event default 
+  RecoZ.SetXYZT(0.0, 0.0, 0.0, 0.0);
+  MET.SetMagPhi(0.0, 0.0);
+  Recoil.SetXYZT(0.0, 0.0, 0.0, 0.0);
+  SumEt = 0;
+  Parrallel = 0;
+  Perpendicular = 0;
+  BB_HT = 0.0;
+  EC_HT = 0.0;
+  FW_HT = 0.0;
+  NPU = GetNPU();
+
+
+  double SumEt1 = 0;
+  double SumEt5 = 0;
+  double SumEt10 = 0;
+  double SumEt30 = 0;
+
+  // Local temp variable.
+  TLorentzVector lVec(0,0,0,0);
+  TLorentzVector lUT(0,0,0,0);
+  TLorentzVector lQT(0,0,0,0);
+
+  // Raw MET = - Sum(PFJets)
+  for(unsigned int i=0; i < GenJetHdl->size(); ++i)
+  {
+    reco::GenJet jet = GenJetHdl->at(i);
+    TLorentzVector jetv(jet.px(), jet.py(), jet.pz(), jet.energy());
+    assert(fabs(jetv.Pt() - jet.pt() ) < 0.01);
+    lVec -= jetv;
+    lUT += jetv;
+    SumEt += jetv.Pt();
+
+    if (jet.pt() > 1) SumEt1 += jet.pt();
+    if (jet.pt() > 5) SumEt5 += jet.pt();
+    if (jet.pt() > 10) SumEt10 += jet.pt();
+    if (jet.pt() > 30) SumEt30 += jet.pt();
+
+    hJetPT->Fill(jet.pt());
+    hJetEta->Fill(jet.eta());
+    h2D_JetEta_JetPT->Fill(jet.eta(), jet.pt());
+
+    HT += jet.pt();
+    if (fabs(jet.eta()) <= 1.3) BB_HT += jet.pt();
+    if (fabs(jet.eta()) > 1.3 && fabs(jet.eta()) < 3.0) EC_HT += jet.pt();
+    if (fabs(jet.eta()) >= 3.0) FW_HT += jet.pt();
+  }
+
+  for(unsigned int i=0; i < MuonHdl->size(); ++i)
+  {
+    reco::Muon muon = MuonHdl->at(i);
+    TLorentzVector muonv(muon.px(), muon.py(), muon.pz(), muon.energy());
+    //assert(muonv.Pt() == muon.pt());
+    assert(fabs(muonv.Pt() - muon.pt() ) < 0.01);
+    //lVec -= muonv;
+    //SumEt += muonv.Pt();
+    lQT += muonv;
+    //lUT -= muonv; //Since GenJet has Muons, removing them here 
+  }
+
+  RecoZ = lQT;
+  assert( lQT == RecoZ );
+  Recoil = lUT;
+  MET.SetMagPhi(lVec.Pt(), lVec.Phi());
+
+  double Dphi =  lUT.DeltaPhi(lQT);
+  Perpendicular = lUT.Pt() * std::sin(Dphi);
+  Parrallel = lUT.Pt() * std::cos(Dphi);
+
+  hUnCluSumET->Fill(UnCluSumET);
+  hSumET1->Fill(SumEt1);
+  hSumET5->Fill(SumEt5);
+  hSumET10->Fill(SumEt10);
+  hSumET30->Fill(SumEt30);
+
+  return true;
+}       // -----  end of function METPerformance::RecoEventGen  -----
 
