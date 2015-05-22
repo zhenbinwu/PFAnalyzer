@@ -14,22 +14,24 @@ import copy, os, time
 from CRABAPI.RawCommand import crabCommand
 from crab3Config import config as config
 
-workArea = 'CrabTest/April0PU'
-outDir =  '/store/user/benwu/JetMET_TP/MET/ANPAS'
+workArea = 'CrabTest/HGCalnoHF'
+outDir =  '/store/user/benwu/JetMET_TP/MET/HGCalnoHF'
 
 jobslist = {
-    'SLHC23p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           3],
-    'SLHC23p1_SHCal_0PU_MET'   : ['../python/METPerformance_SHCal_NoPU_cfg_RECO.py',   '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_NoPU_PH2_1K_FB_V6-v1/GEN-SIM-RECO',                3],
-
-    'SLHC23p1_Aged_140PU_MET'  : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 3],
-    'SLHC23p1_Aged_0PU_MET'    : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/GEN-SIM-RECO',      3],
-
-    'SLHC23p1_NoAged_50PU_MET' : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',     3],
-    'SLHC23p1_NoAged_0PU_MET'  : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_NoPU_DES19_62_V8-v1/GEN-SIM-RECO',         3],
+    #'SLHC23p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           3],
+    #'SLHC25p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALMar26_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           2],
+    #'SLHC23p1_SHCal_0PU_MET'   : ['../python/METPerformance_SHCal_NoPU_cfg_RECO.py',   '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_NoPU_PH2_1K_FB_V6-v1/GEN-SIM-RECO',                2],
+    #'SLHC23p1_Aged_140PU_MET'  : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 2],
+    ##'SLHC23p1_Aged_0PU_MET'    : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/GEN-SIM-RECO',      2, 2],
+    #'SLHC23p1_NoAged_50PU_MET' : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',     2],
+    #'SLHC23p1_NoAged_0PU_MET'  : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_NoPU_DES19_62_V8-v1/GEN-SIM-RECO',         2, 2],
 
     #'SLHC23p1_HGCal_140PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PU_PH2_1K_FB_V6_UPGHGCalPandPU140-v1/GEN-SIM-RECO', 1],
     #'SLHC23p1_HGCal_0PU_MET' : ['../METPerformance_HGCal_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC25_patch2-PH2_1K_FB_V6_UPGHGCalPand-v1/GEN-SIM-RECO', 1],
 
+    #'SLHC25p2_HGCal_140PU_JET' : ['../python/PFAnalyzer_Phase2_cfg.py', '/QCD_Pt-15to3000_Tune4C_14TeV_pythia8/TP2023HGCALDR-HGCALMar26_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 3],
+    #'SLHC25p2_HGCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALMar26_PU140BX25_PH2_1K_FB_V6-v2/GEN-SIM-RECO', 2],
+    'SLHC25p4_HGCal_140PU_MET' : ['../python/METPerformance_HGCal_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALnewsplit_PU140BX25_newsplitPU140_PH2_1K_FB_V6-v3/GEN-SIM-RECO', 10],
 }
 tasklist = {}
 
@@ -39,7 +41,7 @@ for key, value in jobslist.items():
     tempconfig.General.requestName = key
     tempconfig.General.workArea = workArea
     tempconfig.Data.publishDataName = key
-    tempconfig.Data.outLFN = outDir
+    tempconfig.Data.outLFNDirBase = outDir
     if len(value) > 0:
         tempconfig.JobType.psetName = value[0]
     if len(value) > 1:
@@ -61,5 +63,5 @@ while True:
             print "For task", request, "the job states are", results['jobsPerStatus']
         except:
             pass
-        time.sleep(60)
+        time.sleep(120)
 
