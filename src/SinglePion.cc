@@ -485,7 +485,7 @@ std::vector<unsigned int> SinglePion::FilterTurePion(std::vector<unsigned int> G
     
     for(unsigned int j=0; j < GenIdx.size(); j++)
     {
-      reco::GenParticle gen = PFCandidateHdl->at(GenIdx.at(j));
+      reco::GenParticle gen = GenParticleHdl->at(GenIdx.at(j));
       double delR = deltaR(can, gen);
       double Ediff = fabs(can.trackRef()->outerP()/gen.energy() -1);
       if (delR< 0.5)
@@ -693,7 +693,7 @@ bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
       j != CaloTowerHdl->end(); j++) {
     for (unsigned int i = 0; i < GenIdx.size(); ++i)
     {
-      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      reco::GenParticle gen= GenParticleHdl->at(GenIdx.at(i));
       if (CalodeltaR(gen, *j) < 1.0)
       {
         CaloTowerMap[j->id()] = j;
@@ -730,7 +730,7 @@ bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
 
     for (unsigned int i = 0; i < GenIdx.size(); ++i)
     {
-      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      reco::GenParticle gen= GenParticleHdl->at(GenIdx.at(i));
       if (reco::deltaR(gen.eta(), gen.phi(), cell->getPosition().eta(), cell->getPosition().phi() < 0.5))
       {
         RecHitSum.at(i) += k->energy();
@@ -763,7 +763,7 @@ bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
 
     for (unsigned int i = 0; i < GenIdx.size(); ++i)
     {
-      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      reco::GenParticle gen= GenParticleHdl->at(GenIdx.at(i));
       if (reco::deltaR(gen.eta(), gen.phi(), cell->getPosition().eta(), cell->getPosition().phi() < 0.5))
       {
         PionMap[GenIdx.at(i)].vEcalRecHit.push_back(ecalhit);
@@ -776,7 +776,7 @@ bool SinglePion::GetHitMapGen( std::vector<unsigned int> GenIdx )
 
     for (unsigned int i = 0; i < GenIdx.size(); ++i)
     {
-      reco::GenParticle gen= PFCandidateHdl->at(GenIdx.at(i));
+      reco::GenParticle gen= GenParticleHdl->at(GenIdx.at(i));
       if (reco::deltaR(gen.eta(), gen.phi(), cell->getPosition().eta(), cell->getPosition().phi() < 0.5))
       {
         PionMap[GenIdx.at(i)].vEcalRecHit.push_back(ecalhit);
