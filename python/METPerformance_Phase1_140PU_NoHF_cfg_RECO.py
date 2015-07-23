@@ -6,22 +6,27 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-JetEta = 999
+JetEta = 3
 
 process.source = cms.Source("PoolSource",
+                            #fileNames = cms.untracked.vstring('/store/user/lpcjme/benwu/TP_SLHC23/DYMM_Phase1_50PU_noaged/DYMM_Phase1_50PU_noaged_192_1_VUT.root')
                             fileNames = cms.untracked.vstring(
-                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/00000/06C1D071-40B1-E411-8DD9-00266CF9157C.root',
-                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/00000/0E210D58-10B1-E411-BE66-7845C4FC373A.root'
-                                #'/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1NoAgedJan23_NoPU_DES19_62_V8-v1/60000/002E000C-24C0-E411-9BB0-C4346BC87798.root'
+                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/00000/04A2E804-E1BD-E411-9040-008CFA0518D4.root',
+                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/00000/04F6572C-0FBE-E411-BB5B-00266CFFCCC8.root',
+                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/00000/0858D297-46BD-E411-B52C-00266CFF0840.root',
+                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/00000/08A33DAC-DABD-E411-BE9D-00266CFEFDC4.root',
+
+                                #'/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/60000/0048AD1F-FEBF-E411-900E-00266CFFC80C.root'
+                            )
+
                             #fileNames = cms.untracked.vstring(filelist)
                             #fileNames = cms.untracked.vstring( ['file:%s' % x.strip() for x in open(options.filelist, 'r').readlines()])
-                            #fileNames = cms.untracked.vstring('file:%s' % x for x in glob.glob("/eos/uscms/store/user/lpcjme/benwu/TP_SLHC23/DYMM_Phase1_50PU_aged/DYMM_Phase1_50PU_age*.root"))
-                            )
+                            #fileNames = cms.untracked.vstring('file:%s' % x for x in glob.glob("/eos/uscms/store/user/lpcjme/benwu/TP_SLHC23/DYMM_Phase1_140PU_aged/DYMM_Phase1_140PU_age*.root"))
                             )
 
 process.TFileService = cms.Service("TFileService",
                                    #fileName = cms.string(options.outputFile),
-                                   fileName = cms.string("Phase1_ZMM_50PU.root"),
+                                   fileName = cms.string("Phase1_ZMM_140PU.root"),
                                    closeFileFast = cms.untracked.bool(True)
                                    )
 
@@ -93,9 +98,9 @@ process.ak4PFGenRaw = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4PFGenJEC = cms.EDAnalyzer('METPerformance',
-                                     L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                     L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                     L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                     L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                     L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                     L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                      MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      JetEtaThresTag = cms.untracked.double(JetEta),
                                      PFJetInputTag = cms.InputTag("ak4PFJets"),
@@ -108,9 +113,9 @@ process.ak4PFGenJEC = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4_10_PFJEC = cms.EDAnalyzer('METPerformance',
-                                      L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                      L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                      L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                      L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                      L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                      L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                       MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                       JetJECThresTag = cms.untracked.double(10),
                                       JetEtaThresTag = cms.untracked.double(JetEta),
@@ -123,9 +128,9 @@ process.ak4_10_PFJEC = cms.EDAnalyzer('METPerformance',
                                       )
 
 process.ak4_15_PFJEC = cms.EDAnalyzer('METPerformance',
-                                      L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                      L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                      L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                      L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                      L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                      L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                       MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      JetEtaThresTag = cms.untracked.double(JetEta),
                                       JetJECThresTag = cms.untracked.double(15),
@@ -138,9 +143,9 @@ process.ak4_15_PFJEC = cms.EDAnalyzer('METPerformance',
                                       )
 
 process.ak4_20_PFJEC = cms.EDAnalyzer('METPerformance',
-                                      L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                      L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                      L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                      L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                      L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                      L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                       MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                       JetEtaThresTag = cms.untracked.double(JetEta),
                                       JetJECThresTag = cms.untracked.double(20),
@@ -153,9 +158,9 @@ process.ak4_20_PFJEC = cms.EDAnalyzer('METPerformance',
                                       )
 
 process.ak4_30_PFJEC = cms.EDAnalyzer('METPerformance',
-                                      L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                      L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                      L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                      L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                      L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                      L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                       MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                       JetEtaThresTag = cms.untracked.double(JetEta),
                                       JetJECThresTag = cms.untracked.double(30),
@@ -184,9 +189,9 @@ process.ak4PFCHSRaw = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4_10_PFCHSJEC = cms.EDAnalyzer('METPerformance',
-                                         L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
-                                         L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PFchs.txt"),
-                                         L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PFchs.txt"),
+                                         L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
+                                         L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PFchs.txt"),
+                                         L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PFchs.txt"),
                                          MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                          JetJECThresTag = cms.untracked.double(10),
                                          PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
@@ -198,9 +203,9 @@ process.ak4_10_PFCHSJEC = cms.EDAnalyzer('METPerformance',
                                          )
 
 process.ak4_15_PFCHSJEC = cms.EDAnalyzer('METPerformance',
-                                         L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
-                                         L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PFchs.txt"),
-                                         L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PFchs.txt"),
+                                         L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
+                                         L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PFchs.txt"),
+                                         L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PFchs.txt"),
                                          MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                          JetJECThresTag = cms.untracked.double(15),
                                          PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
@@ -212,9 +217,9 @@ process.ak4_15_PFCHSJEC = cms.EDAnalyzer('METPerformance',
                                          )
 
 process.ak4_20_PFCHSJEC = cms.EDAnalyzer('METPerformance',
-                                         L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
-                                         L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PFchs.txt"),
-                                         L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PFchs.txt"),
+                                         L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
+                                         L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PFchs.txt"),
+                                         L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PFchs.txt"),
                                          MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                          JetJECThresTag = cms.untracked.double(20),
                                          PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
@@ -226,9 +231,9 @@ process.ak4_20_PFCHSJEC = cms.EDAnalyzer('METPerformance',
                                          )
 
 process.ak4_30_PFCHSJEC = cms.EDAnalyzer('METPerformance',
-                                         L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
-                                         L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PFchs.txt"),
-                                         L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PFchs.txt"),
+                                         L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
+                                         L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PFchs.txt"),
+                                         L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PFchs.txt"),
                                          MuonInputTag = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                          JetJECThresTag = cms.untracked.double(30),
                                          PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
@@ -256,9 +261,9 @@ process.ak4PuppiRaw = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4PuppiJEC = cms.EDAnalyzer('METPerformance',
-                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L1FastJet_AK4PUPPI.txt"),
-                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L2Relative_AK4PUPPI.txt"),
-                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L3Absolute_AK4PUPPI.txt"),
+                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L1FastJet_AK4PUPPI.txt"),
+                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L2Relative_AK4PUPPI.txt"),
+                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L3Absolute_AK4PUPPI.txt"),
                                      MuonInputTag   = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      PFJetInputTag  = cms.InputTag("ak4PuppiJets"),
                                      srcRhoTag      = cms.InputTag(''),
@@ -271,9 +276,9 @@ process.ak4PuppiJEC = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4PuppiJEC10 = cms.EDAnalyzer('METPerformance',
-                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L1FastJet_AK4PUPPI.txt"),
-                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L2Relative_AK4PUPPI.txt"),
-                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L3Absolute_AK4PUPPI.txt"),
+                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L1FastJet_AK4PUPPI.txt"),
+                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L2Relative_AK4PUPPI.txt"),
+                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L3Absolute_AK4PUPPI.txt"),
                                      MuonInputTag   = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      PFJetInputTag  = cms.InputTag("ak4PuppiJets"),
                                      srcRhoTag      = cms.InputTag(''),
@@ -285,9 +290,9 @@ process.ak4PuppiJEC10 = cms.EDAnalyzer('METPerformance',
                                      JetsMatchedGen =  cms.untracked.bool(False),
                                      )
 process.ak4PuppiJEC20 = cms.EDAnalyzer('METPerformance',
-                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L1FastJet_AK4PUPPI.txt"),
-                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L2Relative_AK4PUPPI.txt"),
-                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L3Absolute_AK4PUPPI.txt"),
+                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L1FastJet_AK4PUPPI.txt"),
+                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L2Relative_AK4PUPPI.txt"),
+                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L3Absolute_AK4PUPPI.txt"),
                                      MuonInputTag   = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      PFJetInputTag  = cms.InputTag("ak4PuppiJets"),
                                      srcRhoTag      = cms.InputTag(''),
@@ -300,9 +305,9 @@ process.ak4PuppiJEC20 = cms.EDAnalyzer('METPerformance',
                                      )
 
 process.ak4PuppiJEC30 = cms.EDAnalyzer('METPerformance',
-                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L1FastJet_AK4PUPPI.txt"),
-                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L2Relative_AK4PUPPI.txt"),
-                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L3Absolute_AK4PUPPI.txt"),
+                                     L1JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L1FastJet_AK4PUPPI.txt"),
+                                     L2JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L2Relative_AK4PUPPI.txt"),
+                                     L3JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L3Absolute_AK4PUPPI.txt"),
                                      MuonInputTag   = cms.InputTag("ZMMProducer", "ZMMTightMuon"),
                                      PFJetInputTag  = cms.InputTag("ak4PuppiJets"),
                                      srcRhoTag      = cms.InputTag(''),
@@ -344,7 +349,7 @@ process.JETak4PFRaw = cms.EDAnalyzer('JetPerformance',
 
 
 process.JETak4PFJECL1 = cms.EDAnalyzer('JetPerformance',
-                                       L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
+                                       L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
                                        L2JECTag = cms.string(""),
                                        L3JECTag = cms.string(""),
                                        srcRhoTag      = cms.InputTag('kt6PFJets','rho'),
@@ -354,9 +359,9 @@ process.JETak4PFJECL1 = cms.EDAnalyzer('JetPerformance',
                                        )
 
 process.JETak4PFJEC = cms.EDAnalyzer('JetPerformance',
-                                     L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PF.txt"),
-                                     L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PF.txt"),
-                                     L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PF.txt"),
+                                     L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PF.txt"),
+                                     L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PF.txt"),
+                                     L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PF.txt"),
                                      srcRhoTag      = cms.InputTag('kt6PFJets','rho'),
                                      PFJetInputTag = cms.InputTag("ak4PFJets"),
                                      GenJetInputTag = cms.InputTag("ak4GenJets"),
@@ -378,7 +383,7 @@ process.JETak4PFCHSRaw = cms.EDAnalyzer('JetPerformance',
                                         )
 
 process.JETak4PFCHSJECL1 = cms.EDAnalyzer('JetPerformance',
-                                          L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
+                                          L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
                                           L2JECTag = cms.string(""),
                                           L3JECTag = cms.string(""),
                                           PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
@@ -388,9 +393,9 @@ process.JETak4PFCHSJECL1 = cms.EDAnalyzer('JetPerformance',
                                           )
 
 process.JETak4PFCHSJEC = cms.EDAnalyzer('JetPerformance',
-                                        L1JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L1FastJet_AK4PFchs.txt"),
-                                        L2JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L2Relative_AK4PFchs.txt"),
-                                        L3JECTag = cms.string("SLHC23p1_PhaseI_50PU_V2_L3Absolute_AK4PFchs.txt"),
+                                        L1JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L1FastJet_AK4PFchs.txt"),
+                                        L2JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L2Relative_AK4PFchs.txt"),
+                                        L3JECTag = cms.string("SLHC23p1_PhaseI_140PU_V2_L3Absolute_AK4PFchs.txt"),
                                         PFJetInputTag = cms.InputTag("ak4PFJetsCHS"),
                                         GenJetInputTag = cms.InputTag("ak4GenJets"),
                                         srcRhoTag      = cms.InputTag('kt6PFJets','rho'),
@@ -412,9 +417,9 @@ process.JETak4PuppiRaw = cms.EDAnalyzer('JetPerformance',
                                         PileUpInfoTag = cms.InputTag("addPileupInfo"),
                                         )
 process.JETak4PuppiJEC = cms.EDAnalyzer('JetPerformance',
-                                        L1JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L1FastJet_AK4PUPPI.txt"),
-                                        L2JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L2Relative_AK4PUPPI.txt"),
-                                        L3JECTag       = cms.string("SLHC23p1_PhaseI_50PU_V3_L3Absolute_AK4PUPPI.txt"),
+                                        L1JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L1FastJet_AK4PUPPI.txt"),
+                                        L2JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L2Relative_AK4PUPPI.txt"),
+                                        L3JECTag       = cms.string("SLHC23p1_PhaseI_140PU_V3_L3Absolute_AK4PUPPI.txt"),
                                         PFJetInputTag = cms.InputTag("ak4PuppiJets"),
                                         GenJetInputTag = cms.InputTag("ak4GenJets"),
                                         srcRhoTag      = cms.InputTag(''),
@@ -426,8 +431,8 @@ process.GenProducer = cms.Sequence(process.genParticlesForJetsNoMuNoNu  * proces
 #process.PFProducer = cms.Sequence(process.ak4PFJets * process.ak4PFRaw * process.ak4_10_PFJEC *  process.ak4PFGenRaw * process.ak4PFGenJEC *
                                   #process.ak4_15_PFJEC * process.ak4_20_PFJEC *process.ak4_30_PFJEC )
 
-#process.PFProducer = cms.Sequence(process.ak4PFJets * process.ak4PFRaw * process.ak4_10_PFJEC )
 process.PFProducer = cms.Sequence(process.ak4PFJets * process.ak4PFRaw * process.ak4PFGenRaw * process.ak4PFGenJEC * process.ak4_10_PFJEC )
+                                  #process.ak4PFGenRaw * process.ak4PFGenJEC * process.ak4_15_PFJEC * process.ak4_20_PFJEC *process.ak4_30_PFJEC )
 process.PFCHSProducer = cms.Sequence(process.goodOfflinePrimaryVertices * process.PFPileUpZMM  * process.PFNoPileUpZMM *
                                      process.ak4PFJetsCHS * process.ak4PFCHSRaw * process.ak4_10_PFCHSJEC * process.ak4_15_PFCHSJEC *
                                      process.ak4_20_PFCHSJEC * process.ak4_30_PFCHSJEC )

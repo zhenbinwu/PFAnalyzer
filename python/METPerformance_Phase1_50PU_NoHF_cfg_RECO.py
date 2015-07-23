@@ -6,7 +6,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-JetEta = 999
+JetEta = 3
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
