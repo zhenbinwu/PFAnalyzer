@@ -88,6 +88,7 @@ class METPerformance : public edm::EDAnalyzer {
     bool BookHistogram();
     TLorentzVector GetRecoZ();
 
+    bool SlimJet(reco::PFJet jet);
     int GetNPU() const;
     bool PassZCut() const;
     bool RecoEvent();
@@ -121,6 +122,7 @@ class METPerformance : public edm::EDAnalyzer {
     std::string L2JECTag_;
     std::string L3JECTag_;
     double JetJECThres;
+    double JetEtaThres;
     int NPU;
     bool UseGenJets;
     bool JetsMatchedGen;
@@ -158,6 +160,17 @@ class METPerformance : public edm::EDAnalyzer {
     TH1D* hMETPhi;
     TH1D* hMETx;
     TH1D* hMETy;
+    TH1D* h20METPT;
+    TH1D* h20METPhi;
+    TH1D* h20METx;
+    TH1D* h20METy;
+
+
+    TH1D* h40METPT;
+    TH1D* h40METPhi;
+    TH1D* h40METx;
+    TH1D* h40METy;
+
     TH1D* hlogSumET;
     TH1D* hMETSig;
     TH1D* hSumET;

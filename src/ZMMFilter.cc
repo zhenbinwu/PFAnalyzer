@@ -259,6 +259,8 @@ std::vector<reco::PFCandidate> ZMMFilter::GetPFCandidatesNoMuon(const std::vecto
     {
       reco::Muon muon = ZMMTightMuon.at(j);
       double delR = deltaR(can, muon);
+      //if (delR < 0.1 && can.particleId() == reco::PFCandidate::mu)
+        //std::cout << " PFCan " << i << " pt " << can.pt() <<" eta " << can.eta()  <<" phi " << can.phi()<<" : muon " << " pt " << muon.pt() <<" eta " << muon.eta() <<" detltaR " << delR << std::endl;
       if (delR > 0.05 ) continue;
       if (fabs(can.pt() - muon.pt()) > 0.1) continue;
       if (can.particleId() != reco::PFCandidate::mu) continue;
@@ -271,8 +273,9 @@ std::vector<reco::PFCandidate> ZMMFilter::GetPFCandidatesNoMuon(const std::vecto
     }
   }
 
-  assert(matchcount == ZMMTightMuon.size());
-  assert(PFCandidateHdl->size() - temp.size() == matchcount);
+  if (matchcount != ZMMTightMuon.size())
+    temp.clear();
+  //assert(PFCandidateHdl->size() - temp.size() == matchcount);
 
   return temp;
 }       // -----  end of function ZMMFilter::GetPFCandidatesNoMuon  -----

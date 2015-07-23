@@ -49,6 +49,7 @@ METPerformance::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   using namespace edm;
   GetHandleByLabel(iEvent);
 
+  if (PFJetHdl->size() == 0) return;
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
   Handle<ExampleData> pIn;
@@ -156,7 +157,7 @@ bool METPerformance::PassZCut() const
 {
   if (! IsDiMuon ()) return false;
   if (RecoZ.M() < 80 || RecoZ.M() > 200) return false;
-  //if (RecoZ.Pt() < 30) return false;
+  //if (fabs(RecoZ.Eta()) > 3.0) return false;
 
   return true;
 }       // -----  end of function METPerformance::PassZCut  -----
@@ -177,6 +178,17 @@ bool METPerformance::BookHistogram()
   hMETPhi  = fs->make<TH1D>("METPhi",  "MET Phi; MET Phi; Number of Event", 28, 0, 7);
   hMETx  = fs->make<TH1D>("METx",  "MET x; MET x; Number of Event", 100, -200, 200);
   hMETy  = fs->make<TH1D>("METy",  "MET y; MET y; Number of Event", 100, -200, 200);
+
+  h20METPT  = fs->make<TH1D>("METPT_20",  "MET PT; MET PT (qt > 20GeV); Number of Event", 100, 0 , 500);
+  h20METPhi  = fs->make<TH1D>("METPhi_20",  "MET Phi; MET Phi (qt > 20GeV); Number of Event", 28, 0, 7);
+  h20METx  = fs->make<TH1D>("METx_20",  "MET x; MET x (qt > 20GeV); Number of Event", 100, -200, 200);
+  h20METy  = fs->make<TH1D>("METy_20",  "MET y; MET y (qt > 20GeV); Number of Event", 100, -200, 200);
+  
+  h40METPT  = fs->make<TH1D>("METPT_40",  "MET PT; MET PT (qt > 40GeV); Number of Event", 100, 0 , 500);
+  h40METPhi  = fs->make<TH1D>("METPhi_40",  "MET Phi; MET Phi (qt > 40GeV); Number of Event", 28, 0, 7);
+  h40METx  = fs->make<TH1D>("METx_40",  "MET x; MET x (qt > 40GeV); Number of Event", 100, -200, 200);
+  h40METy  = fs->make<TH1D>("METy_40",  "MET y; MET y (qt > 40GeV); Number of Event", 100, -200, 200);
+
   hSumET  = fs->make<TH1D>("SumET",  "MET PT; SumET; Number of Event", 500, 0, 10000);
   hSumET1  = fs->make<TH1D>("SumET1",  "MET PT; SumET (PT>1); Number of Event", 100, 0, 5000);
   hSumET5  = fs->make<TH1D>("SumET5",  "MET PT; SumET (PT>5); Number of Event", 100, 0, 5000);
@@ -480,6 +492,23 @@ bool METPerformance::FillMETPerf()
   hParrallelZPT->Fill(Parrallel + RecoZ.Pt());
   hPerpendicular->Fill(Perpendicular);
 
+  //if (RecoZ.Pt() > 20 && fabs(RecoZ.Eta()) < 3.0)
+  if (RecoZ.Pt() > 20 )
+  {
+    h20METPT->Fill(MET.Mod());
+    h20METPhi->Fill(MET.Phi());
+    h20METx->Fill(MET.Px());
+    h20METy->Fill(MET.Py());
+  }
+  //if (RecoZ.Pt() > 40 && fabs(RecoZ.Eta()) < 3.0)
+  if (RecoZ.Pt() > 40)
+  {
+    h40METPT->Fill(MET.Mod());
+    h40METPhi->Fill(MET.Phi());
+    h40METx->Fill(MET.Px());
+    h40METy->Fill(MET.Py());
+  }
+ 
 
   // 2D Performance
   h2D_Parrallel ->Fill(RecoZ.Pt(), Parrallel + RecoZ.Pt());
@@ -509,6 +538,7 @@ bool METPerformance::GetInputTag(const edm::ParameterSet& iConfig)
   JetJECThres= iConfig.getUntrackedParameter<double>("JetJECThresTag", 0);
   UseGenJets =  iConfig.getUntrackedParameter<bool>("UseGenJets", false);
   JetsMatchedGen =  iConfig.getUntrackedParameter<bool>("JetsMatchedGen", false);
+  JetEtaThres= iConfig.getUntrackedParameter<double>("JetEtaThresTag", 999);
 
   return true;
 }       // -----  end of function METPerformance::GetInputTag  -----
@@ -542,8 +572,14 @@ std::vector<reco::PFJet> METPerformance::GetRawJets()
       it!=PFJetHdl->end(); it++)
   {
     reco::PFJet rawJet = *it;
+    if (JetEtaThres != 999)
+    {
+      if (fabs(rawJet.eta()) > JetEtaThres) continue;
+    }
+
     if (!JetsMatchedGen)
     {
+      //SlimJet(rawJet);
       RawJets.push_back(rawJet);
     } else{
       DeltaR<reco::PFJet, reco::GenJet> deltaR;
@@ -680,4 +716,28 @@ bool METPerformance::RecoEventGen()
 
   return true;
 }       // -----  end of function METPerformance::RecoEventGen  -----
+
+// ===  FUNCTION  ============================================================
+//         Name:  METPerformance::SlimJet
+//  Description:  /* cursor */
+// ===========================================================================
+bool METPerformance::SlimJet(reco::PFJet jet)
+{
+
+  //std::cout << "orignial jet pt " << jet.pt() << std::endl;
+  std::vector<const reco::Candidate*> jetconst = jet.getJetConstituentsQuick();
+  TLorentzVector  newJet(0, 0, 0, 0);
+  for(unsigned int i=0; i < jetconst.size(); ++i)
+  {
+    if (jetconst.at(i)->charge() != 0)
+    {
+      TLorentzVector temp(jetconst.at(i)->px(), jetconst.at(i)->py(), jetconst.at(i)->pz(), jetconst.at(i)->energy());
+      newJet += temp;
+    }
+  }
+  jet.setP4(reco::Candidate::LorentzVector(newJet.Px(), newJet.Py(), newJet.Pz(), newJet.E()));
+  
+  //std::cout << "new jet pt " << jet.pt() << std::endl;
+  return true;
+}       // -----  end of function METPerformance::SlimJet  -----
 

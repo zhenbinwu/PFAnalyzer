@@ -214,6 +214,12 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TH1D* PFJetRaw_Pt;
     TH1D* PFJetRaw_Eta;
     TH1D* PFJetRaw_Phi;
+    TH1D* PFHad_Pt;
+    TH1D* PFHad_Eta;
+    TH1D* PFHad_Phi;
+    TH1D* PFHadHF_Pt;
+    TH1D* PFHadHF_Eta;
+    TH1D* PFHadHF_Phi;
 
 
     TH1D* CaloJet_Pt;
@@ -599,6 +605,15 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TProfile* PFJetE_Photon;
     TProfile* PFJetE_HFEM;
     TProfile* PFJetE_HFHad;
+    TProfile* PFJetF_PUCh;
+    TProfile* PFJetF_LVCh;
+    TProfile* PFJetF_Ch;
+    TProfile* PFJetF_Nh;
+    TProfile* PFJetF_Ele;
+    TProfile* PFJetF_Muon;
+    TProfile* PFJetF_Photon;
+    TProfile* PFJetF_HFEM;
+    TProfile* PFJetF_HFHad;
 
     TH1D* PUJetRate_BR_Pt_Numerator ;
     TH1D* PUJetRate_BR_Pt_Deminator ;
@@ -609,10 +624,13 @@ class PFAnalyzer : public edm::EDAnalyzer {
     TH1D* PUJetRate_FW_Pt_Numerator ;
     TH1D* PUJetRate_FW_Pt_Deminator ;
     TH1D* PUJetRate_FW_Pt           ;
+
+    TH2D* PFHad_PtVsNPV;
 };
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(PFAnalyzer);
+
 
 
 

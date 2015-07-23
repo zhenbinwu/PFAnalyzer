@@ -42,6 +42,12 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetRaw_Pt = fs->make<TH1D>("PFJetRaw_PT", "PF JetRaw_Pt " ,  100, 0, 500);
   PFJetRaw_Eta =fs->make<TH1D>("PFJetRaw_Eta", "PF JetRaw Eta", 100, -5, 5);
   PFJetRaw_Phi = fs->make<TH1D>("PFJetRaw_Phi", "PF jetRaw Phi", 100, -5, 5);
+  PFHad_Pt = fs->make<TH1D>("PFHad_PT", "PF Had_Pt " ,  100, 0, 100);
+  PFHad_Eta =fs->make<TH1D>("PFHad_Eta", "PF Had Eta", 100, -5, 5);
+  PFHad_Phi = fs->make<TH1D>("PFHad_Phi", "PF Had Phi", 100, -5, 5);
+  PFHadHF_Pt = fs->make<TH1D>("PFHadHF_PT", "PF HadHF_Pt " ,  100, 0, 10);
+  PFHadHF_Eta =fs->make<TH1D>("PFHadHF_Eta", "PF HadHF Eta", 100, -5, 5);
+  PFHadHF_Phi = fs->make<TH1D>("PFHadHF_Phi", "PF HadHF Phi", 100, -5, 5);
 
   PFJet_Pt = fs->make<TH1D>("PFJet_PT", "PF Jet_Pt " ,  100, 0, 500);
   PFJet_Eta =fs->make<TH1D>("PFJet_Eta", "PF Jet Eta", 100, -5, 5);
@@ -308,7 +314,7 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 
 
   // RecHit
-  HcalRH_N = fs->make<TH1D>("HcalRH_N" , "Number of Hbhe RecHit",  300, 0, 0);
+  HcalRH_N = fs->make<TH1D>("HcalRH_N" , "Number of Hbhe RecHit",  300, 0, 3000);
   HcalRH_iEta = fs->make<TH1D>("HcalRH_iEta" , "iEta of Hbhe RecHit",  80, -40, 40);
   HcalRH_iPhi = fs->make<TH1D>("HcalRH_iPhi" , "iPhi of Hbhe RecHit",  240, 0, 80);
   HcalRH_iEtaiPhi = fs->make<TH2D>("HcalRH_iEtaiPhi" , "iEtaiPhi of Hbhe RecHit",  80, -40, 40, 240, 0, 80);
@@ -385,6 +391,7 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJet_HFHad = fs->make<TProfile>("PFJet_HFHad" , "PFJet_HFHad Energy Fraction",  100, -5, 5);
 
   PFCH_EtaVsNPV = fs->make<TH2D>("PFCH_EtaVsNPV " , "PFCH_Eta Vs NPV ",  100, -5, 5, 122, -2, 120);
+  PFHad_PtVsNPV = fs->make<TH2D>("PFHad_PtVsNPV " , "PFCH_Pt Vs NPV ",  100, 0, 10, 122, -2, 120);
 
   PFJetB_PUCh  = fs->make<TProfile>("PFJetB_PUCh " , "PFJetB_PUCh  Energy Fraction",  500, 0, 500);
   PFJetB_LVCh  = fs->make<TProfile>("PFJetB_LVCh " , "PFJetB_LVCh  Energy Fraction",  500, 0, 500);
@@ -406,6 +413,17 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   PFJetE_HFEM  = fs->make<TProfile>("PFJetE_HFEM " , "PFJetE_HFEM  Energy Fraction",  500, 0, 500);
   PFJetE_HFHad = fs->make<TProfile>("PFJetE_HFHad" , "PFJetE_HFHad Energy Fraction",  500, 0, 500);
 
+  PFJetF_PUCh  = fs->make<TProfile>("PFJetF_PUCh " , "PFJetF_PUCh  Energy Fraction",  500, 0, 500);
+  PFJetF_LVCh  = fs->make<TProfile>("PFJetF_LVCh " , "PFJetF_LVCh  Energy Fraction",  500, 0, 500);
+  PFJetF_Ch    = fs->make<TProfile>("PFJetF_Ch   " , "PFJetF_Ch    Energy Fraction",  500, 0, 500);
+  PFJetF_Nh    = fs->make<TProfile>("PFJetF_Nh   " , "PFJetF_Nh    Energy Fraction",  500, 0, 500);
+  PFJetF_Ele   = fs->make<TProfile>("PFJetF_Ele  " , "PFJetF_Ele   Energy Fraction",  500, 0, 500);
+  PFJetF_Photon= fs->make<TProfile>("PFJetF_Photon " , "PFJetF_Photon  Energy Fraction", 500, 0, 500);
+  PFJetF_Muon  = fs->make<TProfile>("PFJetF_Muon " , "PFJetF_Muon  Energy Fraction",  500, 0, 500);
+  PFJetF_HFEM  = fs->make<TProfile>("PFJetF_HFEM " , "PFJetF_HFEM  Energy Fraction",  500, 0, 500);
+  PFJetF_HFHad = fs->make<TProfile>("PFJetF_HFHad" , "PFJetF_HFHad Energy Fraction",  500, 0, 500);
+
+
 
   const int NPtBins = 18;
   const double vpt[NPtBins+1] = {20, 25, 30,35,40,45,57,72,90,120,150,200,300,400,550,750,1000,1500,2000};
@@ -422,6 +440,7 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
   GetInputTag(iConfig);
   //PFJetAna->Test();
   //RecHitAna->SetupHandler(HbHeRecHitHdl, HfRecHitHdl, HoRecHitHdl);
+  PFPUAlgo.setCheckClosestZVertex(false);
 }
 
 
@@ -474,7 +493,7 @@ PFAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   CaloMETAna();
   //PCaloHitAna();
   //PFClusterAna();
-  //PFCandidateAna();
+  PFCandidateAna();
   //RecHitAna->Analyze();
   //for(unsigned int i=0; i < HcalPFRecHitHdl->size(); i++)
   //{
@@ -635,6 +654,7 @@ int PFAnalyzer::GetHandleByLabel(const edm::Event& iEvent)
    iEvent.getByLabel(CaloMETInputTag_, CaloMETHdl); 
 
    iEvent.getByLabel(GenParticleInputTag_, GenParticleHdl); 
+   iEvent.getByLabel(PFCandidateInputTag_, PFCandidateHdl); 
    //iEvent.getByLabel(SimCaloHitInputTag_, SimCaloHitHdl); 
   return 1;
 }       // -----  end of function PFAnalyzer::GetHandleByLabel  -----
@@ -692,9 +712,12 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
   {
     
     reco::PFJet  correctedJet = *it;
-    //PFJetRaw_Pt->Fill(it->pt());
-    //PFJetRaw_Eta->Fill(it->eta());
-    //PFJetRaw_Phi->Fill(it->phi());
+    if (fabs(it->eta()) >= 3.0  && fabs(it->eta()) <= 4.0)
+    {
+      PFJetRaw_Pt->Fill(it->pt());
+      PFJetRaw_Eta->Fill(it->eta());
+      PFJetRaw_Phi->Fill(it->phi());
+    }
 
     //double jec = corrector->correction(correctedJet,iEvent,iSetup);
     //correctedJet.scaleEnergy(jec);
@@ -840,7 +863,6 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
         if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
         {
           int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
-          PFCH_EtaVsNPV->Fill(JetPFCands.at(j)->eta(), vtxid);
           if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
           else PUCh += JetPFCands.at(j)->energy();
         }
@@ -886,7 +908,6 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
         if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
         {
           int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
-          PFCH_EtaVsNPV->Fill(JetPFCands.at(j)->eta(), vtxid);
           if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
           else PUCh += JetPFCands.at(j)->energy();
         }
@@ -912,9 +933,49 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (gjet.pt() >= 150 && gjet.pt() < 200) PFJetG3_Gen150_200_Pt->Fill(res);
       if (gjet.pt() >= 200 && gjet.pt() < 500) PFJetG3_Gen200_500_Pt->Fill(res);
       if (gjet.pt() >= 500 && gjet.pt() < 1000) PFJetG3_Gen500_1000_Pt->Fill(res);
+
+      if (fabs(gjet.eta() ) >= 3.0 && fabs(gjet.eta() ) < 4.0 )
+      {
+        //**************************************************************************//
+        //                            Check Jet Component                           //
+        //**************************************************************************//
+
+        PFJetF_Ch->Fill(gjet.pt(), jet.chargedHadronEnergyFraction()) ;
+        PFJetF_Nh->Fill(gjet.pt(), jet.neutralHadronEnergyFraction()) ;
+        PFJetF_Ele->Fill(gjet.pt(), jet.electronEnergyFraction()) ;
+        PFJetF_Muon->Fill(gjet.pt(), jet.muonEnergyFraction()) ;
+        PFJetF_Photon->Fill(gjet.pt(), jet.photonEnergyFraction()) ;
+        PFJetF_HFEM->Fill(gjet.pt(), jet.HFEMEnergyFraction()) ;
+        PFJetF_HFHad->Fill(gjet.pt(), jet.HFHadronEnergyFraction()) ;
+
+        std::vector<reco::PFCandidatePtr> JetPFCands = jet.getPFConstituents();
+        double LVCh = 0.0;
+        double PUCh = 0.0;
+        for (unsigned int j = 0; j < JetPFCands.size(); ++j)
+        {
+          //std::cout << " id " << JetPFCands.at(j)->particleId() << "  " ;
+          if (JetPFCands.at(j)->particleId() == reco::PFCandidate::h)
+          {
+            int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, *JetPFCands.at(j));
+            if (vtxid == 0 || vtxid == -1) LVCh += JetPFCands.at(j)->energy();
+            else PUCh += JetPFCands.at(j)->energy();
+          }
+        }
+        //std::cout << " " << std::endl;
+        PFJetF_LVCh->Fill(gjet.pt(),   LVCh/jet.energy());
+        PFJetF_PUCh->Fill(gjet.pt(), PUCh/jet.energy());
+        std::vector<const reco::GenParticle*> GenCands = gjet.getGenConstituents();
+        //for(unsigned int k=0; k < GenCands.size(); ++k)
+        //{
+
+          //std::cout << " idx " << GenCands[k]->pdgId() << "  " ;
+        //}
+        //std::cout << " " << std::endl;
+        
+      }
     }
 
-    if (fabs(gjet.eta() ) >= 1.7 && fabs(gjet.eta() ) < 2.7 )
+    if (fabs(gjet.eta() ) >= 2.5 && fabs(gjet.eta() ) < 3 )
     {
       //double res = (jet.pt()-gjet.pt())/gjet.pt();
       if (gjet.pt() >= 10 && gjet.pt() < 20) PFJetG4_Gen10_20_Pt->Fill(res);
@@ -990,7 +1051,6 @@ int PFAnalyzer::PFJetAna(const edm::Event& iEvent, const edm::EventSetup& iSetup
   for(unsigned int i=0; i < PFJetV.size(); ++i)
   {
     reco::PFJet jet = PFJetV.at(i);
-    if (jet.pt() < 100) continue;
 
     PFJet_Ch->Fill(jet.eta(), jet.chargedHadronEnergyFraction()) ;
     PFJet_Nh->Fill(jet.eta(), jet.neutralHadronEnergyFraction()) ;
@@ -1412,15 +1472,41 @@ int PFAnalyzer::PFClusterAna()
 bool PFAnalyzer::PFCandidateAna() 
 {
 
+  //std::cout<<"Run to \033[0;31m"<<__func__<<"\033[0m at \033[1;36m"<< __FILE__<<"\033[0m, line \033[0;34m"<< __LINE__<<"\033[0m"<< std::endl; 
+  int nPU = 0;
+ 
   for(unsigned int i=0; i < PFCandidateHdl->size(); ++i)
   {
     reco::PFCandidate can = PFCandidateHdl->at(i);
-    std::cout << can.particleId()  << std::endl;
+    //std::cout << can.particleId()  << std::endl;
     if (can.particleId() == reco::PFCandidate::h )
     {
-      std::cout << PFPUAlgo.chargedHadronVertex(*VertexHdl, can) << std::endl;
+      int vtxid = PFPUAlgo.chargedHadronVertex(*VertexHdl, can);
+      if (vtxid == -1 || vtxid == 0)
+      {
+        PFHad_Pt->Fill(can.pt());
+        PFHad_Eta->Fill(can.eta());
+        PFHad_Phi->Fill(can.phi());
+        if(fabs(can.eta()) > 3.0 &&fabs(can.eta()) < 4.0  )
+        {
+          PFHadHF_Pt->Fill(can.pt());
+          PFHadHF_Eta->Fill(can.eta());
+          PFHadHF_Phi->Fill(can.phi());
+        }
+        //std::cout<<"VTX "<<i<<" "<< can<<" ivertex " << vtxid <<std::endl;
+      }
+      else
+      {
+        nPU ++;
+        //std::cout<<"PU  "<<i<<" "<< can<<" ivertex " << vtxid <<std::endl;
+      }
+      if(fabs(can.eta()) > 3.0 &&fabs(can.eta()) < 4.0  )
+      {
+        PFHad_PtVsNPV->Fill(can.pt(), vtxid);
+      }
     }
   }
+  //std::cout << "total Vertex" << VertexHdl->size() << " total can " << PFCandidateHdl->size() << " nPU " << nPU << std::endl;
 
   return true;
 }       // -----  end of function PFAnalyzer::PFCandidateAna  -----

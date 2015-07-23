@@ -333,6 +333,8 @@ bool JetPerformance::JetPTMassPerf()
 
   assert(NPU != -99);
 
+  JetEffRate();
+
   for(std::map<unsigned int, unsigned int>::const_iterator it=PFGenJet.begin();
     it!=PFGenJet.end(); ++it)
   {
@@ -342,8 +344,12 @@ bool JetPerformance::JetPTMassPerf()
     double massratio = pjet.mass() / gjet.mass();
     JetPTPerf->Fill(gjet.pt(), ptratio );
     JetMassPerf->Fill(gjet.mass(), massratio );
+    PFJetEff_Pt_Numerator->Fill(gjet.pt());
+    PFJetEff_Eta_Numerator->Fill(gjet.eta());
+
     if (fabs(gjet.eta()) <= 1.3)
     {
+      PFJetEff_PtBB_Numerator->Fill(gjet.pt());
       JetPTPerf_BB->Fill(gjet.pt(), ptratio);
       if (gjet.pt() > 30 && gjet.pt() < 150)
         JetPTPerf_NPU_LowBB->Fill(NPU, ptratio);
@@ -351,6 +357,7 @@ bool JetPerformance::JetPTMassPerf()
 
     if (fabs(gjet.eta()) > 1.3 && fabs(gjet.eta()) <= 3.0)
     {
+      PFJetEff_PtEC_Numerator->Fill(gjet.pt());
       JetPTPerf_EC->Fill(gjet.pt(), ptratio);
       if (gjet.pt() > 30 && gjet.pt() < 150)
         JetPTPerf_NPU_LowEC->Fill(NPU, ptratio);
@@ -358,6 +365,7 @@ bool JetPerformance::JetPTMassPerf()
 
     if (fabs(gjet.eta()) > 3)
     {
+      PFJetEff_PtFW_Numerator->Fill(gjet.pt());
       JetPTPerf_FW->Fill(gjet.pt(), ptratio);
       if (gjet.pt() > 30 && gjet.pt() < 150)
         JetPTPerf_NPU_LowFW->Fill(NPU, ptratio);
@@ -391,6 +399,13 @@ bool JetPerformance::JetEffRate()
   for(unsigned int i=0; i < GenJetHdl->size(); ++i)
   {
     reco::GenJet gjet = GenJetHdl->at(i);
+    PFJetEff_Pt_Deminator->Fill(gjet.pt());
+    PFJetEff_Eta_Deminator->Fill(gjet.eta());
+    if (fabs(gjet.eta()) <= 1.3)     PFJetEff_PtBB_Deminator->Fill(gjet.pt());
+    if (fabs(gjet.eta()) > 1.3 && fabs(gjet.eta()) <= 3.0)     
+      PFJetEff_PtEC_Deminator->Fill(gjet.pt());
+    if (fabs(gjet.eta()) > 3) PFJetEff_PtFW_Deminator->Fill(gjet.pt());
+
   }
 
   return true;
