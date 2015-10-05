@@ -10,8 +10,7 @@ JetEta = 999
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/00000/06C1D071-40B1-E411-8DD9-00266CF9157C.root',
-                                '/store/mc/GEM2019Upg14DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/00000/0E210D58-10B1-E411-BE66-7845C4FC373A.root'
+                                '/store/mc/Upg2017Summer15DR/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEN-SIM-RECO/NoAgingPU50_DES17_62_V8-v1/10000/000E1FC6-0B1A-E511-8FA5-02163E011DB7.root',
                             )
                             )
 
@@ -66,6 +65,9 @@ options.register ('HEFlag',
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.string,          # string, int, or float
                   "Flag for this HE aging condition")
+
+# get and parse the command line arguments
+options.parseArguments()
 
 HEFlagMap = {
     '17Age0PU50'   : 'Upg2017Summer15DR-NoAgingPU50_DES17',
@@ -145,7 +147,6 @@ process.ak4PuppiJEC10 = cms.EDAnalyzer('METPerformance',
                                      UseGenJets     = cms.untracked.bool(False),
                                      PileUpInfoTag  = cms.InputTag("addPileupInfo"),
                                      JetsMatchedGen =  cms.untracked.bool(False),
-                                     )
                                      )
 
 #============================================================================#
