@@ -14,8 +14,8 @@ import copy, os, time
 from CRABAPI.RawCommand import crabCommand
 from crab3Config import config as config
 
-workArea = 'CrabTest/RandomTest1'
-outDir =  '/store/user/benwu/JetMET_TP/NoExTracker/RandomTest1'
+workArea = 'CrabTest/HETest2'
+outDir =  '/store/user/benwu/JetMET_TP/HEAging/Test2'
 
 jobslist = {
     #'SLHC23p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           3],
@@ -65,21 +65,19 @@ jobslist = {
     #--------------------------     HE Aging Study     --------------------------#
     #============================================================================#
 
-    '19PlanBAge500PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloNoHEPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, "HEFlag='19PlanBAge500PU50'"  ] ,
-    '19PlanBAge300PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloNoHEPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, "HEFlag='19PlanBAge300PU50'"  ] ,
-    '19PlanBAge150PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloNoHEPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, "HEFlag='19PlanBAge150PU50'"  ] ,
+    '19PlanBAge500PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloNoHEPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, 'HEFlag=19PlanBAge500PU50'  ] ,
+    '19PlanBAge300PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloNoHEPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, 'HEFlag=19PlanBAge300PU50'  ] ,
+    '19PlanBAge150PU50_MET' : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloNoHEPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO' , 20, 'HEFlag=19PlanBAge150PU50'  ] ,
 
-    '19Age500PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, "HEFlag='19Age500PU50'"       ] ,
-    '19Age300PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, "HEFlag='19Age300PU50'"       ] ,
-    '19Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, "HEFlag='19Age150PU50'"       ] ,
-    '19Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age100CaloPU50_U19_100FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, "HEFlag='19Age100PU50'"       ] ,
-    '19Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age0CaloPU50_DES19_62_V8_ext1-v1/GEN-SIM-RECO'         , 20, "HEFlag='19Age0PU50'"         ] ,
+    '19Age500PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, 'HEFlag=19Age500PU50'       ] ,
+    '19Age300PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, 'HEFlag=19Age300PU50'       ] ,
+    '19Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, 'HEFlag=19Age150PU50'       ] ,
+    '19Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age100CaloPU50_U19_100FB_V1A_ext1-v1/GEN-SIM-RECO'     , 20, 'HEFlag=19Age100PU50'       ] ,
+    '19Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age0CaloPU50_DES19_62_V8_ext1-v1/GEN-SIM-RECO'         , 20, 'HEFlag=19Age0PU50'         ] ,
 
-    '17Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age150CaloPU50_U17_150FB_V1A-v1/GEN-SIM-RECO'       , 20, "HEFlag='17Age150PU50'"       ] ,
-    '17Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age100CaloPU50_U17_100FB_V1A-v1/GEN-SIM-RECO'       , 20, "HEFlag='17Age100PU50'"       ] ,
-    '17Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-NoAgingPU50_DES17_62_V8-v1/GEN-SIM-RECO'            , 20, "HEFlag='17Age0PU50'"         ] ,
-
-
+    '17Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age150CaloPU50_U17_150FB_V1A-v1/GEN-SIM-RECO'       , 20, 'HEFlag=17Age150PU50'       ] ,
+    '17Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age100CaloPU50_U17_100FB_V1A-v1/GEN-SIM-RECO'       , 20, 'HEFlag=17Age100PU50'       ] ,
+    '17Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py", '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-NoAgingPU50_DES17_62_V8-v1/GEN-SIM-RECO'            , 20, 'HEFlag=17Age0PU50'         ] ,
 
 }
 tasklist = {}
@@ -98,7 +96,10 @@ for key, value in jobslist.items():
     if len(value) > 2:
         tempconfig.Data.unitsPerJob = value[2]
     if len(value) > 3:
-        tempconfig.JobType.pyCfgParams = value[3]
+        if isinstance(value[3], list):
+            tempconfig.JobType.pyCfgParams = value[3]
+        else:
+            tempconfig.JobType.pyCfgParams = [value[3]]
         # tempconfig.Data.totalUnits = value[3]
     results = crabCommand('submit', config = tempconfig)
     tasklist[results['uniquerequestname']] = key
