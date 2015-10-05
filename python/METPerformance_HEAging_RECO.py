@@ -75,12 +75,16 @@ HEFlagMap = {
     '17Age150PU50' : 'Upg2017Summer15DR-Age150CaloPU50_U17_150FB',
     '19Age0PU50'   : 'GEM2019Upg14DR-Age0CaloPU50_hcal_DES19',
     '19Age100PU50' : 'GEM2019Upg14DR-Age100CaloPU50_hcal_U19_100FB',
-    '19Age150PU50' : 'GEM2019Upg14DR-Age150CaloNoHEPU50_hcal_U19_150FB',
-    # '19PlanBAge0PU50',
+    '19Age150PU50' : 'GEM2019Upg14DR-Age150CaloPU50_hcal_U19_150FB',
+    '19Age300PU50' : 'GEM2019Upg14DR-Age300CaloPU50_hcal_U19_300FB',
+    '19Age500PU50' : 'GEM2019Upg14DR-Age500CaloPU50_hcal_U19_500FB',
+    '19PlanBAge150PU50' : 'GEM2019Upg14DR-Age150CaloNoHEPU50_hcal_U19_150FB',
+    '19PlanBAge300PU50' : 'GEM2019Upg14DR-Age300CaloNoHEPU50_hcal_U19_300FB',
+    '19PlanBAge500PU50' : 'GEM2019Upg14DR-Age500CaloNoHEPU50_hcal_U19_500FB',
 }
 
 if options.HEFlag is None or options.HEFlag not in HEFlagMap:
-    raise AssertionError()
+    print "Missing input HEFlag"
 
 L1PUPPIJEC = HEFlagMap[options.HEFlag] + "_MC_L1FastJet_AK4PUPPI.txt"
 L2PUPPIJEC = HEFlagMap[options.HEFlag] + "_MC_L2Relative_AK4PUPPI.txt"
