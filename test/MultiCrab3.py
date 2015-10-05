@@ -18,9 +18,18 @@ workArea = 'CrabTest/HETest2'
 outDir =  '/store/user/benwu/JetMET_TP/HEAging/Test2'
 
 jobslist = {
+
+    #============================================================================#
+    #--------------------------------     TP     --------------------------------#
+    #============================================================================#
+    'SLHC26_Ext_140PU_NoHFMET'     : ['../python/METPerformance_HGCal_140PU_NoHF_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALnewsplit_PU140BX25_newsplitPU140_PH2_1K_FB_V6-v3/GEN-SIM-RECO', 10],
+    'SLHC25p1_Aged_140PU_NoHFMET'  : ['../python/METPerformance_Phase1_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kMar26_PU140BX25_PH1_1K_FB_V2-v3/GEN-SIM-RECO',           2],
+    'SLHC25p1_NoAged_50PU_NoHFMET' : ['../python/METPerformance_Phase1_50PU_NoHF_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedMar26_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',            2],
+
     #'SLHC23p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           3],
     #'SLHC25p1_SHCal_140PU_MET' : ['../python/METPerformance_SHCal_140PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALMar26_PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO',           2],
     #'SLHC23p1_SHCal_0PU_MET'   : ['../python/METPerformance_SHCal_NoPU_cfg_RECO.py',   '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023SHCALDR-SHCALJan23_NoPU_PH2_1K_FB_V6-v1/GEN-SIM-RECO',                2],
+
     #'SLHC23p1_Aged_140PU_MET'  : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_PU140BX25_PH1_1K_FB_V2-v1/GEN-SIM-RECO', 2],
     #'SLHC23p1_Aged_0PU_MET'    : ['../python/METPerformance_Phase1_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kfixJan23_NoPU_PH1_1K_FB_V2-v1/GEN-SIM-RECO',      2],
     #'SLHC23p1_NoAged_50PU_MET' : ['../python/METPerformance_Phase1_50PU_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedJan23_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',     2],
@@ -35,8 +44,8 @@ jobslist = {
     #'SLHC26p2_EE24_140PU_MET' : ['../python/METPerformance_HGCal_140PU_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC26_patch2-PH2_1K_FB_V6_HGCalee24PU140-v1/GEN-SIM-RECO', 2],
     #'SLHC26p2_EE28_140PU_MET' : ['../python/METPerformance_HGCal_140PU_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC26_patch2-PH2_1K_FB_V6_HGCalee18PU140-v1/GEN-SIM-RECO', 2],
 
-    #'SLHC26_Ext_140PU_NoHFMET' : ['../python/METPerformance_HGCal_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALnewsplit_PU140BX25_newsplitPU140_PH2_1K_FB_V6-v3/GEN-SIM-RECO', 2],
     #'SLHC26_NoExt_140PU_NoHFMET' : ['../python/METPerformance_NoExt_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALNoTRKExtDR-PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 1, 2],
+    #'SLHC26_Ext_140PU_NoHFMET' : ['../python/METPerformance_HGCal_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALnewsplit_PU140BX25_newsplitPU140_PH2_1K_FB_V6-v3/GEN-SIM-RECO', 2],
     #'SLHC25p1_Aged_140PU_NoHFMET'  : ['../python/METPerformance_Phase1_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kMar26_PU140BX25_PH1_1K_FB_V2-v3/GEN-SIM-RECO', 2],
     #'SLHC25p1_NoAged_50PU_NoHFMET' : ['../python/METPerformance_Phase1_50PU_NoHF_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedMar26_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',   2],
 
