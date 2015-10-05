@@ -36,7 +36,7 @@ jobslist = {
     #'SLHC26p2_EE28_140PU_MET' : ['../python/METPerformance_HGCal_140PU_cfg_RECO.py', '/RelValZMM_14TeV/CMSSW_6_2_0_SLHC26_patch2-PH2_1K_FB_V6_HGCalee18PU140-v1/GEN-SIM-RECO', 2],
 
     #'SLHC26_Ext_140PU_NoHFMET' : ['../python/METPerformance_HGCal_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALDR-HGCALnewsplit_PU140BX25_newsplitPU140_PH2_1K_FB_V6-v3/GEN-SIM-RECO', 2],
-    'SLHC26_NoExt_140PU_NoHFMET' : ['../python/METPerformance_NoExt_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALNoTRKExtDR-PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 1, 2],
+    #'SLHC26_NoExt_140PU_NoHFMET' : ['../python/METPerformance_NoExt_140PU_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/TP2023HGCALNoTRKExtDR-PU140BX25_PH2_1K_FB_V6-v1/GEN-SIM-RECO', 1, 2],
     #'SLHC25p1_Aged_140PU_NoHFMET'  : ['../python/METPerformance_Phase1_140PU_NoHF_cfg_RECO.py', '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1age1kMar26_PU140BX25_PH1_1K_FB_V2-v3/GEN-SIM-RECO', 2],
     #'SLHC25p1_NoAged_50PU_NoHFMET' : ['../python/METPerformance_Phase1_50PU_NoHF_cfg_RECO.py',  '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Phase1NoAgedMar26_PU50BX25_DES19_62_V8-v1/GEN-SIM-RECO',   2],
 
@@ -59,6 +59,26 @@ jobslist = {
     #'SLHC25p6_HGCal_0PU_HF' : ['../python/PFAnalyzer_Phase2_cfg.py', '/RelValQCDForPF_14TeV/CMSSW_6_2_0_SLHC25_patch6-PH2_1K_FB_V6_UPGHGCalPand-v1/GEN-SIM-RECO', 2],
     #'SLHC25p4_HGCal_0PU_HF' : ['../python/PFAnalyzer_Phase2_cfg.py', '/RelValQCDForPF_14TeV/CMSSW_6_2_0_SLHC25_patch4-PH2_1K_FB_V6_UPGHGCalPand-v1/GEN-SIM-RECO', 2],
     #'SLHC25_Aged_0PU_HF' : ['../python/PFAnalyzer_Phase2_cfg.py', '/RelValQCDForPF_14TeV/CMSSW_6_2_0_SLHC25-PH1_1K_FB_V2_2019GEM1k-v1/GEN-SIM-RECO', 2],
+
+
+    #============================================================================#
+    #--------------------------     HE Aging Study     --------------------------#
+    #============================================================================#
+
+    '19PlanBAge500PU50_MET' : ["../python/METPerformance_HEAging_RECO.py HEFlag='19PlanBAge500PU50'" , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloNoHEPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO' , 2] ,
+    '19PlanBAge300PU50_MET' : ["../python/METPerformance_HEAging_RECO.py HEFlag='19PlanBAge300PU50'" , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloNoHEPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO' , 2] ,
+    '19PlanBAge150PU50_MET' : ["../python/METPerformance_HEAging_RECO.py HEFlag='19PlanBAge150PU50'" , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloNoHEPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO' , 2] ,
+
+    '19Age500PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='19Age500PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age500CaloPU50_U19_500FB_V1A_ext1-v1/GEN-SIM-RECO'     , 2] ,
+    '19Age300PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='19Age300PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age300CaloPU50_U19_300FB_V1A_ext1-v1/GEN-SIM-RECO'     , 2] ,
+    '19Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='19Age150PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age150CaloPU50_U19_150FB_V1A_ext1-v1/GEN-SIM-RECO'     , 2] ,
+    '19Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='19Age100PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age100CaloPU50_U19_100FB_V1A_ext1-v1/GEN-SIM-RECO'     , 2] ,
+    '19Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py HEFlag='19Age0PU50'"        , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/GEM2019Upg14DR-Age0CaloPU50_DES19_62_V8_ext1-v1/GEN-SIM-RECO'         , 2] ,
+
+    '17Age150PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='17Age150PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age150CaloPU50_U17_150FB_V1A-v1/GEN-SIM-RECO'       , 2] ,
+    '17Age100PU50_MET'      : ["../python/METPerformance_HEAging_RECO.py HEFlag='17Age100PU50'"      , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-Age100CaloPU50_U17_100FB_V1A-v1/GEN-SIM-RECO'       , 2] ,
+    '17Age0PU50_MET'        : ["../python/METPerformance_HEAging_RECO.py HEFlag='17Age0PU50'"        , '/DYToMuMu_M-20_TuneZ2star_14TeV-pythia6-tauola/Upg2017Summer15DR-NoAgingPU50_DES17_62_V8-v1/GEN-SIM-RECO'            , 2] ,
+
 
 
 }
